@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MAD_Lab1</string>
+    <string name="name">Nome</string>
+    <string name="mail">E-mail</string>
+    <string name="bio">Descrizione</string>
+    <string name="location">Posizione</string>
+    <string name="language">Lingua</string>
+</resources>

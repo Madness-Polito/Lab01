@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MAD_Lab1</string>
+    <string name="name">Name</string>
+    <string name="mail">E-mail</string>
+    <string name="bio">Short bio</string>
+    <string name="location">Location</string>
+    <string name="language">Language</string>
+</resources>
