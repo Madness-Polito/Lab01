@@ -4,5 +4,6 @@
     <item android:title="editProfile"
           android:id="@+id/editButton"
           android:icon="@android:drawable/ic_menu_edit"
-          app:showAsAction="always"/>
+          app:showAsAction="always"
+        />
 </menu>

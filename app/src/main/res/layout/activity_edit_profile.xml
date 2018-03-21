@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,17 +15,16 @@
             android:id="@+id/editImageProfile"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorAccent"/>
+            android:src="@mipmap/ic_launcher_round"/>
 
         <ImageButton
             android:id="@+id/selectImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="24dp"
+            android:layout_margin="12dp"
             android:layout_alignBottom="@id/editImageProfile"
             android:layout_alignRight="@id/editImageProfile"
-            android:src="@mipmap/ic_launcher"
-            android:background="@android:drawable/ic_menu_edit"/>
+            android:background="@android:drawable/ic_menu_edit" />
 
     </RelativeLayout>
     
