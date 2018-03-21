@@ -6,16 +6,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class editProfile extends AppCompatActivity {
+import com.vansuita.pickimage.bean.PickResult;
+import com.vansuita.pickimage.bundle.PickSetup;
+import com.vansuita.pickimage.dialog.PickImageDialog;
+import com.vansuita.pickimage.listeners.IPickResult;
+
+public class editProfile extends AppCompatActivity implements View.OnClickListener, IPickResult{
 
     private EditText name, mail, bio;
     private ImageView pic;
     private ImageButton imgBtn;
+
+    private PickSetup setup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +35,16 @@ public class editProfile extends AppCompatActivity {
         bio  = findViewById(R.id.editTextBio);
         pic  = findViewById(R.id.editImageProfile);
         imgBtn = findViewById(R.id.selectImage);
+
+        //set listeners
+        imgBtn.setOnClickListener(this);
+
+        //customize PickSetup (gallery/camera)
+        setup =  new PickSetup().setSystemDialog(true);
+
+
+
+
 
     }
 
@@ -73,6 +91,32 @@ public class editProfile extends AppCompatActivity {
         pic.setImageBitmap(bm);
     }
 
+    @Override
+    public void onPickResult(PickResult r) {
+        if (r.getError() == null) {
+            pic.setImageBitmap(r.getBitmap());
+            //imageView.setImageURI(r.getUri());
+        } else {
+            //Handle possible errors
+            //TODO: do what you have to do with r.getError();
+        }
+    }
 
 
+
+
+
+
+    @Override
+    public void onClick(View view) {
+
+        //figure out what button ha been pressed
+        switch (view.getId()){
+
+            case R.id.selectImage:
+                //Button to edit image has been pressed
+                PickImageDialog.build(setup).show(this);
+                break;
+        }
+    }
 }
