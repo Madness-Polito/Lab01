@@ -19,11 +19,13 @@
             android:background="@color/colorAccent"/>
 
         <ImageButton
+            android:id="@+id/selectImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="12dp"
+            android:padding="24dp"
             android:layout_alignBottom="@id/editImageProfile"
             android:layout_alignRight="@id/editImageProfile"
+            android:src="@mipmap/ic_launcher"
             android:background="@android:drawable/ic_menu_edit"/>
 
     </RelativeLayout>
