@@ -76,7 +76,7 @@ public class showProfile extends AppCompatActivity {
 
         Intent i = new Intent(getApplicationContext(), editProfile.class);
         startActivity(i);
-        finish();
+        //finish();
 
         return super.onOptionsItemSelected(item);
     }
