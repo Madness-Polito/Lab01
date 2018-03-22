@@ -102,9 +102,7 @@ public class editProfile extends AppCompatActivity implements View.OnClickListen
             e.printStackTrace();
         }
 
-        // restart showProfile activity passing saved data
-        Intent i = new Intent(getApplicationContext(), showProfile.class);
-        startActivity(i);
+        // return to showProfile
         finish();
 
         return super.onOptionsItemSelected(item);
