@@ -7,13 +7,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,10 +29,11 @@ import android.widget.Toast;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class editProfile extends AppCompatActivity implements View.OnClickListener{
+public class editProfile extends AppCompatActivity{
 
     private EditText name, mail, bio;
     private ImageView pic;
@@ -44,6 +49,7 @@ public class editProfile extends AppCompatActivity implements View.OnClickListen
         g = (Globals)getApplication();
         setContentView(R.layout.activity_edit_profile);
 
+        // get object references
         name = findViewById(R.id.editTextName);
         mail = findViewById(R.id.editTextMail);
         bio  = findViewById(R.id.editTextBio);
@@ -51,20 +57,39 @@ public class editProfile extends AppCompatActivity implements View.OnClickListen
         imgBtn = findViewById(R.id.selectImage);
 
         //set listeners
-        imgBtn.setOnClickListener(this);
+        imgBtn.setOnClickListener(v -> { if (v.getId() == R.id.selectImage)
+                                            CropImage.startPickImageActivity(this);} );
+        name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-        //Intent i = getIntent();
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextValidation.isValidName(s.toString()))
+                    name.setTextColor(Color.RED);
+            }
+        });
+        mail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!TextValidation.isValidMail(s.toString()))
+                    mail.setTextColor(Color.RED);
+            }
+        });
+
         name.setText(g.getName());
         mail.setText(g.getMail());
         bio.setText(g.getBio());
         pic.setImageBitmap(g.getBmp());
-        /*Bundle b = i.getExtras();
-        name.setText(b.getString("name"));
-        mail.setText(b.getString("mail"));
-        bio.setText(b.getString("bio"));
-        Bitmap bm = b.getParcelable("pic");
-        pic.setImageBitmap(bm);*/
     }
 
     // create the edit bar next to the app name
@@ -79,29 +104,45 @@ public class editProfile extends AppCompatActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
-        // save data
-        try {
-            // save simple data through sharedPreferences
-            SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
-            editor.putString("name", name.getText().toString());
-            editor.putString("mail", mail.getText().toString());
-            editor.putString("bio", bio.getText().toString());
-            editor.apply();
+        // check data satisfies regex
+        // check name
+        if (!TextValidation.isValidName(name.getText().toString())) {
+            name.setError(getString(R.string.invalidName));
+            return false;
+        }
 
-            // save pic to file
-            Bitmap bmp = ((BitmapDrawable)pic.getDrawable()).getBitmap();
-            if (bmp != null){
+        // check mail
+        if (!TextValidation.isValidMail(mail.getText().toString())) {
+            mail.setError(getString(R.string.invalidMail));
+            return false;
+        }
+
+        Bitmap bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
+
+        // update global vars
+        g.setProfileSet(true);
+        g.setName(name.getText().toString());
+        g.setMail(mail.getText().toString());
+        g.setBio(bio.getText().toString());
+        g.setBmp(bmp);
+
+        // save simple data through sharedPreferences
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putBoolean("profileSet", true);
+        editor.putString("name", name.getText().toString());
+        editor.putString("mail", mail.getText().toString());
+        editor.putString("bio", bio.getText().toString());
+        editor.apply();
+
+        // save pic to file
+        try {
+            if (bmp != null) {
                 FileOutputStream outStream = openFileOutput(PIC_FILE, Context.MODE_PRIVATE);
-                bmp.compress(Bitmap.CompressFormat.JPEG, 30, outStream);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
                 outStream.close();
             }
-
-            // update global vars
-            g.setName(name.getText().toString());
-            g.setMail(mail.getText().toString());
-            g.setBio(bio.getText().toString());
-            g.setBmp(bmp);
-        } catch (Exception e) {
+        }
+        catch (Exception e ){
             e.printStackTrace();
         }
 
@@ -109,27 +150,6 @@ public class editProfile extends AppCompatActivity implements View.OnClickListen
         finish();
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-
-    @Override
-    public void onClick(View view) {
-
-        //figure out what button ha been pressed
-        switch (view.getId()){
-
-            case R.id.selectImage:
-                //Button to edit image has been pressed
-                CropImage.startPickImageActivity(this);
-                break;
-        }
-    }
-
-
-    private void startCropImageActivity() {
-        CropImage.activity()
-                .start(this);
     }
 
     @Override
@@ -155,6 +175,7 @@ public class editProfile extends AppCompatActivity implements View.OnClickListen
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
                     pic.setImageBitmap(bitmap);
+                    g.setBmp(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
