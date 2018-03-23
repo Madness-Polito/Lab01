@@ -6,4 +6,6 @@
     <string name="bio">Descrizione</string>
     <string name="location">Posizione</string>
     <string name="language">Lingua</string>
+    <string name="invalidName">Nome invalido</string>
+    <string name="invalidMail">E-mail invalida</string>
 </resources>

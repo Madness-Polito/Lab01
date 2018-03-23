@@ -21,9 +21,9 @@ public class showProfile extends AppCompatActivity {
     private Globals g;
     private TextView name, mail, bio;
     private ImageView pic;
-    private ImageButton imgBtn;
     private final String PREFS_NAME = "MAD_Lab1_prefs";
     private final String PIC_FILE   = "MAD_Lab1_pic";
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -36,16 +36,16 @@ public class showProfile extends AppCompatActivity {
         mail = findViewById(R.id.showTextMail);
         bio = findViewById(R.id.showTextBio);
         pic = findViewById(R.id.showImageProfile);
-        imgBtn = findViewById(R.id.selectImage);
 
         // first app run: load data from storage
         if (b == null){
 
             // set global data
-            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            g.setName(prefs.getString("name", "name"));
-            g.setMail(prefs.getString("mail", "mail"));
-            g.setBio(prefs.getString("bio", "bio"));
+            prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            g.setProfileSet(prefs.getBoolean("profileSet", false));
+            g.setName(prefs.getString("name", null));
+            g.setMail(prefs.getString("mail", null));
+            g.setBio(prefs.getString("bio", null));
 
             // load pic if exists
             File f = new File(getFilesDir().getPath() + "/" + PIC_FILE);
@@ -55,12 +55,17 @@ public class showProfile extends AppCompatActivity {
             }
 
         }
+    }
 
-        // copy data to screen
-        name.setText(g.getName());
-        mail.setText(g.getMail());
-        bio.setText(g.getBio());
-        pic.setImageBitmap(g.getBmp());
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // redirect to editProfile if no user data set
+        if (!g.isProfileSet()){
+            Intent i = new Intent(getApplicationContext(), editProfile.class);
+            startActivity(i);
+        }
     }
 
     // create the edit bar next to the app name
@@ -76,8 +81,18 @@ public class showProfile extends AppCompatActivity {
 
         Intent i = new Intent(getApplicationContext(), editProfile.class);
         startActivity(i);
-        //finish();
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // read data from globals
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        name.setText(g.getName());
+        mail.setText(g.getMail());
+        bio.setText(g.getBio());
+        pic.setImageBitmap(g.getBmp());
     }
 }

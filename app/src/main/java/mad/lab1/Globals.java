@@ -5,10 +5,19 @@ import android.graphics.Bitmap;
 
 public class Globals extends Application {
 
+    private boolean profileSet;
     private String name;
     private String mail;
     private String bio;
     private Bitmap bmp;
+
+    public boolean isProfileSet() {
+        return profileSet;
+    }
+
+    public void setProfileSet(boolean profileSet) {
+        this.profileSet = profileSet;
+    }
 
     public String getName() {
         return name;
