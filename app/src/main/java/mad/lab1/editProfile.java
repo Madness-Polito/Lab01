@@ -21,10 +21,12 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -42,6 +44,7 @@ public class editProfile extends AppCompatActivity{
     private final String PREFS_NAME = "MAD_Lab1_prefs";
     private final String PIC_FILE   = "MAD_Lab1_pic";
     private Uri mCropImageUri;
+    private ImageButton saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +53,21 @@ public class editProfile extends AppCompatActivity{
         setContentView(R.layout.activity_edit_profile);
 
         // get object references
+
+        /*
         name = findViewById(R.id.editTextName);
         mail = findViewById(R.id.editTextMail);
         bio  = findViewById(R.id.editTextBio);
         pic  = findViewById(R.id.editImageProfile);
+        */
         imgBtn = findViewById(R.id.selectImage);
 
         //set listeners
+
         imgBtn.setOnClickListener(v -> { if (v.getId() == R.id.selectImage)
                                             CropImage.startPickImageActivity(this);} );
+
+        /*
         name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -86,17 +95,77 @@ public class editProfile extends AppCompatActivity{
             }
         });
 
+
+        */
+        /*
+        saveButton = findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // check data satisfies regex
+                // check name
+                if (!TextValidation.isValidName(name.getText().toString())) {
+                    name.setError(getString(R.string.invalidName));
+
+                } else if (!TextValidation.isValidMail(mail.getText().toString())) {
+                    // check mail
+                    mail.setError(getString(R.string.invalidMail));
+
+                }else{
+
+
+
+                Bitmap bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
+
+                // update global vars
+                g.setProfileSet(true);
+                g.setName(name.getText().toString());
+                g.setMail(mail.getText().toString());
+                g.setBio(bio.getText().toString());
+                g.setBmp(bmp);
+
+                // save simple data through sharedPreferences
+                SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+                editor.putBoolean("profileSet", true);
+                editor.putString("name", name.getText().toString());
+                editor.putString("mail", mail.getText().toString());
+                editor.putString("bio", bio.getText().toString());
+                editor.apply();
+
+                // save pic to file
+                try {
+                    if (bmp != null) {
+                        FileOutputStream outStream = openFileOutput(PIC_FILE, Context.MODE_PRIVATE);
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                        outStream.close();
+                    }
+                }
+                catch (Exception e ){
+                    e.printStackTrace();
+                }
+
+                // return to showProfile
+                finish();
+                }
+            }
+        });
+
+
         name.setText(g.getName());
         mail.setText(g.getMail());
         bio.setText(g.getBio());
         pic.setImageBitmap(g.getBmp());
+        */
+
+
+
     }
 
     // create the edit bar next to the app name
     // all icons under menu folder are automatically put
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.save_profile, menu);
+        //getMenuInflater().inflate(R.menu.save_profile, menu);
         return true;
     }
 
@@ -104,50 +173,7 @@ public class editProfile extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
-        // check data satisfies regex
-        // check name
-        if (!TextValidation.isValidName(name.getText().toString())) {
-            name.setError(getString(R.string.invalidName));
-            return false;
-        }
 
-        // check mail
-        if (!TextValidation.isValidMail(mail.getText().toString())) {
-            mail.setError(getString(R.string.invalidMail));
-            return false;
-        }
-
-        Bitmap bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
-
-        // update global vars
-        g.setProfileSet(true);
-        g.setName(name.getText().toString());
-        g.setMail(mail.getText().toString());
-        g.setBio(bio.getText().toString());
-        g.setBmp(bmp);
-
-        // save simple data through sharedPreferences
-        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putBoolean("profileSet", true);
-        editor.putString("name", name.getText().toString());
-        editor.putString("mail", mail.getText().toString());
-        editor.putString("bio", bio.getText().toString());
-        editor.apply();
-
-        // save pic to file
-        try {
-            if (bmp != null) {
-                FileOutputStream outStream = openFileOutput(PIC_FILE, Context.MODE_PRIVATE);
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-                outStream.close();
-            }
-        }
-        catch (Exception e ){
-            e.printStackTrace();
-        }
-
-        // return to showProfile
-        finish();
 
         return super.onOptionsItemSelected(item);
     }

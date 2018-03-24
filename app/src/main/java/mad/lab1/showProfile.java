@@ -8,15 +8,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.io.File;
 
-public class showProfile extends AppCompatActivity {
+public class showProfile extends AppCompatActivity implements MenuItem.OnMenuItemClickListener {
 
     private Globals g;
     private TextView name, mail, bio;
@@ -24,6 +28,7 @@ public class showProfile extends AppCompatActivity {
     private final String PREFS_NAME = "MAD_Lab1_prefs";
     private final String PIC_FILE   = "MAD_Lab1_pic";
     private SharedPreferences prefs;
+
 
     @Override
     protected void onCreate(Bundle b) {
@@ -36,6 +41,8 @@ public class showProfile extends AppCompatActivity {
         mail = findViewById(R.id.showTextMail);
         bio = findViewById(R.id.showTextBio);
         pic = findViewById(R.id.showImageProfile);
+
+
 
         // first app run: load data from storage
         if (b == null){
@@ -57,6 +64,28 @@ public class showProfile extends AppCompatActivity {
         }
     }
 
+    public void showPopup(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+
+        // This activity implements OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(this::onMenuItemClick);
+        popup.inflate(R.menu.edit_profile);
+        popup.show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.editButton:
+                Intent i = new Intent(getApplicationContext(), editProfile.class);
+                startActivity(i);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+
     @Override
     public void onStart() {
         super.onStart();
@@ -69,9 +98,10 @@ public class showProfile extends AppCompatActivity {
     }
 
     // create the edit bar next to the app name
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-      getMenuInflater().inflate(R.menu.edit_profile, menu);
+      //getMenuInflater().inflate(R.menu.edit_profile, menu);
       return true;
     }
 
@@ -84,6 +114,7 @@ public class showProfile extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    */
 
     // read data from globals
     @Override
