@@ -103,6 +103,9 @@ public class editProfile extends AppCompatActivity{
             final EditText txt_editName = (EditText)promptsView.findViewById(R.id.txt_editName);
             final EditText txt_editCity = (EditText)promptsView.findViewById(R.id.txt_editCity);
 
+            txt_editName.setText(txt_name.getText());
+            txt_editCity.setText(txt_city.getText());
+
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)
@@ -139,6 +142,11 @@ public class editProfile extends AppCompatActivity{
             final EditText txt_editEmail = (EditText)promptsView.findViewById(R.id.txt_editEmail);
             final DatePicker datePicker = (DatePicker)promptsView.findViewById(R.id.datePicker);
 
+            txt_editPhone.setText(txt_phone.getText());
+            txt_editEmail.setText(txt_email.getText());
+            String[] date = txt_dateOfBirth.getText().toString().split("/");
+            datePicker.updateDate(Integer.parseInt(date[2]) - 1, Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0]));
+
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)
@@ -147,7 +155,7 @@ public class editProfile extends AppCompatActivity{
                                 public void onClick(DialogInterface dialog,int id) {
                                     txt_phone.setText(txt_editPhone.getText().toString());
                                     txt_email.setText(txt_editEmail.getText().toString());
-                                    txt_dateOfBirth.setText(datePicker.getDayOfMonth() + "/" + datePicker.getMonth() + "/" + datePicker.getYear());
+                                    txt_dateOfBirth.setText(datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + (datePicker.getYear() + 1));
                                 }
                             })
                     .setNegativeButton("Cancel",
@@ -173,6 +181,8 @@ public class editProfile extends AppCompatActivity{
             alertDialogBuilder.setView(promptsView);
 
             final EditText txt_editBio = (EditText)promptsView.findViewById(R.id.txt_editBio);
+
+            txt_editBio.setText(txt_bio.getText());
 
             // set dialog message
             alertDialogBuilder
