@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -14,17 +15,21 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -45,6 +50,15 @@ public class editProfile extends AppCompatActivity{
     private final String PIC_FILE   = "MAD_Lab1_pic";
     private Uri mCropImageUri;
     private ImageButton saveButton;
+    private ImageButton but_nameCity;
+    private ImageButton but_persInfo;
+    private ImageButton but_bio;
+    private TextView txt_bio;
+    private TextView txt_name;
+    private TextView txt_city;
+    private TextView txt_dateOfBirth;
+    private TextView txt_phone;
+    private TextView txt_email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +72,129 @@ public class editProfile extends AppCompatActivity{
         name = findViewById(R.id.editTextName);
         mail = findViewById(R.id.editTextMail);
         bio  = findViewById(R.id.editTextBio);
-        pic  = findViewById(R.id.editImageProfile);
         */
+        pic = findViewById(R.id.showImageProfile);
         imgBtn = findViewById(R.id.selectImage);
+        but_nameCity = findViewById(R.id.editTextNameCity);
+        but_persInfo = findViewById(R.id.editPersonalInfo);
+        but_bio = findViewById(R.id.editBio);
+
+        txt_bio = findViewById(R.id.showTextBio);
+        txt_name = findViewById(R.id.showTextName);
+        txt_city = findViewById(R.id.showTextCityStateName);
+        txt_dateOfBirth = findViewById(R.id.showTextBirthDate);
+        txt_phone = findViewById(R.id.showTextTelephone);
+        txt_email = findViewById(R.id.showTextMail);
 
         //set listeners
 
         imgBtn.setOnClickListener(v -> { if (v.getId() == R.id.selectImage)
                                             CropImage.startPickImageActivity(this);} );
+        but_nameCity.setOnClickListener(v -> {
+            // get prompts.xml view
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.edit_name_city_layout, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final EditText txt_editName = (EditText)promptsView.findViewById(R.id.txt_editName);
+            final EditText txt_editCity = (EditText)promptsView.findViewById(R.id.txt_editCity);
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    txt_name.setText(txt_editName.getText().toString());
+                                    txt_city.setText(txt_editCity.getText().toString());
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            // show it
+            alertDialog.show();
+        });
+
+        but_persInfo.setOnClickListener(v -> {
+            // get prompts.xml view
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.edit_pers_info_layout, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final EditText txt_editPhone = (EditText)promptsView.findViewById(R.id.txt_editPhone);
+            final EditText txt_editEmail = (EditText)promptsView.findViewById(R.id.txt_editEmail);
+            final DatePicker datePicker = (DatePicker)promptsView.findViewById(R.id.datePicker);
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    txt_phone.setText(txt_editPhone.getText().toString());
+                                    txt_email.setText(txt_editEmail.getText().toString());
+                                    txt_dateOfBirth.setText(datePicker.getDayOfMonth() + "/" + datePicker.getMonth() + "/" + datePicker.getYear());
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            // show it
+            alertDialog.show();
+        });
+
+        but_bio.setOnClickListener(v -> {
+            // get prompts.xml view
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.edit_bio_layout, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final EditText txt_editBio = (EditText)promptsView.findViewById(R.id.txt_editBio);
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    txt_bio.setText(txt_editBio.getText().toString());
+
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            // show it
+            alertDialog.show();
+        });
 
         /*
         name.addTextChangedListener(new TextWatcher() {

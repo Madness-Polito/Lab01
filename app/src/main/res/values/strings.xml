@@ -7,4 +7,7 @@
     <string name="language">Language</string>
     <string name="invalidName">Invalid name</string>
     <string name="invalidMail">Invalid e-mail</string>
+    <string name="city">City</string>
+    <string name="dateOfBirth">Date of birth</string>
+    <string name="phoneNumber">Phone number</string>
 </resources>

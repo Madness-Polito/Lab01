@@ -8,4 +8,7 @@
     <string name="language">Lingua</string>
     <string name="invalidName">Nome invalido</string>
     <string name="invalidMail">E-mail invalida</string>
+    <string name="city">Citta\'</string>
+    <string name="dateOfBirth">Data di nascita</string>
+    <string name="phoneNumber">Numero telefonico</string>
 </resources>
