@@ -10,6 +10,16 @@ public class Globals extends Application {
     private String mail;
     private String bio;
     private Bitmap bmp;
+    private String phone;
+    private String dateOfBirth;
+
+    public void setDateOfBirth(String birthDate) { this.dateOfBirth = birthDate; }
+
+    public String getDateOfBirth(){ return this.dateOfBirth; }
+
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getPhone(){ return this.phone; }
 
     public boolean isProfileSet() {
         return profileSet;

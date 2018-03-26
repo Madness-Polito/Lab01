@@ -75,7 +75,7 @@ public class editProfile extends AppCompatActivity{
         pic = findViewById(R.id.showImageProfile);
         imgBtn = findViewById(R.id.selectImage);
         but_nameCity = findViewById(R.id.editTextNameCity);
-        but_persInfo = findViewById(R.id.editPersonalInfo);
+        but_persInfo = findViewById(R.id.editPersonalInfo); //assign editPersonalInfo btn to the button
         but_bio = findViewById(R.id.editBio);
 
         txt_bio = findViewById(R.id.showTextBio);
@@ -261,6 +261,8 @@ public class editProfile extends AppCompatActivity{
                 g.setMail(txt_email.getText().toString());
                 g.setBio(txt_bio.getText().toString());
                 g.setBmp(bmp);
+                g.setPhone(txt_phone.getText().toString());
+                g.setDateOfBirth(txt_dateOfBirth.getText().toString());
 
                 // save simple data through sharedPreferences
                 SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
@@ -268,6 +270,8 @@ public class editProfile extends AppCompatActivity{
                 editor.putString("name", txt_name.getText().toString());
                 editor.putString("mail", txt_email.getText().toString());
                 editor.putString("bio", txt_bio.getText().toString());
+                editor.putString("phone", txt_phone.getText().toString());
+                editor.putString("dateOfBirth", txt_dateOfBirth.getText().toString());
                 editor.apply();
 
                 // save pic to file
@@ -288,14 +292,12 @@ public class editProfile extends AppCompatActivity{
             }
         });
 
+        txt_phone.setText(g.getPhone());
 
         txt_name.setText(g.getName());
         txt_email.setText(g.getMail());
         txt_bio.setText(g.getBio());
         pic.setImageBitmap(g.getBmp());
-
-
-
 
     }
 
@@ -364,6 +366,10 @@ public class editProfile extends AppCompatActivity{
 
     private void startCropImageActivity(Uri imageUri) {
         CropImage.activity(imageUri)
+
+                .setMaxCropResultSize(1800, 1800)
+                .setMinCropResultSize(1800, 1800)
+
                 .start(this);
     }
 
