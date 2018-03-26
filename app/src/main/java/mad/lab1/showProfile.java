@@ -91,10 +91,10 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
         super.onStart();
 
         // redirect to editProfile if no user data set
-        if (!g.isProfileSet()){
+        /*if (!g.isProfileSet()){
             Intent i = new Intent(getApplicationContext(), editProfile.class);
             startActivity(i);
-        }
+        }*/
     }
 
     // create the edit bar next to the app name

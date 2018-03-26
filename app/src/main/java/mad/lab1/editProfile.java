@@ -42,7 +42,6 @@ import java.io.IOException;
 
 public class editProfile extends AppCompatActivity{
 
-    private EditText name, mail, bio;
     private ImageView pic;
     private ImageButton imgBtn;
     private Globals g;
@@ -236,19 +235,19 @@ public class editProfile extends AppCompatActivity{
 
 
         */
-        /*
+
         saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // check data satisfies regex
                 // check name
-                if (!TextValidation.isValidName(name.getText().toString())) {
-                    name.setError(getString(R.string.invalidName));
+                if (!TextValidation.isValidName(txt_name.getText().toString())) {
+                    txt_name.setError(getString(R.string.invalidName));
 
-                } else if (!TextValidation.isValidMail(mail.getText().toString())) {
+                } else if (!TextValidation.isValidMail(txt_email.getText().toString())) {
                     // check mail
-                    mail.setError(getString(R.string.invalidMail));
+                    txt_email.setError(getString(R.string.invalidMail));
 
                 }else{
 
@@ -258,17 +257,17 @@ public class editProfile extends AppCompatActivity{
 
                 // update global vars
                 g.setProfileSet(true);
-                g.setName(name.getText().toString());
-                g.setMail(mail.getText().toString());
-                g.setBio(bio.getText().toString());
+                g.setName(txt_name.getText().toString());
+                g.setMail(txt_email.getText().toString());
+                g.setBio(txt_bio.getText().toString());
                 g.setBmp(bmp);
 
                 // save simple data through sharedPreferences
                 SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
                 editor.putBoolean("profileSet", true);
-                editor.putString("name", name.getText().toString());
-                editor.putString("mail", mail.getText().toString());
-                editor.putString("bio", bio.getText().toString());
+                editor.putString("name", txt_name.getText().toString());
+                editor.putString("mail", txt_email.getText().toString());
+                editor.putString("bio", txt_bio.getText().toString());
                 editor.apply();
 
                 // save pic to file
@@ -290,11 +289,11 @@ public class editProfile extends AppCompatActivity{
         });
 
 
-        name.setText(g.getName());
-        mail.setText(g.getMail());
-        bio.setText(g.getBio());
+        txt_name.setText(g.getName());
+        txt_email.setText(g.getMail());
+        txt_bio.setText(g.getBio());
         pic.setImageBitmap(g.getBmp());
-        */
+
 
 
 
