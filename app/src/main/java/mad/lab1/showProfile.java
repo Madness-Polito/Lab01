@@ -23,7 +23,7 @@ import java.io.File;
 public class showProfile extends AppCompatActivity implements MenuItem.OnMenuItemClickListener {
 
     private Globals g;
-    private TextView name, mail, bio;
+    private TextView name, mail, bio, phone, dateOfBirth;
     private ImageView pic;
     private final String PREFS_NAME = "MAD_Lab1_prefs";
     private final String PIC_FILE   = "MAD_Lab1_pic";
@@ -32,6 +32,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
 
     @Override
     protected void onCreate(Bundle b) {
+
         super.onCreate(b);
         g = (Globals)getApplication();
 
@@ -41,8 +42,8 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
         mail = findViewById(R.id.showTextMail);
         bio = findViewById(R.id.showTextBio);
         pic = findViewById(R.id.showImageProfile);
-
-
+        phone = findViewById(R.id.showTextTelephone);
+        dateOfBirth = findViewById(R.id.showTextBirthDate);
 
         // first app run: load data from storage
         if (b == null){
@@ -53,7 +54,8 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
             g.setName(prefs.getString("name", null));
             g.setMail(prefs.getString("mail", null));
             g.setBio(prefs.getString("bio", null));
-
+            g.setPhone(prefs.getString("phone", null));
+            g.setDateOfBirth(prefs.getString("dateOfBirth", null));
             // load pic if exists
             File f = new File(getFilesDir().getPath() + "/" + PIC_FILE);
             if (f.exists()) {
@@ -88,6 +90,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
 
     @Override
     public void onStart() {
+
         super.onStart();
 
         // redirect to editProfile if no user data set
@@ -105,7 +108,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
       return true;
     }
 
-    // associate eventlistener to the edit bar
+    // associate event listener to the edit bar -> go to edit activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
 
@@ -119,11 +122,19 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
     // read data from globals
     @Override
     public void onResume() {
-        super.onResume();
+
+
 
         name.setText(g.getName());
         mail.setText(g.getMail());
         bio.setText(g.getBio());
         pic.setImageBitmap(g.getBmp());
+        phone.setText(g.getPhone());
+        dateOfBirth.setText(g.getDateOfBirth());
+        super.onResume();
     }
+
+
+
+
 }

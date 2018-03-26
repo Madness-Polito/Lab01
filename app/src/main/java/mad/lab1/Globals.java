@@ -61,7 +61,5 @@ public class Globals extends Application {
         this.bmp = bmp;
     }
 
-    public void eraseBmp(){
-        this.bmp = null;
-    }
+
 }

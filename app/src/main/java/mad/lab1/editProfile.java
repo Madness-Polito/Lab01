@@ -45,7 +45,7 @@ import java.io.IOException;
 public class editProfile extends AppCompatActivity{
 
     private ImageView pic;
-    private Bitmap oldBmp, bmp;
+    private Bitmap oldBmp;
     private boolean saved = false;
     private ImageButton imgBtn;
     private Globals g;
@@ -90,10 +90,12 @@ public class editProfile extends AppCompatActivity{
         txt_phone = findViewById(R.id.showTextTelephone);
         txt_email = findViewById(R.id.showTextMail);
 
+
+        oldBmp = g.getBmp();
         //set listeners
 
         imgBtn.setOnClickListener(v -> { if (v.getId() == R.id.selectImage)
-                                            CropImage.startPickImageActivity(this);} );
+            CropImage.startPickImageActivity(this);} );
         but_nameCity.setOnClickListener(v -> {
             // get prompts.xml view
             LayoutInflater li = LayoutInflater.from(this);
@@ -258,45 +260,43 @@ public class editProfile extends AppCompatActivity{
 
                 }else{
 
+                    Bitmap bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
 
 
-                bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
 
-                //save an instance of Bitmap value
-                oldBmp = bmp;
-                // update global vars
-                g.setProfileSet(true);
-                g.setName(txt_name.getText().toString());
-                g.setMail(txt_email.getText().toString());
-                g.setBio(txt_bio.getText().toString());
-                g.setBmp(bmp);
-                g.setPhone(txt_phone.getText().toString());
-                g.setDateOfBirth(txt_dateOfBirth.getText().toString());
+                    // update global vars
+                    g.setProfileSet(true);
+                    g.setName(txt_name.getText().toString());
+                    g.setMail(txt_email.getText().toString());
+                    g.setBio(txt_bio.getText().toString());
+                    g.setBmp(bmp);
+                    g.setPhone(txt_phone.getText().toString());
+                    g.setDateOfBirth(txt_dateOfBirth.getText().toString());
 
-                // save simple data through sharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
-                editor.putBoolean("profileSet", true);
-                editor.putString("name", txt_name.getText().toString());
-                editor.putString("mail", txt_email.getText().toString());
-                editor.putString("bio", txt_bio.getText().toString());
-                editor.putString("phone", txt_phone.getText().toString());
-                editor.putString("dateOfBirth", txt_dateOfBirth.getText().toString());
-                editor.apply();
+                    // save simple data through sharedPreferences
+                    SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+                    editor.putBoolean("profileSet", true);
+                    editor.putString("name", txt_name.getText().toString());
+                    editor.putString("mail", txt_email.getText().toString());
+                    editor.putString("bio", txt_bio.getText().toString());
+                    editor.putString("phone", txt_phone.getText().toString());
+                    editor.putString("dateOfBirth", txt_dateOfBirth.getText().toString());
+                    editor.apply();
 
-                // save pic to file
-                try {
-                    if (bmp != null) {
-                        FileOutputStream outStream = openFileOutput(PIC_FILE, Context.MODE_PRIVATE);
-                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-                        outStream.close();
+                    // save pic to file
+                    try {
+                        if (bmp != null) {
+                            FileOutputStream outStream = openFileOutput(PIC_FILE, Context.MODE_PRIVATE);
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                            outStream.close();
+                        }
                     }
-                }
-                catch (Exception e ){
-                    e.printStackTrace();
-                }
+                    catch (Exception e ){
+                        e.printStackTrace();
+                    }
 
-                // return to showProfile
-                finish();
+                    // return to showProfile
+                    finish();
                 }
             }
         });
@@ -321,8 +321,6 @@ public class editProfile extends AppCompatActivity{
     // save data persistently
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-
-
 
         return super.onOptionsItemSelected(item);
     }
@@ -351,6 +349,7 @@ public class editProfile extends AppCompatActivity{
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
                     pic.setImageBitmap(bitmap);
                     g.setBmp(bitmap);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -385,9 +384,10 @@ public class editProfile extends AppCompatActivity{
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)  {
+
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
             if(saved == false){
-                Log.d("PAUSE", "saved -> FALSE -> switching back to old pic");
+
 
                 g.setBmp(oldBmp);
                 try {
@@ -404,6 +404,7 @@ public class editProfile extends AppCompatActivity{
 
         return super.onKeyDown(keyCode, event);
     }
+
 
 
 }
