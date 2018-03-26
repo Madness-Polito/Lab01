@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
     private Globals g;
     private TextView name, mail, bio;
     private ImageView pic;
+    private CardView cardView;
     private final String PREFS_NAME = "MAD_Lab1_prefs";
     private final String PIC_FILE   = "MAD_Lab1_pic";
     private SharedPreferences prefs;
@@ -41,6 +43,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
         mail = findViewById(R.id.showTextMail);
         bio = findViewById(R.id.showTextBio);
         pic = findViewById(R.id.showImageProfile);
+        cardView = findViewById(R.id.rating_card);
 
 
 

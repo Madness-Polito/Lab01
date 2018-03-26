@@ -144,7 +144,7 @@ public class editProfile extends AppCompatActivity{
             txt_editPhone.setText(txt_phone.getText());
             txt_editEmail.setText(txt_email.getText());
             String[] date = txt_dateOfBirth.getText().toString().split("/");
-            datePicker.updateDate(Integer.parseInt(date[2]) - 1, Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0]));
+            datePicker.updateDate(Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0]));
 
             // set dialog message
             alertDialogBuilder
@@ -154,7 +154,7 @@ public class editProfile extends AppCompatActivity{
                                 public void onClick(DialogInterface dialog,int id) {
                                     txt_phone.setText(txt_editPhone.getText().toString());
                                     txt_email.setText(txt_editEmail.getText().toString());
-                                    txt_dateOfBirth.setText(datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + (datePicker.getYear() + 1));
+                                    txt_dateOfBirth.setText(datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + (datePicker.getYear()));
                                 }
                             })
                     .setNegativeButton("Cancel",
