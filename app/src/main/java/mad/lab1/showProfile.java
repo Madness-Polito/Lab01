@@ -32,6 +32,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
 
     @Override
     protected void onCreate(Bundle b) {
+
         super.onCreate(b);
         g = (Globals)getApplication();
 
@@ -89,6 +90,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
 
     @Override
     public void onStart() {
+
         super.onStart();
 
         // redirect to editProfile if no user data set
@@ -120,7 +122,8 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
     // read data from globals
     @Override
     public void onResume() {
-        super.onResume();
+
+
 
         name.setText(g.getName());
         mail.setText(g.getMail());
@@ -128,5 +131,10 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
         pic.setImageBitmap(g.getBmp());
         phone.setText(g.getPhone());
         dateOfBirth.setText(g.getDateOfBirth());
+        super.onResume();
     }
+
+
+
+
 }

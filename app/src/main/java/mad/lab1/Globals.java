@@ -60,4 +60,8 @@ public class Globals extends Application {
     public void setBmp(Bitmap bmp) {
         this.bmp = bmp;
     }
+
+    public void eraseBmp(){
+        this.bmp = null;
+    }
 }

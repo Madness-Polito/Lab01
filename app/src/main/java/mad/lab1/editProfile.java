@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +45,8 @@ import java.io.IOException;
 public class editProfile extends AppCompatActivity{
 
     private ImageView pic;
+    private Bitmap oldBmp, bmp;
+    private boolean saved = false;
     private ImageButton imgBtn;
     private Globals g;
     private final String PREFS_NAME = "MAD_Lab1_prefs";
@@ -61,6 +65,7 @@ public class editProfile extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         g = (Globals)getApplication();
         setContentView(R.layout.activity_edit_profile);
@@ -240,6 +245,8 @@ public class editProfile extends AppCompatActivity{
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                saved = true;
                 // check data satisfies regex
                 // check name
                 if (!TextValidation.isValidName(txt_name.getText().toString())) {
@@ -253,8 +260,10 @@ public class editProfile extends AppCompatActivity{
 
 
 
-                Bitmap bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
+                bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
 
+                //save an instance of Bitmap value
+                oldBmp = bmp;
                 // update global vars
                 g.setProfileSet(true);
                 g.setName(txt_name.getText().toString());
@@ -374,6 +383,27 @@ public class editProfile extends AppCompatActivity{
     }
 
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            if(saved == false){
+                Log.d("PAUSE", "saved -> FALSE -> switching back to old pic");
+
+                g.setBmp(oldBmp);
+                try {
+                    FileOutputStream outStream = openFileOutput(PIC_FILE, Context.MODE_PRIVATE);
+                    oldBmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                    outStream.close();
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
 
 
 }
