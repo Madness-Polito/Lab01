@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Region;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +21,7 @@ import android.widget.TextView;
 
 import java.io.File;
 
-public class showProfile extends AppCompatActivity implements MenuItem.OnMenuItemClickListener {
+public class showProfile extends AppCompatActivity  {
 
     private Globals g;
     private TextView name, mail, bio, phone, dateOfBirth;
@@ -28,6 +29,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
     private final String PREFS_NAME = "MAD_Lab1_prefs";
     private final String PIC_FILE   = "MAD_Lab1_pic";
     private SharedPreferences prefs;
+    private ImageButton editButton;
 
 
     @Override
@@ -44,6 +46,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
         pic = findViewById(R.id.showImageProfile);
         phone = findViewById(R.id.showTextTelephone);
         dateOfBirth = findViewById(R.id.showTextBirthDate);
+        editButton = findViewById(R.id.editProfileButton);
 
         // first app run: load data from storage
         if (b == null){
@@ -64,7 +67,20 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
             }
 
         }
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), editProfile.class);
+                startActivity(i);
+            }
+        });
     }
+
+    /*
+    TODO: To restore when using the 3 points in show profile with a popup menu.
+    IMPLEMENT:
+    implements MenuItem.OnMenuItemClickListener
 
     public void showPopup(View v) {
         PopupMenu popup = new PopupMenu(this, v);
@@ -74,6 +90,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
         popup.inflate(R.menu.edit_profile);
         popup.show();
     }
+
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -86,7 +103,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
                 return false;
         }
     }
-
+    */
 
     @Override
     public void onStart() {
