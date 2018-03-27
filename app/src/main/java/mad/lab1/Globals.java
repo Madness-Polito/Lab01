@@ -7,7 +7,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.ImageView;
 
+
 import java.io.File;
+
 
 public class Globals extends Application {
 
@@ -27,5 +29,4 @@ public class Globals extends Application {
             pic.setImageURI(Uri.parse(path));
         }
     }
-
 }

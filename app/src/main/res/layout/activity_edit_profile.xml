@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <ScrollView
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:scrollbars="none">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+
+
+
+
+
+        <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
 
 
 
@@ -70,12 +79,12 @@
         </android.support.v7.widget.CardView>
 
 
-
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F5F5F5">
+            android:layout_alignParentTop="true"
+            android:background="#F5F5F5"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -154,36 +163,31 @@
             </RelativeLayout>
 
 
-
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/general_info_card"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="8dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="56dp"
-                android:layout_marginBottom="8dp"
                 card_view:cardBackgroundColor="#EEEEEE"
-                >
-
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp">
 
 
                 <LinearLayout
-                    android:layout_margin="4dp"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:orientation="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:layout_alignParentLeft="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/persInfo"
@@ -193,31 +197,33 @@
 
                         <ImageButton
                             android:id="@+id/editPersonalInfo"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="16dp"
-                            android:layout_alignParentRight="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mode_edit_24dp"
-                            android:background="@android:color/transparent"/>
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="16dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_mode_edit_24dp" />
 
                     </RelativeLayout>
 
 
                     <LinearLayout
-                        android:layout_margin="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_marginLeft="16dp"
-                            android:src="@drawable/ic_date_range_24dp"
                             android:layout_width="24dp"
-                            android:layout_height="24dp" />
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_date_range_24dp" />
 
                         <TextView
                             android:id="@+id/showTextBirthDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
@@ -228,20 +234,22 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_gravity="center_vertical"
-                        android:layout_margin="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_marginLeft="16dp"
-                            android:src="@drawable/ic_phone_android_24dp"
                             android:layout_width="24dp"
-                            android:layout_height="24dp" />
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_phone_android_24dp" />
 
                         <TextView
                             android:id="@+id/showTextTelephone"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="16dp"
                             android:hint="@string/phoneHint"
@@ -252,20 +260,22 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_gravity="bottom"
-                        android:layout_margin="8dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_margin="8dp"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_marginLeft="16dp"
-                            android:src="@drawable/ic_email_black_24dp"
                             android:layout_width="24dp"
-                            android:layout_height="24dp" />
+                            android:layout_height="24dp"
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_email_black_24dp" />
 
                         <TextView
                             android:id="@+id/showTextMail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
@@ -278,32 +288,30 @@
 
             </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/bio_card"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="8dp"
-                card_view:cardBackgroundColor="#EEEEEE"
+                android:layout_gravity="center"
+                android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp">
+                card_view:cardBackgroundColor="#EEEEEE"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp">
 
                 <LinearLayout
-                    android:layout_margin="4dp"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:orientation="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:layout_alignParentLeft="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/bio"
@@ -313,21 +321,20 @@
 
                         <ImageButton
                             android:id="@+id/editBio"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="16dp"
-                            android:layout_alignParentRight="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mode_edit_24dp"
-                            android:background="@android:color/transparent"/>
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="16dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_mode_edit_24dp" />
 
                     </RelativeLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
 
                         <TextView
@@ -340,39 +347,36 @@
                     </LinearLayout>
 
 
-
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
 
-            <android.support.v7.widget.CardView
-                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/favorite_books_card"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                card_view:cardCornerRadius="4dp"
-                card_view:cardElevation="8dp"
-                card_view:cardBackgroundColor="#EEEEEE"
+                android:layout_gravity="center"
+                android:layout_marginBottom="32dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="32dp">
+                card_view:cardBackgroundColor="#EEEEEE"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp">
 
 
                 <LinearLayout
-                    android:layout_margin="4dp"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="4dp"
+                    android:orientation="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:layout_alignParentLeft="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
@@ -382,21 +386,20 @@
 
                         <ImageButton
                             android:id="@+id/editFavoriteBooks"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="16dp"
-                            android:layout_alignParentRight="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mode_edit_24dp"
-                            android:background="@android:color/transparent"/>
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="16dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_mode_edit_24dp" />
 
                     </RelativeLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
 
 
                         <TextView
@@ -408,13 +411,13 @@
 
                         <ImageButton
 
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="16dp"
-                            android:layout_alignParentRight="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_mode_edit_24dp"
-                            android:background="@android:color/transparent"/>
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="16dp"
+                            android:background="@android:color/transparent"
+                            android:src="@drawable/ic_mode_edit_24dp" />
 
                     </LinearLayout>
 
@@ -425,6 +428,8 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+
 
 </ScrollView>
 
