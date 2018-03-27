@@ -201,7 +201,7 @@ public class editProfile extends AppCompatActivity{
 
                 if (!DoB.getText().toString().equals("")){
                     String[] date = DoB.getText().toString().split("/");
-                    datePicker.updateDate(Integer.parseInt(date[2]) - 1, Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0]));
+                    datePicker.updateDate(Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0]));
                 }
 
             // set dialog message
@@ -243,7 +243,7 @@ public class editProfile extends AppCompatActivity{
                     else {
                         phone.setText(txt_editPhone.getText().toString());
                         mail.setText(txt_editEmail.getText().toString());
-                        DoB.setText(datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + (datePicker.getYear() + 1));
+                        DoB.setText(datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + (datePicker.getYear()));
                         alertDialog.dismiss();
                     }
                 }
