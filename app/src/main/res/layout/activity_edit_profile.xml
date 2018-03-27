@@ -132,7 +132,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
                     android:gravity="center_horizontal"
-                    android:text="Daniele Caschili"
+                    android:hint="@string/nameHint"
                     android:textColor="@color/text_white"
                     android:textSize="18sp" />
 
@@ -155,7 +155,7 @@
                     android:layout_below="@id/showTextName"
                     android:layout_centerHorizontal="true"
                     android:gravity="center_horizontal"
-                    android:text="Turin, Italy"
+                    android:hint="@string/cityHint"
                     android:textColor="@color/text_white"
                     android:textSize="14sp" />
 
@@ -190,11 +190,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_margin="6dp"
-                            android:text="personal info"
-                            android:textAllCaps="true"
-                            android:textSize="16sp" />
+                            android:text="@string/persInfo"
+                            android:layout_margin= "6dp"
+                            android:textSize="16sp"
+                            android:textAllCaps="true"/>
 
                         <ImageButton
                             android:id="@+id/editPersonalInfo"
@@ -227,8 +226,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="16dp"
-                            android:text="25/12/2018"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:hint="@string/DoBHint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
 
@@ -251,8 +252,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="16dp"
-                            android:text="0701234567"
-                            android:textSize="12sp" />
+                            android:hint="@string/phoneHint"
+                            android:textSize="12sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
 
@@ -275,8 +278,10 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="16dp"
-                            android:text="danielecaschili@polito.it"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:hint="@string/mailHint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -309,11 +314,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_margin="6dp"
-                            android:text="bio"
-                            android:textAllCaps="true"
-                            android:textSize="16sp" />
+                            android:text="@string/bio"
+                            android:textSize="16sp"
+                            android:layout_margin= "6dp"
+                            android:textAllCaps="true"/>
 
                         <ImageButton
                             android:id="@+id/editBio"
@@ -338,7 +342,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="Tell me something about you..." />
+                            android:hint="@string/bioHint"/>
 
                     </LinearLayout>
 
@@ -375,11 +379,10 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_margin="6dp"
-                            android:text="favorite books"
-                            android:textAllCaps="true"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:text="@string/books"
+                            android:layout_margin= "6dp"
+                            android:textAllCaps="true"/>
 
                         <ImageButton
                             android:id="@+id/editFavoriteBooks"
@@ -404,7 +407,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="What are your favorite books?" />
+                            android:hint="@string/booksHint"/>
 
                         <ImageButton
 

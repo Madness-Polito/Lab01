@@ -46,14 +46,16 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phone Number: "
-                android:textAppearance="@style/TextAppearance.AppCompat" />
+                android:text="@string/phoneNumber"
+                android:textAppearance="@style/TextAppearance.AppCompat"/>
 
             <EditText
+                android:imeOptions="flagNoFullscreen"
                 android:id="@+id/txt_editPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone">
+                android:inputType="phone"
+                android:hint="@string/phoneHint">
 
             </EditText>
 
@@ -65,10 +67,12 @@
                 android:textAppearance="@style/TextAppearance.AppCompat" />
 
             <EditText
+                android:imeOptions="flagNoFullscreen"
                 android:id="@+id/txt_editEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textWebEmailAddress">
+                android:inputType="textWebEmailAddress"
+                android:hint="@string/mailHint">
 
             </EditText>
 

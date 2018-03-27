@@ -19,7 +19,7 @@ public class TextValidation {
     }
 
     public static boolean isValidName(String name){
-        String namePattern = "^[\\p{L} .'-]+$";
+        String namePattern = "^[a-zA-Z\\s]+"; ;
 
         return TextValidation.matches(namePattern, name);
     }

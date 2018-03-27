@@ -7,7 +7,19 @@
     <string name="language">Language</string>
     <string name="invalidName">Invalid name</string>
     <string name="invalidMail">Invalid e-mail</string>
+    <string name="invalidPhone">Invalid phone</string>
     <string name="city">City</string>
     <string name="dateOfBirth">Date of birth</string>
     <string name="phoneNumber">Phone number</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">Ok</string>
+    <string name="persInfo">Personal info</string>
+    <string name="bioHint">Tell me something about you</string>
+    <string name="DoBHint">Your birthday</string>
+    <string name="nameHint">Your name</string>
+    <string name="cityHint">Your city</string>
+    <string name="phoneHint">Your phone #</string>
+    <string name="mailHint">Your email</string>
+    <string name="booksHint">Which are your favourite books?</string>
+    <string name="books">Your favourite books</string>
 </resources>
