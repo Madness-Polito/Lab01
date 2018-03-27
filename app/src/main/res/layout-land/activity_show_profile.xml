@@ -17,10 +17,10 @@
             android:id="@+id/editProfileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_more_vert_32dp"
+            android:src="@drawable/ic_edit_32dp_white"
             android:layout_margin="8dp"
             android:layout_alignParentRight="true"
-            android:onClick="showPopup"
+
             android:background="@android:color/transparent"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
