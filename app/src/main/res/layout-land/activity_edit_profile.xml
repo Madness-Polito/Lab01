@@ -43,7 +43,7 @@
             android:layout_centerVertical="true"
             android:layout_width="144dp"
             android:layout_height="144dp"
-            android:src="@drawable/ic_account_circle_128dp"
+            android:src="@drawable/ic_account_circle_144dp"
             android:elevation="0dp"/>
 
         <TextView
@@ -56,7 +56,7 @@
             android:id="@+id/showTextName"
             android:textSize="18sp"
             android:layout_marginTop="8dp"
-            android:hint="@string/nameHint"/>
+            android:text="@string/nameHint"/>
 
         <ImageButton
             android:id="@+id/editTextNameCity"
@@ -79,7 +79,7 @@
             android:textColor="@color/text_white"
             android:id="@+id/showTextCityStateName"
             android:textSize="14sp"
-            android:hint="@string/cityHint"/>
+            android:text="@string/cityHint"/>
 
 
     </RelativeLayout>
