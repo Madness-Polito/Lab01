@@ -23,6 +23,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat" />
 
             <EditText
+                android:imeOptions="flagNoFullscreen"
                 android:id="@+id/txt_editName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -40,6 +41,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat" />
 
             <EditText
+                android:imeOptions="flagNoFullscreen"
                 android:id="@+id/txt_editCity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

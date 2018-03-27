@@ -23,6 +23,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat" />
 
             <EditText
+                android:imeOptions="flagNoFullscreen"
                 android:id="@+id/txt_editBio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

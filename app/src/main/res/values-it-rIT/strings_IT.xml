@@ -8,7 +8,10 @@
     <string name="language">Lingua</string>
     <string name="invalidName">Nome invalido</string>
     <string name="invalidMail">E-mail invalida</string>
+    <string name="invalidPhone">Telefono invalido</string>
     <string name="city">Citta\'</string>
     <string name="dateOfBirth">Data di nascita</string>
     <string name="phoneNumber">Numero telefonico</string>
+    <string name="ok">Accetta</string>
+    <string name="cancel">Annulla</string>
 </resources>

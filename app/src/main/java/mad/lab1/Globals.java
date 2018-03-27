@@ -1,53 +1,29 @@
 package mad.lab1;
 
 import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.widget.ImageView;
+
+import java.io.File;
 
 public class Globals extends Application {
 
-    private boolean profileSet;
-    private String name;
-    private String mail;
-    private String bio;
-    private Bitmap bmp;
+    public static final String[] KEYS = new String[]{"name", "mail", "bio", "date", "city", "phone"};
+    public static final String KEY_PIC = "pic";
+    public static final int EDIT_CODE = 2;
+    public static final String PIC_FILE = "MAD_Lab1_pic";
 
-    public boolean isProfileSet() {
-        return profileSet;
+    public static void loadPic(Context c, ImageView pic){
+
+        String path = c.getFilesDir().getPath() + "/" + PIC_FILE;
+        File f = new File(path);
+        if (f.exists()){
+            pic.setImageURI(null); // needed to refresh the cache
+            pic.setImageURI(Uri.parse(path));
+        }
     }
 
-    public void setProfileSet(boolean profileSet) {
-        this.profileSet = profileSet;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public Bitmap getBmp() {
-        return bmp;
-    }
-
-    public void setBmp(Bitmap bmp) {
-        this.bmp = bmp;
-    }
 }
