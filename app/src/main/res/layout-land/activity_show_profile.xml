@@ -24,7 +24,6 @@
             android:background="@android:color/transparent"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/showImageProfile"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
@@ -32,10 +31,6 @@
             android:layout_height="144dp"
             android:src="@drawable/ic_account_circle_128dp"
             android:elevation="0dp"/>
-        <!--
-        app:civ_border_width="2dp"
-        app:civ_border_color="#FF000000"
-        -->
 
         <TextView
             android:layout_width="match_parent"
@@ -47,7 +42,7 @@
             android:id="@+id/showTextName"
             android:textSize="18sp"
             android:layout_marginTop="8dp"
-            android:text="Daniele Caschili"/>
+            android:hint="@string/nameHint"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -59,7 +54,7 @@
             android:textColor="@color/text_white"
             android:id="@+id/showTextCityStateName"
             android:textSize="14sp"
-            android:text="Turin, Italy"/>
+            android:hint="@string/cityHint"/>
 
 
     </RelativeLayout>
@@ -169,7 +164,7 @@
                                 android:layout_alignParentLeft="true"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="personal info"
+                                android:text="@string/persInfo"
                                 android:layout_margin= "6dp"
                                 android:textSize="16sp"
                                 android:textAllCaps="true"/>
@@ -194,7 +189,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="16dp"
                                 android:textSize="12sp"
-                                android:text="25/12/2018"
+                                android:hint="@string/DoBHint"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
 
@@ -217,7 +212,7 @@
                                 android:id="@+id/showTextTelephone"
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="16dp"
-                                android:text="0701234567"
+                                android:hint="@string/phoneHint"
                                 android:textSize="12sp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
@@ -242,7 +237,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginLeft="16dp"
                                 android:textSize="12sp"
-                                android:text="danielecaschili@polito.it"
+                                android:hint="@string/mailHint"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
 
@@ -279,7 +274,7 @@
                                 android:layout_alignParentLeft="true"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="bio"
+                                android:text="@string/bio"
                                 android:textSize="16sp"
                                 android:layout_margin= "6dp"
                                 android:textAllCaps="true"/>
@@ -298,8 +293,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:text="Tell me something about you..."/>
-
+                                android:hint="@string/bioHint"/>
                         </LinearLayout>
 
 
@@ -339,7 +333,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textSize="16sp"
-                                android:text="favorite books"
+                                android:text="@string/books"
                                 android:layout_margin= "6dp"
                                 android:textAllCaps="true"/>
 
@@ -357,7 +351,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:text="What are your favorite books?"/>
+                                android:hint="@string/booksHint"/>
 
                         </LinearLayout>
 

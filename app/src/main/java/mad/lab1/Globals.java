@@ -15,6 +15,8 @@ public class Globals extends Application {
     public static final String KEY_PIC = "pic";
     public static final int EDIT_CODE = 2;
     public static final String PIC_FILE = "MAD_Lab1_pic";
+    public static final String PREFS_NAME = "MAD_Lab1_prefs";
+
 
     public static void loadPic(Context c, ImageView pic){
 

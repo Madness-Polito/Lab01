@@ -19,7 +19,6 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
     //private Globals g;
     private TextView name, mail, bio, date, city, phone;
     private ImageView pic;
-    private final String PREFS_NAME = "MAD_Lab1_prefs";
     private SharedPreferences prefs;
     private TextView[] TEXTVIEWS;
     private final String[] KEYS = Globals.KEYS;
@@ -43,7 +42,7 @@ public class showProfile extends AppCompatActivity implements MenuItem.OnMenuIte
         if (b == null){
 
             // load preferences
-            prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            prefs = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE);
             for (int i = 0; i < KEYS.length; i++){
                 String s = prefs.getString(KEYS[i], null);
                 TEXTVIEWS[i].setText(s);

@@ -112,7 +112,7 @@
                     android:id="@+id/showTextName"
                     android:textSize="18sp"
                     android:layout_marginTop="8dp"
-                    android:text="Daniele Caschili"/>
+                    android:hint="@string/nameHint"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -124,7 +124,7 @@
                     android:textColor="@color/text_white"
                     android:id="@+id/showTextCityStateName"
                     android:textSize="14sp"
-                    android:text="Turin, Italy"/>
+                    android:hint="@string/cityHint"/>
 
 
             </RelativeLayout>
@@ -161,7 +161,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="personal info"
+                            android:text="@string/persInfo"
                             android:layout_margin= "6dp"
                             android:textSize="16sp"
                             android:textAllCaps="true"/>
@@ -187,7 +187,8 @@
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:hint="@string/DoBHint"/>
 
                     </LinearLayout>
 
@@ -210,7 +211,8 @@
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:hint="@string/phoneHint"/>
 
                     </LinearLayout>
 
@@ -233,7 +235,8 @@
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:hint="@string/mailHint"/>
 
                     </LinearLayout>
                 </LinearLayout>
@@ -268,7 +271,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="bio"
+                            android:text="@string/bio"
                             android:textSize="16sp"
                             android:layout_margin= "6dp"
                             android:textAllCaps="true"/>
@@ -287,7 +290,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="Tell me something about you..."/>
+                            android:hint="@string/bioHint"/>
 
                     </LinearLayout>
 
@@ -327,7 +330,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
-                            android:text="favorite books"
+                            android:text="@string/books"
                             android:layout_margin= "6dp"
                             android:textAllCaps="true"/>
 
@@ -345,7 +348,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="What are your favorite books?"/>
+                            android:hint="@string/booksHint"/>
 
                     </LinearLayout>
 

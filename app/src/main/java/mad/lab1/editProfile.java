@@ -45,9 +45,6 @@ public class editProfile extends AppCompatActivity{
 
     private ImageView pic;
     private ImageButton imgBtn;
-    private Globals g;
-    private final String PREFS_NAME = "MAD_Lab1_prefs";
-    private final String PIC_FILE   = "MAD_Lab1_pic";
     private Uri mCropImageUri;
     private ImageButton saveButton;
     private ImageButton but_nameCity;
@@ -87,10 +84,11 @@ public class editProfile extends AppCompatActivity{
         }
 
         // load pic if exists
-        File f = new File(getFilesDir().getPath() + "/" + PIC_FILE);
+        String uri = getFilesDir().getPath() + "/" + Globals.PIC_FILE;
+        File f = new File(uri);
         if (f.exists()) {
-            picUri = getFilesDir().getPath() + "/" + PIC_FILE;
-            Bitmap bmp = BitmapFactory.decodeFile(getFilesDir().getPath() + "/" + PIC_FILE);
+            picUri = uri;
+            Bitmap bmp = BitmapFactory.decodeFile(picUri);
             pic.setImageBitmap(bmp);
         }
 
@@ -209,13 +207,13 @@ public class editProfile extends AppCompatActivity{
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)
-                    .setPositiveButton("OK",
+                    .setPositiveButton(getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
 
                                 }
                             })
-                    .setNegativeButton("Cancel",
+                    .setNegativeButton(getString(R.string.cancel),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     dialog.cancel();
@@ -269,13 +267,13 @@ public class editProfile extends AppCompatActivity{
             // set dialog message
             alertDialogBuilder
                     .setCancelable(false)
-                    .setPositiveButton("OK",
+                    .setPositiveButton(getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     bio.setText(txt_editBio.getText().toString());
                                 }
                             })
-                    .setNegativeButton("Cancel",
+                    .setNegativeButton(getString(R.string.cancel),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     dialog.cancel();
@@ -293,7 +291,7 @@ public class editProfile extends AppCompatActivity{
             public void onClick(View v) {
 
                 // save strings through sharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+                SharedPreferences.Editor editor = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE).edit();
                 for (int i = 0; i < KEYS.length; i++)
                     editor.putString(KEYS[i], TEXTVIEWS[i].getText().toString());
                 editor.apply();

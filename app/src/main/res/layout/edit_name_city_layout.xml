@@ -27,7 +27,8 @@
                 android:id="@+id/txt_editName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text">
+                android:inputType="text"
+                android:hint="@string/nameHint">
 
                 <requestFocus />
 
@@ -45,10 +46,8 @@
                 android:id="@+id/txt_editCity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text">
-
-            </EditText>
-
+                android:inputType="text"
+                android:hint="@string/cityHint"/>
         </LinearLayout>
     </ScrollView>
 

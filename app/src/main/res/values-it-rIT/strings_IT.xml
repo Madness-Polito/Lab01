@@ -14,4 +14,13 @@
     <string name="phoneNumber">Numero telefonico</string>
     <string name="ok">Accetta</string>
     <string name="cancel">Annulla</string>
+    <string name="persInfo">Informazioni personali</string>
+    <string name="bioHint">Raccontami di te</string>
+    <string name="DoBHint">Il tuo compleanno</string>
+    <string name="nameHint">Il tuo nome</string>
+    <string name="cityHint">La tua città</string>
+    <string name="phoneHint">Il tuo numero di telefono</string>
+    <string name="mailHint">La tua e-mail</string>
+    <string name="booksHint">Quali sono i tuoi libri preferiti?</string>
+    <string name="books">I tuoi libri preferiti</string>
 </resources>
