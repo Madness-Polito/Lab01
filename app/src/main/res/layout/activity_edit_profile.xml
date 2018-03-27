@@ -228,8 +228,7 @@
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
                             android:hint="@string/DoBHint"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            />
 
                     </LinearLayout>
 
@@ -254,8 +253,7 @@
                             android:layout_marginLeft="16dp"
                             android:hint="@string/phoneHint"
                             android:textSize="12sp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            />
 
                     </LinearLayout>
 
@@ -280,8 +278,7 @@
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
                             android:hint="@string/mailHint"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                          />
 
                     </LinearLayout>
                 </LinearLayout>

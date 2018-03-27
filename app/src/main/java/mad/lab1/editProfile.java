@@ -21,8 +21,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,8 +44,6 @@ import java.io.IOException;
 public class editProfile extends AppCompatActivity{
 
     private ImageView pic;
-    private Bitmap oldBmp;
-    private boolean saved = false;
     private ImageButton imgBtn;
     private Uri mCropImageUri;
     private ImageButton saveButton;
@@ -62,14 +58,13 @@ public class editProfile extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-
         setContentView(R.layout.activity_edit_profile);
 
         // get object references
         pic = findViewById(R.id.showImageProfile);
         imgBtn = findViewById(R.id.selectImage);
         but_nameCity = findViewById(R.id.editTextNameCity);
-        but_persInfo = findViewById(R.id.editPersonalInfo); //assign editPersonalInfo btn to the button
+        but_persInfo = findViewById(R.id.editPersonalInfo);
         but_bio = findViewById(R.id.editBio);
         bio = findViewById(R.id.showTextBio);
         name = findViewById(R.id.showTextName);
@@ -97,8 +92,6 @@ public class editProfile extends AppCompatActivity{
             pic.setImageBitmap(bmp);
         }
 
-
-        oldBmp = g.getBmp();
         //set listeners
         imgBtn.setOnClickListener(v -> { if (v.getId() == R.id.selectImage)
             CropImage.startPickImageActivity(this);} );
@@ -170,47 +163,46 @@ public class editProfile extends AppCompatActivity{
         });
 
         but_persInfo.setOnClickListener(v -> {
-                // get prompts.xml view
-                LayoutInflater li = LayoutInflater.from(this);
-                View promptsView = li.inflate(R.layout.edit_pers_info_layout, null);
+            // get prompts.xml view
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.edit_pers_info_layout, null);
 
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
 
-                // set prompts.xml to alertdialog builder
-                alertDialogBuilder.setView(promptsView);
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
 
-                final EditText txt_editPhone = promptsView.findViewById(R.id.txt_editPhone);
-                final EditText txt_editEmail = promptsView.findViewById(R.id.txt_editEmail);
-                final DatePicker datePicker = promptsView.findViewById(R.id.datePicker);
+            final EditText txt_editPhone = promptsView.findViewById(R.id.txt_editPhone);
+            final EditText txt_editEmail = promptsView.findViewById(R.id.txt_editEmail);
+            final DatePicker datePicker = promptsView.findViewById(R.id.datePicker);
 
-                // phone listener
-                txt_editPhone.addTextChangedListener(new CustomTextWatcher() {
+            // phone listener
+            txt_editPhone.addTextChangedListener(new CustomTextWatcher() {
 
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        int color = TextValidation.isValidPhone(s.toString()) ? Color.BLACK : Color.RED;
-                        txt_editPhone.setTextColor(color);
-                    }
-                });
-
-                // mail listener
-                txt_editEmail.addTextChangedListener(new CustomTextWatcher() {
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        int color = TextValidation.isValidMail(s.toString()) ? Color.BLACK : Color.RED;
-                        txt_editEmail.setTextColor(color);
-                    }
-                });
-
-                txt_editPhone.setText(phone.getText());
-                txt_editEmail.setText(mail.getText());
-
-                if (!DoB.getText().toString().equals("")){
-                    String[] date = DoB.getText().toString().split("/");
-                    datePicker.updateDate(Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0]));
+                @Override
+                public void afterTextChanged(Editable s) {
+                    int color = TextValidation.isValidPhone(s.toString()) ? Color.BLACK : Color.RED;
+                    txt_editPhone.setTextColor(color);
                 }
+            });
 
+            // mail listener
+            txt_editEmail.addTextChangedListener(new CustomTextWatcher() {
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    int color = TextValidation.isValidMail(s.toString()) ? Color.BLACK : Color.RED;
+                    txt_editEmail.setTextColor(color);
+                }
+            });
+
+            txt_editPhone.setText(phone.getText());
+            txt_editEmail.setText(mail.getText());
+
+            if (!DoB.getText().toString().equals("")){
+                String[] date = DoB.getText().toString().split("/");
+                datePicker.updateDate(Integer.parseInt(date[2]), Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0]));
+            }
 
             // set dialog message
             alertDialogBuilder
@@ -218,6 +210,7 @@ public class editProfile extends AppCompatActivity{
                     .setPositiveButton(getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
+
                                 }
                             })
                     .setNegativeButton(getString(R.string.cancel),
@@ -311,6 +304,10 @@ public class editProfile extends AppCompatActivity{
                         bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
                         outStream.close();
                     }
+                }
+                catch (Exception e ){
+                    e.printStackTrace();
+                }
 
                 // return data to showProfile
                 Intent i = new Intent();
@@ -318,11 +315,9 @@ public class editProfile extends AppCompatActivity{
                     i.putExtra(KEYS[j], TEXTVIEWS[j].getText().toString());
                 setResult(Activity.RESULT_OK, i);
                 finish();
-
-                }
+            }
             //}
         });
-
     }
 
     @Override
@@ -345,10 +340,8 @@ public class editProfile extends AppCompatActivity{
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
-
                 picUri = resultUri.toString();
                 pic.setImageURI(resultUri);
-
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
@@ -369,20 +362,14 @@ public class editProfile extends AppCompatActivity{
 
     private void startCropImageActivity(Uri imageUri) {
         CropImage.activity(imageUri)
-
-                .setMaxCropResultSize(1800, 1800)
-                .setMinCropResultSize(1800, 1800)
-
                 .start(this);
     }
-
 
 
     protected void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         for (int i = 0; i < KEYS.length; i++)
             b.putString(KEYS[i], TEXTVIEWS[i].getText().toString());
-
 
         // save tmp pic
         if (picUri != null)
