@@ -129,8 +129,9 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
                     android:gravity="center_horizontal"
-                    android:text="@string/nameHint"
+                    android:hint="@string/nameHint"
                     android:textColor="@color/text_white"
+                    android:textColorHint="@color/text_white"
                     android:textSize="18sp" />
 
                 <ImageButton
@@ -152,8 +153,9 @@
                     android:layout_below="@id/showTextName"
                     android:layout_centerHorizontal="true"
                     android:gravity="center_horizontal"
-                    android:text="@string/cityHint"
+                    android:hint="@string/cityHint"
                     android:textColor="@color/text_white"
+                    android:textColorHint="@color/text_white"
                     android:textSize="14sp" />
 
 

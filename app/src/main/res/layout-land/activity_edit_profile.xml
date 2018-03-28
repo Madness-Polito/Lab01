@@ -53,10 +53,11 @@
             android:gravity="center_horizontal"
             android:layout_centerHorizontal="true"
             android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white"
             android:id="@+id/showTextName"
             android:textSize="18sp"
             android:layout_marginTop="8dp"
-            android:text="@string/nameHint"/>
+            android:hint="@string/nameHint"/>
 
         <ImageButton
             android:id="@+id/editTextNameCity"
@@ -77,9 +78,10 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/showTextName"
             android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white"
             android:id="@+id/showTextCityStateName"
             android:textSize="14sp"
-            android:text="@string/cityHint"/>
+            android:hint="@string/cityHint"/>
 
 
     </RelativeLayout>
