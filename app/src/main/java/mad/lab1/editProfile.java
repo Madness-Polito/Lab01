@@ -109,7 +109,7 @@ public class editProfile extends AppCompatActivity{
 
             // set dialog message
             alertDialogBuilder
-                    .setCancelable(false)
+                    .setCancelable(true)
                     .setPositiveButton(getString(R.string.ok),     (dialog, id) -> {})
                     .setNegativeButton(getString(R.string.cancel), (dialog, id) -> dialog.cancel());
             // create alert dialog
@@ -179,7 +179,7 @@ public class editProfile extends AppCompatActivity{
 
             // set dialog message
             alertDialogBuilder
-                    .setCancelable(false)
+                    .setCancelable(true)
                     .setPositiveButton(getString(R.string.ok),     (dialog, id) -> {})
                     .setNegativeButton(getString(R.string.cancel), (dialog, id) -> dialog.cancel());
             // create alert dialog
@@ -226,7 +226,7 @@ public class editProfile extends AppCompatActivity{
 
             // set dialog message
             alertDialogBuilder
-                    .setCancelable(false)
+                    .setCancelable(true)
                     .setPositiveButton(getString(R.string.ok),     (dialog, id) -> bio.setText(txt_editBio.getText().toString()))
                     .setNegativeButton(getString(R.string.cancel), (dialog, id) -> dialog.cancel());
             // create alert dialog
