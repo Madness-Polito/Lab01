@@ -25,6 +25,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.theartofdev.edmodo.cropper.CropImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -238,8 +241,22 @@ public class editProfile extends AppCompatActivity{
         ImageButton saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener((View view) ->{
 
+                // upload user to firebase
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                UserInfo userInfo = new UserInfo(user.getUid(),
+                                                name.getText().toString(),
+                                                mail.getText().toString(),
+                                                phone.getText().toString(),
+                                                city.getText().toString(),
+                                                DoB.getText().toString(),
+                                                bio.getText().toString());
+                UsersDB.setUser(userInfo);
+                updateView(userInfo);
+                if (picUri != null)
+                    StorageDB.uploadProfilePic(picUri);
+
                 // save strings through sharedPreferences
-                SharedPreferences.Editor editor = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE).edit();
+                /*SharedPreferences.Editor editor = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE).edit();
                 for (int j = 0; j < KEYS.length; j++)
                     editor.putString(KEYS[j], TEXTVIEWS[j].getText().toString());
                 editor.apply();
@@ -255,16 +272,24 @@ public class editProfile extends AppCompatActivity{
                 }
                 catch (Exception e ){
                     e.printStackTrace();
-                }
+                }*/
 
                 // return data to showProfile
                 Intent intent = new Intent();
-                for (int j = 0; j < KEYS.length; j++)
-                    intent.putExtra(KEYS[j], TEXTVIEWS[j].getText().toString());
+                intent.putExtra("userInfo", userInfo);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
 
         });
+    }
+
+    private void updateView(UserInfo userInfo){
+        name.setText(userInfo.getName());
+        mail.setText(userInfo.getMail());
+        bio.setText(userInfo.getBio());
+        DoB.setText(userInfo.getDob());
+        city.setText(userInfo.getCity());
+        phone.setText(userInfo.getPhone());
     }
 
     @Override
@@ -287,6 +312,7 @@ public class editProfile extends AppCompatActivity{
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
+                System.out.println("..............." + resultUri);
                 picUri = resultUri.toString();
                 pic.setImageURI(resultUri);
 

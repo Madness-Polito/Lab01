@@ -17,7 +17,6 @@ public class Globals extends Application {
     public static final String PIC_FILE = "MAD_Lab1_pic";
     public static final String PREFS_NAME = "MAD_Lab1_prefs";
 
-
     public static void loadPic(Context c, ImageView pic){
 
         String path = c.getFilesDir().getPath() + "/" + PIC_FILE;
