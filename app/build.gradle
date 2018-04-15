@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:4.27.0'
     //implementation "com.twitter.sdk.android:twitter-core:3.0.0@aar" { transitive = true }
 
+    compile 'com.journeyapps:zxing-android-embedded:3.1.0@aar'
+    compile 'com.google.zxing:core:3.2.0'
+
 
 }
 apply plugin: 'com.google.gms.google-services'
