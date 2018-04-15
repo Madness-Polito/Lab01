@@ -1,7 +1,6 @@
 package mad.lab1;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
-public class showProfile extends AppCompatActivity {
+public class ShowProfile extends AppCompatActivity {
 
     private ImageView pic;
     private TextView[] TEXTVIEWS;
@@ -58,7 +57,7 @@ public class showProfile extends AppCompatActivity {
 
         editButton.setOnClickListener((View v) ->{
 
-                Intent i = new Intent(getApplicationContext(), editProfile.class);
+                Intent i = new Intent(getApplicationContext(), EditProfile.class);
                 for (int j = 0; j < KEYS.length; j++)
                     i.putExtra(KEYS[j], TEXTVIEWS[j].getText().toString());
                 startActivityForResult(i, Globals.EDIT_CODE);
@@ -68,14 +67,21 @@ public class showProfile extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-
         // user already logged in: retrieve his data
         if (Authentication.checkSession()) {
             ValueEventListener listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     UserInfo userInfo = dataSnapshot.getValue(UserInfo.class);
-                    updateView(userInfo);
+                    if(userInfo == null){
+                        Intent i = new Intent(getApplicationContext(), EditProfile.class);
+                        for (int j = 0; j < KEYS.length; j++)
+                            i.putExtra(KEYS[j], TEXTVIEWS[j].getText().toString());
+                        startActivityForResult(i, Globals.EDIT_CODE);
+                    }else{
+                        updateView(userInfo);
+                    }
+
                 }
 
                 @Override
@@ -90,12 +96,13 @@ public class showProfile extends AppCompatActivity {
         // user not logged in
         else
             Authentication.signIn(this);
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        // get the return data from editProfile
+        // get the return data from EditProfile
         if (requestCode == Globals.EDIT_CODE && resultCode == RESULT_OK && data != null) {
             UserInfo userInfo = data.getExtras().getParcelable("userInfo");
             updateView(userInfo);
@@ -184,4 +191,5 @@ public class showProfile extends AppCompatActivity {
         for (int i = 0; i < KEYS.length; i++)
             TEXTVIEWS[i].setText(b.getString(KEYS[i]));
     }
+    
 }

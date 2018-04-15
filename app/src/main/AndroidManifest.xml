@@ -15,12 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".showProfile"
+            android:name=".ShowProfile"
             android:theme="@style/AppTheme">
 
         </activity>
         <activity
-            android:name=".editProfile"
+            android:name=".EditProfile"
             android:theme="@style/AppTheme" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

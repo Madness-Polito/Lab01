@@ -33,7 +33,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 
-public class editProfile extends AppCompatActivity{
+public class EditProfile extends AppCompatActivity{
 
     private ImageView pic;
     private Uri mCropImageUri;
@@ -274,7 +274,7 @@ public class editProfile extends AppCompatActivity{
                     e.printStackTrace();
                 }*/
 
-                // return data to showProfile
+                // return data to ShowProfile
                 Intent intent = new Intent();
                 intent.putExtra("userInfo", userInfo);
                 setResult(Activity.RESULT_OK, intent);

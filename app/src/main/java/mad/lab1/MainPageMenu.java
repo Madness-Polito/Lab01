@@ -1,12 +1,21 @@
 package mad.lab1;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+
 
 public class MainPageMenu extends AppCompatActivity {
 
@@ -15,12 +24,22 @@ public class MainPageMenu extends AppCompatActivity {
     private ViewPager viewPager;
     private FragmentManager fragmentManager;
     private TabLayout tabLayout;
+    private Toolbar toolbar;
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loginCheck();                                               //Checking if user logged in or not
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page_menu);
+
+
 
         initialization();                                           //Initialization and getting views references
 
@@ -56,6 +75,40 @@ public class MainPageMenu extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == Authentication.RC_SIGN_IN && resultCode == RESULT_CANCELED){
+            //If user pressed back button, closing app
+            finish();
+        }else if(requestCode == Authentication.RC_SIGN_IN && resultCode == RESULT_OK){
+            //User logged in, to be used in case of profile related info in the main page
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.profile_toolbar_button:
+                Intent intent = new Intent(getApplicationContext(), ShowProfile.class);
+                startActivity(intent);
+                break;
+            case R.id.logout_toolbar_button:
+                //TODO: CREATE LOGOUT SYSTEM
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
 
     private void initialization(){
         viewPager = findViewById(R.id.view_pager_main_menu);
@@ -66,6 +119,9 @@ public class MainPageMenu extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);                    //Linking tablayout with viewpager, animated bar
         setIcons();
+
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
     }
 
@@ -79,8 +135,13 @@ public class MainPageMenu extends AppCompatActivity {
         tabCall = tabLayout.getTabAt(2);
         tabCall.setIcon(R.drawable.borrowed_books_tab_icon);
 
-        tabCall = tabLayout.getTabAt(3);
-        tabCall.setIcon(R.drawable.profile_tab_icon);
+    }
 
+    private void loginCheck(){
+
+        if (!Authentication.checkSession()) {
+            //User not logged In
+            Authentication.signIn(this);
+        }
     }
 }

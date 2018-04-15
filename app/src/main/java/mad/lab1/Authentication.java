@@ -44,6 +44,7 @@ public class Authentication {
         activity.startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
                         .setAvailableProviders(providers)
                         .build(),
                 RC_SIGN_IN);
@@ -55,7 +56,7 @@ public class Authentication {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
                         // user is now signed out
-                        activity.startActivity(new Intent(activity, showProfile.class));
+                        activity.startActivity(new Intent(activity, ShowProfile.class));
                         activity.finish();
                     }
                 });
