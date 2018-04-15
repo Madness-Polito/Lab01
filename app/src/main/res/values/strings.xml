@@ -22,4 +22,8 @@
     <string name="mailHint">Your email</string>
     <string name="booksHint">Which are your favourite books?</string>
     <string name="books">Your favourite books</string>
+    <string name="sign_in_cancelled">Sign-in cancelled</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="sign_in_ok">Successful sign-in</string>
 </resources>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "415036488461",
+    "firebase_url": "https://madness-f0043.firebaseio.com",
+    "project_id": "madness-f0043",
+    "storage_bucket": "madness-f0043.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415036488461:android:9896a2104a5c7290",
+        "android_client_info": {
+          "package_name": "mad.lab1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "415036488461-kljah5ep2pqk08fnrbfdg6komhunkev0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mad.lab1",
+            "certificate_hash": "bbd85af28273f31d292f465c34dc323e300a2a7e"
+          }
+        },
+        {
+          "client_id": "415036488461-4d5066ekhkq1slmq6cn0e1ridraf1gfj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCkhcQD8WWwrh2CD2p2Q6Gr36u-xwDibuo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415036488461-4d5066ekhkq1slmq6cn0e1ridraf1gfj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
