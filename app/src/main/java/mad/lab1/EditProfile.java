@@ -63,20 +63,17 @@ public class EditProfile extends AppCompatActivity{
 
         // parse intent
         Intent i = getIntent();
-        if (i != null){
+        if (i != null) {
             for (int j = 0; j < KEYS.length; j++) {
                 String s = i.getStringExtra(KEYS[j]);
                 TEXTVIEWS[j].setText(s);
             }
         }
 
-        // load pic if exists
-        String uri = getFilesDir().getPath() + "/" + Globals.PIC_FILE;
-        File f = new File(uri);
-        if (f.exists()) {
-            picUri = uri;
-            Bitmap bmp = BitmapFactory.decodeFile(picUri);
-            pic.setImageBitmap(bmp);
+        // load profile pic if any
+        if (LocalDB.isProfilePicSaved(this)){
+            Uri picUri = Uri.parse(LocalDB.getProfilePicPath(this));
+            pic.setImageURI(picUri);
         }
 
         //set listeners
@@ -241,7 +238,7 @@ public class EditProfile extends AppCompatActivity{
         ImageButton saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener((View view) ->{
 
-                // upload user to firebase
+                // save user data to firebase & locally
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 UserInfo userInfo = new UserInfo(user.getUid(),
                                                 name.getText().toString(),
@@ -251,9 +248,13 @@ public class EditProfile extends AppCompatActivity{
                                                 DoB.getText().toString(),
                                                 bio.getText().toString());
                 UsersDB.setUser(userInfo);
-                updateView(userInfo);
-                if (picUri != null)
-                    StorageDB.uploadProfilePic(picUri);
+                LocalDB.putUserInfo(this, userInfo);
+
+                // save pic to firebase & locally
+                if (picUri != null) {
+                    StorageDB.putProfilePic(picUri);
+                    LocalDB.putProfilePic(this, picUri);
+                }
 
                 // save strings through sharedPreferences
                 /*SharedPreferences.Editor editor = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE).edit();
@@ -283,14 +284,14 @@ public class EditProfile extends AppCompatActivity{
         });
     }
 
-    private void updateView(UserInfo userInfo){
+    /*private void updateView(UserInfo userInfo){
         name.setText(userInfo.getName());
         mail.setText(userInfo.getMail());
         bio.setText(userInfo.getBio());
         DoB.setText(userInfo.getDob());
         city.setText(userInfo.getCity());
         phone.setText(userInfo.getPhone());
-    }
+    }*/
 
     @Override
     @SuppressLint("NewApi")
@@ -313,7 +314,7 @@ public class EditProfile extends AppCompatActivity{
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
                 System.out.println("..............." + resultUri);
-                picUri = resultUri.toString();
+                picUri = resultUri.toString().substring(7);
                 pic.setImageURI(resultUri);
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {

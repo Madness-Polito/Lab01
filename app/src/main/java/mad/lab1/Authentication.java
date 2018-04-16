@@ -8,6 +8,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,19 +24,17 @@ public class Authentication {
     // return code of sign-in
     public static final int RC_SIGN_IN = 123;
 
-    // returns the uid of the current logged in user
-    public static String getCurrentUid(){
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        String uid = auth.getCurrentUser().getUid();
-        return uid;
-    }
-
-
     // check that user is logged in: if not starts login/signup activity
     public static boolean checkSession(){
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         return auth.getCurrentUser() != null;
+    }
+
+    // returns a firebaseUser object describing the currently signed in user
+    public static FirebaseUser getCurrentUser(){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        return auth.getCurrentUser();
     }
 
     public static void signIn(Activity activity){
@@ -56,7 +55,7 @@ public class Authentication {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     public void onComplete(@NonNull Task<Void> task) {
                         // user is now signed out
-                        activity.startActivity(new Intent(activity, ShowProfile.class));
+                        activity.startActivity(new Intent(activity, MainPageMenu.class));
                         activity.finish();
                     }
                 });

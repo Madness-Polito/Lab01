@@ -1,7 +1,13 @@
 package mad.lab1;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.Gson;
+
+import static android.content.Context.MODE_PRIVATE;
 
 // represents the user info stored in firebase
 public class UserInfo implements Parcelable{
@@ -126,6 +132,4 @@ public class UserInfo implements Parcelable{
     public int describeContents() {
         return 0;
     }
-
-
 }
