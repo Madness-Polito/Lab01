@@ -1,45 +1,31 @@
 package mad.lab1;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.widget.ImageView;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class StorageDB {
 
-    private final static String picsPath = "userPics";
-
+    private final static String PICS_PATH = "userPics";      // name of folder in firebase storage where user's profile pictures are saved
 
     // returns a reference to the folder where profile pics are saved
     private static StorageReference getProfilePicRef(){
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference imgRef = storageRef.child(picsPath);
-
-        return imgRef;
+        return storageRef.child(PICS_PATH);
     }
 
-    public static void uploadProfilePic(String imgPath){
-
-        imgPath = imgPath.substring(7);
+    public static void putProfilePic(String imgPath){
 
         // get user uid
-        String uid = Authentication.getCurrentUid();
+        String uid = Authentication.getCurrentUser().getUid();
 
         // setup db reference
         StorageReference imgRef = StorageDB.getProfilePicRef().child(uid);
@@ -65,34 +51,31 @@ public class StorageDB {
     }
 
     // downloads the profile picture and updates the provided imageview
-    public static void downloadProfilePic(ImageView imageView){
+    public static void getProfilePic(Context context){
 
-        try {
-            // get user uid
-            String uid = Authentication.getCurrentUid();
+        // get user uid
+        String uid = Authentication.getCurrentUser().getUid();
 
-            // setup db reference
-            StorageReference imgRef = StorageDB.getProfilePicRef().child(uid);
+        // setup db reference
+        StorageReference imgRef = StorageDB.getProfilePicRef().child(uid);
 
-            // create local file
-            File localFile = File.createTempFile("images", "jpg");
+        // create local file
+        String path = LocalDB.getProfilePicPath(context);
+        File localFile = new File(path);
+        System.out.println("---------->downloadProfilePic path: " + localFile.getPath());
 
-            imgRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    System.out.println("------------------->profile pic downloaded");
-                    imageView.setImageURI(Uri.fromFile(localFile));
-                    // Local temp file has been created
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle any errors
-                }
-            });
-        }
-        catch (IOException ioe){
-            ioe.printStackTrace();
-        }
+        imgRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("------------------->profile pic downloaded");
+                // Local temp file has been created
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle any errors
+            }
+        });
+
     }
 }

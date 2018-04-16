@@ -1,6 +1,7 @@
 package mad.lab1;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+
 public class ShowProfile extends AppCompatActivity {
 
     private ImageView pic;
@@ -32,28 +35,23 @@ public class ShowProfile extends AppCompatActivity {
         setContentView(R.layout.activity_show_profile);
         name = findViewById(R.id.showTextName);
         mail = findViewById(R.id.showTextMail);
-        bio  = findViewById(R.id.showTextBio);
+        bio = findViewById(R.id.showTextBio);
         date = findViewById(R.id.showTextBirthDate);
         city = findViewById(R.id.showTextCityStateName);
-        phone= findViewById(R.id.showTextTelephone);
-        pic  = findViewById(R.id.showImageProfile);
+        phone = findViewById(R.id.showTextTelephone);
+        pic = findViewById(R.id.showImageProfile);
         TEXTVIEWS = new TextView[]{name, mail, bio, date, city, phone};
         ImageButton editButton = findViewById(R.id.editProfileButton);
 
+        // load user info & update view
+        UserInfo userInfo = LocalDB.getUserInfo(this);
+        updateView(userInfo);
 
-        // first app run: load data from storage
-       /* if (b == null){
-
-            // load preferences
-            SharedPreferences prefs = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE);
-            for (int i = 0; i < KEYS.length; i++){
-                String s = prefs.getString(KEYS[i], null);
-                TEXTVIEWS[i].setText(s);
-            }
+        // load profile pic if any
+        if (LocalDB.isProfilePicSaved(this)){
+            Uri picUri = Uri.parse(LocalDB.getProfilePicPath(this));
+            pic.setImageURI(picUri);
         }
-
-        // load pic if exists
-        Globals.loadPic(this, pic);*/
 
         editButton.setOnClickListener((View v) ->{
 
@@ -65,41 +63,6 @@ public class ShowProfile extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart(){
-        super.onStart();
-        // user already logged in: retrieve his data
-        if (Authentication.checkSession()) {
-            ValueEventListener listener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    UserInfo userInfo = dataSnapshot.getValue(UserInfo.class);
-                    if(userInfo == null){
-                        Intent i = new Intent(getApplicationContext(), EditProfile.class);
-                        for (int j = 0; j < KEYS.length; j++)
-                            i.putExtra(KEYS[j], TEXTVIEWS[j].getText().toString());
-                        startActivityForResult(i, Globals.EDIT_CODE);
-                    }else{
-                        updateView(userInfo);
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            };
-
-            UsersDB.getCurrentUser(listener);
-            StorageDB.downloadProfilePic(pic);
-        }
-        // user not logged in
-        else
-            Authentication.signIn(this);
-
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         // get the return data from EditProfile
@@ -107,11 +70,15 @@ public class ShowProfile extends AppCompatActivity {
             UserInfo userInfo = data.getExtras().getParcelable("userInfo");
             updateView(userInfo);
 
-            // load pic if exists
-            //Globals.loadPic(this, pic);
+            // load profile pic if any
+            if (LocalDB.isProfilePicSaved(this)){
+                Uri picUri = Uri.parse(LocalDB.getProfilePicPath(this));
+                pic.setImageURI(null);
+                pic.setImageURI(picUri);
+            }
         }
 
-        if (requestCode == Authentication.RC_SIGN_IN) {
+       /* if (requestCode == Authentication.RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             // Successfully signed in
@@ -167,7 +134,7 @@ public class ShowProfile extends AppCompatActivity {
 
                 Toast.makeText(this, R.string.unknown_error, Toast.LENGTH_SHORT).show();
             }
-        }
+        }*/
     }
 
     // copies data from user info on the db to the textviews
@@ -180,7 +147,7 @@ public class ShowProfile extends AppCompatActivity {
         phone.setText(userInfo.getPhone());
     }
 
-    protected void onSaveInstanceState(Bundle b) {
+  /*  protected void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
         for (int i = 0; i < KEYS.length; i++)
             b.putString(KEYS[i], TEXTVIEWS[i].getText().toString());
@@ -190,6 +157,5 @@ public class ShowProfile extends AppCompatActivity {
         super.onRestoreInstanceState(b);
         for (int i = 0; i < KEYS.length; i++)
             TEXTVIEWS[i].setText(b.getString(KEYS[i]));
-    }
-    
+    }*/
 }
