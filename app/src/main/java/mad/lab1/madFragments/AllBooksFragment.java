@@ -1,10 +1,13 @@
 package mad.lab1.madFragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,7 +45,9 @@ import java.net.URLConnection;
 import mad.lab1.BookIdInfo;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
+import mad.lab1.LocalDB;
 import mad.lab1.R;
+import mad.lab1.StorageDB;
 
 public class AllBooksFragment extends Fragment {
 
@@ -272,10 +278,17 @@ public class AllBooksFragment extends Fragment {
         }
 
         protected void onPostExecute(String result) {
-
+            StorageDB.putProfilePic(getImageUri(getActivity(), thumbImg).toString());
             //thumbView.setImageBitmap(thumbImg);
         }
 
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 }
