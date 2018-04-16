@@ -240,11 +240,6 @@ public class AllBooksFragment extends Fragment {
                         .child(bookID)
                         .setValue(bookIdInfo);
 
-
-
-
-
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
