@@ -9,20 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import mad.lab1.Book;
 import mad.lab1.R;
 
 public class ShowSelelctedBookInfoDialogFragment extends DialogFragment {
 
 
-    private String value;
+    private Book book;
 
     //TODO: CHANGE STRING TO THE BOOK ITEM TO BE DISPLAYED
     //Static method used to get an instance of this fragment
-    public static ShowSelelctedBookInfoDialogFragment newInstance(String value){
+    public static ShowSelelctedBookInfoDialogFragment newInstance(Book b){
         ShowSelelctedBookInfoDialogFragment fragment = new ShowSelelctedBookInfoDialogFragment();
-        Bundle b = new Bundle();
-        b.putString("book", value);
-        fragment.setArguments(b);
+        Bundle argument = new Bundle();
+        argument.putParcelable("book", b);
+        fragment.setArguments(argument);
         return fragment;
     }
 
@@ -32,7 +33,8 @@ public class ShowSelelctedBookInfoDialogFragment extends DialogFragment {
 
         View v = inflater.inflate(R.layout.book_info_dialog_layout, container, false);
         TextView text = v.findViewById(R.id.bookInfoDialogTextView);
-        text.setText(value);
+        //TODO:POPULATE THE VIEW
+        text.setText(book.getTitle());
 
         return v;
     }
@@ -40,6 +42,6 @@ public class ShowSelelctedBookInfoDialogFragment extends DialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        value = getArguments().getString("book");
+        book = getArguments().getParcelable("book");
     }
 }

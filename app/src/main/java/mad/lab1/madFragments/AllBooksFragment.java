@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Base64;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -82,159 +84,34 @@ public class AllBooksFragment extends Fragment {
     private ListView lsv_Books;
     private String isbn;
     private String bookID;
+
     private ArrayList<Book> allBookList;
+
     private DatabaseReference dbRef;
-    FloatingActionButton fab;
     private RecyclerView cardViewList;
     private LinearLayoutManager layoutManager;
     private AllBooksListAdapter adapter;
 
-    @Nullable
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        //Inflating the layout for the fragment
-        View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
-
-        lsv_Books = v.findViewById(R.id.allBookListView);
-        fab = v.findViewById(R.id.addBookToShareActionButton);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         //initialize db
         dbRef = FirebaseDatabase.getInstance().getReference().child("bookID");
-
-
-
-
-
-        fab.setOnClickListener(view -> {
-
-
-                    // custom dialog
-                    final Dialog dialog = new Dialog(getContext());
-                    dialog.setContentView(R.layout.isbn_input_layout);
-
-                    // set the custom dialog components - text, image and button
-                    ImageButton btn_camera = dialog.findViewById(R.id.btn_camera);
-                    ImageButton btn_manual = dialog.findViewById(R.id.btn_manual);
-
-                    btn_camera.setOnClickListener(view1 -> {
-                        dialog.dismiss();
-
-                        IntentIntegrator.forSupportFragment(AllBooksFragment.this)
-                                .setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
-                                .setOrientationLocked(false)
-                                .setBeepEnabled(false)
-                                .initiateScan();
-                    });
-
-                    btn_manual.setOnClickListener(view1 -> {
-                        dialog.dismiss();
-
-                        // get prompts.xml view
-                        LayoutInflater li = LayoutInflater.from(getContext());
-                        View promptsView = li.inflate(R.layout.isbn_manual_input_layout, null);
-
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-
-                        // set prompts.xml to alertdialog builder
-                        alertDialogBuilder.setView(promptsView);
-
-                        EditText txt_isbn = promptsView.findViewById(R.id.txt_isbn);
-        cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
-        layoutManager = new LinearLayoutManager(getContext());
-
-        cardViewList.setLayoutManager(layoutManager);
-
-
-        //JUST TO TRY THE ADAPTER
-        ArrayList<String> prova = new ArrayList<>();
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-        prova.add("prova");
-
-
-        adapter = new AllBooksListAdapter(prova, new AllBooksListAdapter.OnBookClicked() {
-            @Override
-            public void onBookClicked(String value) {
-                //create a dialog fragment that shows all the informatio related to the book selected
-                Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
-
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                if (prev != null) {
-                    ft.remove(prev);
-                }
-                ft.addToBackStack(null);
-
-                // Create and show the dialog.
-                ShowSelelctedBookInfoDialogFragment newFragment = ShowSelelctedBookInfoDialogFragment.newInstance(value);
-                newFragment.show(ft, "dialog");
-            }
-        });
-        cardViewList.setAdapter(adapter);
-
-
-
-        fab.setOnClickListener(
-                new View.OnClickListener(){
-                    @Override
-                    public void onClick(View v)
-                    {
-
-                        // set dialog message
-                        alertDialogBuilder
-                                .setCancelable(true)
-                                .setPositiveButton(getString(R.string.ok),     (dialog2, id) -> {
-                                    GetBookInfo getBookInfo = new GetBookInfo();
-                                    getBookInfo.execute(txt_isbn.getText().toString());
-                                })
-                                .setNegativeButton(getString(R.string.cancel), (dialog2, id) -> dialog2.cancel())
-                                .setTitle(R.string.insertISBN);
-                        // create alert dialog
-                        AlertDialog alertDialog = alertDialogBuilder.create();
-                        // show it
-                        alertDialog.show();
-
-
-                    });
-
-                    dialog.show();
-
-
-
-
-                /*
-                IntentIntegrator.forSupportFragment(AllBooksFragment.this)
-                                    .setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
-                                    .setOrientationLocked(false)
-                                    .setBeepEnabled(false)
-                                    .initiateScan();
-                 */
-        });
-
-        //TODO: CREATE METHODS A ACTIONS FOR THIS FRAGMENT
-
-        //Returning the view to viewPager
-        return v;
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
+        /*
         ValueEventListener bookIdListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 allBookList = new ArrayList<>();
                 // Get Post object and use the values to update the UI
-                Map<String, Map<String, String>> td = (HashMap<String, Map<String, String>>)dataSnapshot.getValue();
 
+                for(DataSnapshot d : dataSnapshot.getChildren()){
+                    allBookList.add(d.getValue(Book.class));
+                }
+
+
+                Map<String, Map<String, String>> td = (HashMap<String, Map<String, String>>)dataSnapshot.getValue();
                 if(td != null) {
                     for (String bookId : td.keySet()) {
 
@@ -257,15 +134,140 @@ public class AllBooksFragment extends Fragment {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        dbRef.addValueEventListener(bookIdListener);
+        */
+        allBookList = new ArrayList<>();
+        adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
+            @Override
+            public void onBookClicked(Book b) {
+                //create a dialog fragment that shows all the informatio related to the book selected
+                Toast.makeText(getContext(), b.getTitle(), Toast.LENGTH_SHORT).show();
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                //Checking if previous dialog are active
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                ShowSelelctedBookInfoDialogFragment newFragment = ShowSelelctedBookInfoDialogFragment.newInstance(b);
+                newFragment.show(ft, "dialog");
+            }
+        });
+
+        ChildEventListener bookIDListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Book b = dataSnapshot.getValue(Book.class);
+                b.setEncodedThumbnail(dataSnapshot.child("encodedThumbnail").getValue(String.class));
+                allBookList.add(b);
+                adapter.notifyItemInserted(allBookList.indexOf(b));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
                 //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
                 Toast.makeText(getActivity(), "Failed to load book list.",
                         Toast.LENGTH_SHORT).show();
             }
         };
-        dbRef.addValueEventListener(bookIdListener);
+        dbRef.addChildEventListener(bookIDListener);
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        //Inflating the layout for the fragment
+        View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
+
+        fab = v.findViewById(R.id.addBookToShareActionButton);
+
+        fab.setOnClickListener(view -> {
+
+
+            // custom dialog
+            final Dialog dialog = new Dialog(getContext());
+            dialog.setContentView(R.layout.isbn_input_layout);
+
+            // set the custom dialog components - text, image and button
+            ImageButton btn_camera = dialog.findViewById(R.id.btn_camera);
+            ImageButton btn_manual = dialog.findViewById(R.id.btn_manual);
+
+            btn_camera.setOnClickListener(view1 -> {
+                dialog.dismiss();
+
+                IntentIntegrator.forSupportFragment(AllBooksFragment.this)
+                        .setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
+                        .setOrientationLocked(false)
+                        .setBeepEnabled(false)
+                        .initiateScan();
+            });
+
+            btn_manual.setOnClickListener(view1 -> {
+                dialog.dismiss();
+
+                // get prompts.xml view
+                LayoutInflater li = LayoutInflater.from(getContext());
+                View promptsView = li.inflate(R.layout.isbn_manual_input_layout, null);
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                EditText txt_isbn = promptsView.findViewById(R.id.txt_isbn);
+                           });
+
+        });
+
+        cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
+        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        cardViewList.setLayoutManager(layoutManager);
+        cardViewList.setItemAnimator(new DefaultItemAnimator());
+
+
+
+
+        cardViewList.setAdapter(adapter);
+
+        return v;
+
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+
 
 
     }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //TODO: fill in the listview
@@ -290,9 +292,6 @@ public class AllBooksFragment extends Fragment {
         fragment.setArguments(arg);
         return fragment;
     }
-
-
-
 
     private class GetBookInfo extends AsyncTask<String, Object, JSONObject> {
         @Override
@@ -379,8 +378,8 @@ public class AllBooksFragment extends Fragment {
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                 JSONArray industryIdentifiers = volumeInfo.getJSONArray("industryIdentifiers");
 
-                GetBookThumb getBookThumb = new GetBookThumb();
-                getBookThumb.execute(imageLinks.getString("thumbnail"));
+                //GetBookThumb getBookThumb = new GetBookThumb();
+                //getBookThumb.execute(imageLinks.getString("thumbnail"));
 
                 isbn = industryIdentifiers.getJSONObject(0).getString("identifier");
                 author = authors.getString(0);
@@ -486,8 +485,6 @@ public class AllBooksFragment extends Fragment {
 
     }
 
-
-
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -496,3 +493,4 @@ public class AllBooksFragment extends Fragment {
     }
 
 }
+

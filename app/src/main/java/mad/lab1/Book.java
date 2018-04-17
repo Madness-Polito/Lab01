@@ -2,13 +2,15 @@ package mad.lab1;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Base64;
 
 /**
  * Created by Matteo on 17/04/2018.
  */
 
-public class Book {
+public class Book implements Parcelable {
     private String bookId;
     private String isbn;
     private String title;
@@ -29,6 +31,21 @@ public class Book {
         this.publisher = publisher;
         this.pubYear = pubYear;
         this.encodedThumbnail = encodedThumbnail;
+    }
+
+    public Book(Parcel in){
+        this.bookId = in.readString();
+        this.isbn = in.readString();
+        this.title = in.readString();
+        this.author = in.readString();
+        this.status = in.readString();
+        this.condition = in.readString();
+        this.publisher = in.readString();
+        this.pubYear = in.readString();
+        this.encodedThumbnail = in.readString();
+    }
+    public Book(){
+        this("", "", "", "", "", "", "", "", "");
     }
 
     public String getBookId() {
@@ -63,6 +80,10 @@ public class Book {
         return pubYear;
     }
 
+    public void setEncodedThumbnail(String encodedThumbnail){
+        this.encodedThumbnail = encodedThumbnail;
+    }
+
     public Bitmap getDecodedThumbnail() {
         return decodeToBitmap(encodedThumbnail);
     }
@@ -72,4 +93,32 @@ public class Book {
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         return decodedByte;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.bookId);
+        dest.writeString(this.isbn);
+        dest.writeString(this.title);
+        dest.writeString(this.author);
+        dest.writeString(this.status);
+        dest.writeString(this.condition);
+        dest.writeString(this.publisher);
+        dest.writeString(this.pubYear);
+        dest.writeString(this.encodedThumbnail);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
+        public Book createFromParcel(Parcel in){
+            return new Book(in);
+        }
+
+        public Book[] newArray(int size){
+            return new Book[size];
+        }
+    };
 }

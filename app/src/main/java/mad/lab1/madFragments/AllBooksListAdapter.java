@@ -12,13 +12,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import mad.lab1.Book;
 import mad.lab1.R;
 
 public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapter.CardViewHolder> {
 
 
     public interface OnBookClicked {
-        void onBookClicked(String value);       //TODO: SET BOOKS INSTEAD OF STRING
+        void onBookClicked(Book b);       //TODO: SET BOOKS INSTEAD OF STRING
     }
 
     class CardViewHolder extends  RecyclerView.ViewHolder{
@@ -37,31 +38,31 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
             image = v.findViewById(R.id.imageBook);
         }
 
-        //TODO: SET BOOKS INSTEAD OF STRING
-        public void bind(String value, final OnBookClicked listener){
+
+        public void bind(Book b, final OnBookClicked listener){
             card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Calling the interface method, it will start a new activity to show all the info relative to the book
-                    listener.onBookClicked(value);
+                    listener.onBookClicked(b);
                 }
             });
         }
 
     }
 
-    private ArrayList<String> value;
+    private ArrayList<Book> allSharedBooks;
     private final OnBookClicked listener;
 
     //TODO: IT WILL RECEIVE THE LIST OF BOOK ITEMS TO DISPLAY
-    public AllBooksListAdapter(ArrayList<String> value, OnBookClicked listener){
-        this.value = value;
+    public AllBooksListAdapter(ArrayList<Book> allSharedBooks, OnBookClicked listener){
+        this.allSharedBooks = allSharedBooks;
         this.listener = listener;
     }
 
     @Override
     public int getItemCount() {
-        return value.size();
+        return allSharedBooks.size();
     }
 
     @NonNull
@@ -74,10 +75,11 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        holder.titleText.setText(value.get(position));
-        holder.authorText.setText(value.get(position));
+        holder.titleText.setText(allSharedBooks.get(position).getTitle());
+        holder.authorText.setText(allSharedBooks.get(position).getAuthor());
+        holder.image.setImageBitmap(allSharedBooks.get(position).getDecodedThumbnail());
         //The view holder gets the listener
-        holder.bind(value.get(position), listener);
+        holder.bind(allSharedBooks.get(position), listener);
     }
 
     @Override
