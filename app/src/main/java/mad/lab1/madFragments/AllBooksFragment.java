@@ -16,11 +16,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -42,7 +46,13 @@ import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import mad.lab1.Book;
 import mad.lab1.BookIdInfo;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
@@ -50,9 +60,12 @@ import mad.lab1.R;
 
 public class AllBooksFragment extends Fragment {
 
-    FloatingActionButton fab;
-    ListView lsv_Books;
+    private FloatingActionButton fab;
+    private ListView lsv_Books;
     private String isbn;
+    private String bookID;
+    private ArrayList<Book> allBookList;
+    private DatabaseReference dbRef;
 
     @Nullable
     @Override
@@ -63,6 +76,13 @@ public class AllBooksFragment extends Fragment {
 
         lsv_Books = v.findViewById(R.id.allBookListView);
         fab = v.findViewById(R.id.addBookToShareActionButton);
+
+        //initialize db
+        dbRef = FirebaseDatabase.getInstance().getReference().child("bookID");
+
+
+
+
 
         fab.setOnClickListener(
                 new View.OnClickListener()
@@ -84,6 +104,49 @@ public class AllBooksFragment extends Fragment {
 
         //Returning the view to viewPager
         return v;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        ValueEventListener bookIdListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                allBookList = new ArrayList<>();
+                // Get Post object and use the values to update the UI
+                Map<String, Map<String, String>> td = (HashMap<String, Map<String, String>>)dataSnapshot.getValue();
+
+                if(td != null) {
+                    for (String bookId : td.keySet()) {
+
+                        System.out.println(bookId);
+                        Book newBook = new Book(
+                                bookId,
+                                td.get(bookId).get("isbn"),
+                                td.get(bookId).get("title"),
+                                td.get(bookId).get("author"),
+                                td.get(bookId).get("status"),
+                                td.get(bookId).get("condition"),
+                                td.get(bookId).get("publisher"),
+                                td.get(bookId).get("pubYear"),
+                                td.get(bookId).get("encodedThumbnail")
+                        );
+                        allBookList.add(newBook);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                Toast.makeText(getActivity(), "Failed to load book list.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
+        dbRef.addValueEventListener(bookIdListener);
+
+
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -185,7 +248,7 @@ public class AllBooksFragment extends Fragment {
                 String publisher;
                 String pubYear;
                 String description;
-                String bookID;
+
 
 
 
@@ -291,7 +354,12 @@ public class AllBooksFragment extends Fragment {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
             ref.child(isbn).child("encodedThumbnail").setValue(encodedImage);
 
-            decodeToBitmap(encodedImage);
+            ref = FirebaseDatabase.getInstance().getReference("bookID");
+            ref.child(bookID).child("encodedThumbnail").setValue(encodedImage);
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            ref = FirebaseDatabase.getInstance().getReference("bookList");
+            ref.child(user.getUid()).child(bookID).child("encodedThumbnail").setValue(encodedImage);
 
 
             //thumbView.setImageBitmap(thumbImg);
@@ -299,10 +367,6 @@ public class AllBooksFragment extends Fragment {
 
     }
 
-    private Bitmap decodeToBitmap(String encodedImage){
-        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        return decodedByte;
-    }
+
 
 }
