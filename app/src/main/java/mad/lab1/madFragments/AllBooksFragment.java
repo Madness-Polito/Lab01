@@ -87,7 +87,7 @@ public class AllBooksFragment extends Fragment {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //TODO: Get book info and upload to firebase / fill in the listview
+        //TODO: fill in the listview
         if(data != null) {
             IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             String scanContent = scanningResult.getContents().toString();
@@ -297,12 +297,12 @@ public class AllBooksFragment extends Fragment {
             //thumbView.setImageBitmap(thumbImg);
         }
 
-        private Bitmap decodeToBitmap(String encodedImage){
-            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            return decodedByte;
-        }
+    }
 
+    private Bitmap decodeToBitmap(String encodedImage){
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return decodedByte;
     }
 
 }
