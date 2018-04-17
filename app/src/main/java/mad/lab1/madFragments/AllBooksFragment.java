@@ -3,12 +3,14 @@ package mad.lab1.madFragments;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,9 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -47,6 +52,7 @@ public class AllBooksFragment extends Fragment {
 
     FloatingActionButton fab;
     ListView lsv_Books;
+    private String isbn;
 
     @Nullable
     @Override
@@ -173,7 +179,7 @@ public class AllBooksFragment extends Fragment {
         protected void onPostExecute(JSONObject jsonObject) {
             super.onPostExecute(jsonObject);
             try {
-                String isbn;
+
                 String title;
                 String author;
                 String publisher;
@@ -192,8 +198,8 @@ public class AllBooksFragment extends Fragment {
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                 JSONArray industryIdentifiers = volumeInfo.getJSONArray("industryIdentifiers");
 
-                //GetBookThumb getBookThumb = new GetBookThumb();
-                //getBookThumb.execute(imageLinks.getString("thumbnail"));
+                GetBookThumb getBookThumb = new GetBookThumb();
+                getBookThumb.execute(imageLinks.getString("thumbnail"));
 
                 isbn = industryIdentifiers.getJSONObject(0).getString("identifier");
                 author = authors.getString(0);
@@ -209,7 +215,8 @@ public class AllBooksFragment extends Fragment {
                         author,
                         publisher,
                         pubYear,
-                        description);
+                        description,
+                        null);
                 IsbnDB.setBook(isbnInfo);
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -273,7 +280,27 @@ public class AllBooksFragment extends Fragment {
 
         protected void onPostExecute(String result) {
 
+            //save the thumbnail to firebase
+
+            ByteArrayOutputStream bYtE = new ByteArrayOutputStream();
+            thumbImg.compress(Bitmap.CompressFormat.PNG, 100, bYtE);
+            thumbImg.recycle();
+            byte[] byteArray = bYtE.toByteArray();
+            String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
+            ref.child(isbn).child("encodedThumbnail").setValue(encodedImage);
+
+            decodeToBitmap(encodedImage);
+
+
             //thumbView.setImageBitmap(thumbImg);
+        }
+
+        private Bitmap decodeToBitmap(String encodedImage){
+            byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            return decodedByte;
         }
 
     }
