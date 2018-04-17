@@ -16,8 +16,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add_white_24dp" />
 
-    <ListView
-        android:id="@+id/allBookListView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewAllBooks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+
 </android.support.constraint.ConstraintLayout>
