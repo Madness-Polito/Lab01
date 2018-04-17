@@ -1,6 +1,7 @@
 package mad.lab1;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -52,6 +53,7 @@ public class MainPageMenu extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
+
                 if (position == 3) {
                     tabLayout.setVisibility(View.GONE);
                     getSupportActionBar().hide();
@@ -122,6 +124,7 @@ public class MainPageMenu extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
     }
 

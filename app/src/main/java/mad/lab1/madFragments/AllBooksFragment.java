@@ -12,11 +12,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,6 +46,7 @@ import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 import mad.lab1.BookIdInfo;
 import mad.lab1.IsbnDB;
@@ -52,7 +58,9 @@ import mad.lab1.StorageDB;
 public class AllBooksFragment extends Fragment {
 
     FloatingActionButton fab;
-    ListView lsv_Books;
+    private RecyclerView cardViewList;
+    private LinearLayoutManager layoutManager;
+    private AllBooksListAdapter adapter;
 
     @Nullable
     @Override
@@ -61,12 +69,53 @@ public class AllBooksFragment extends Fragment {
         //Inflating the layout for the fragment
         View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
 
-        lsv_Books = v.findViewById(R.id.allBookListView);
+
         fab = v.findViewById(R.id.addBookToShareActionButton);
 
+        cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
+        layoutManager = new LinearLayoutManager(getContext());
+
+        cardViewList.setLayoutManager(layoutManager);
+
+
+        //JUST TO TRY THE ADAPTER
+        ArrayList<String> prova = new ArrayList<>();
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+
+
+        adapter = new AllBooksListAdapter(prova, new AllBooksListAdapter.OnBookClicked() {
+            @Override
+            public void onBookClicked(String value) {
+                //create a dialog fragment that shows all the informatio related to the book selected
+                Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                ShowSelelctedBookInfoDialogFragment newFragment = ShowSelelctedBookInfoDialogFragment.newInstance(value);
+                newFragment.show(ft, "dialog");
+            }
+        });
+        cardViewList.setAdapter(adapter);
+
+
+
         fab.setOnClickListener(
-                new View.OnClickListener()
-                {
+                new View.OnClickListener(){
                     @Override
                     public void onClick(View v)
                     {

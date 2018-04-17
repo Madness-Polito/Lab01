@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "415036488461-vklq4qg1gmu9mceh9cnq0odrkc8l8ib1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "mad.lab1",
+            "certificate_hash": "e02286ef118f0e1581a5be0d7a7fc49a1979e1f8"
+          }
+        },
+        {
           "client_id": "415036488461-sh32jisef0krjrksmeuoc7nva7ouminf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
