@@ -23,4 +23,7 @@
     <string name="mailHint">La tua e-mail</string>
     <string name="booksHint">Quali sono i tuoi libri preferiti?</string>
     <string name="books">I tuoi libri preferiti</string>
+    <string name="isbn">ISBN</string>
+    <string name="insertISBN">"Inserisci ISBN"</string>
+    <string name="addBook">"Aggiungi libro alla tua libreria"</string>
 </resources>

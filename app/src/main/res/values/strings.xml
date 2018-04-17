@@ -26,4 +26,7 @@
     <string name="no_internet">No internet connection</string>
     <string name="unknown_error">Unknown error</string>
     <string name="sign_in_ok">Successful sign-in</string>
+    <string name="isbn">ISBN</string>
+    <string name="insertISBN">"Insert ISBN"</string>
+    <string name="addBook">"Add a book to your library"</string>
 </resources>

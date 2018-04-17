@@ -1,5 +1,6 @@
 package mad.lab1.madFragments;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,12 +11,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -84,21 +91,71 @@ public class AllBooksFragment extends Fragment {
 
 
 
-        fab.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
+        fab.setOnClickListener(view -> {
+
+
+                    // custom dialog
+                    final Dialog dialog = new Dialog(getContext());
+                    dialog.setContentView(R.layout.isbn_input_layout);
+
+                    // set the custom dialog components - text, image and button
+                    ImageButton btn_camera = dialog.findViewById(R.id.btn_camera);
+                    ImageButton btn_manual = dialog.findViewById(R.id.btn_manual);
+
+                    btn_camera.setOnClickListener(view1 -> {
+                        dialog.dismiss();
 
                         IntentIntegrator.forSupportFragment(AllBooksFragment.this)
                                 .setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
                                 .setOrientationLocked(false)
                                 .setBeepEnabled(false)
                                 .initiateScan();
-                    }
-                }
-            );
+                    });
+
+                    btn_manual.setOnClickListener(view1 -> {
+                        dialog.dismiss();
+
+                        // get prompts.xml view
+                        LayoutInflater li = LayoutInflater.from(getContext());
+                        View promptsView = li.inflate(R.layout.isbn_manual_input_layout, null);
+
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+
+                        // set prompts.xml to alertdialog builder
+                        alertDialogBuilder.setView(promptsView);
+
+                        EditText txt_isbn = promptsView.findViewById(R.id.txt_isbn);
+
+                        // set dialog message
+                        alertDialogBuilder
+                                .setCancelable(true)
+                                .setPositiveButton(getString(R.string.ok),     (dialog2, id) -> {
+                                    GetBookInfo getBookInfo = new GetBookInfo();
+                                    getBookInfo.execute(txt_isbn.getText().toString());
+                                })
+                                .setNegativeButton(getString(R.string.cancel), (dialog2, id) -> dialog2.cancel())
+                                .setTitle(R.string.insertISBN);
+                        // create alert dialog
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        // show it
+                        alertDialog.show();
+
+
+                    });
+
+                    dialog.show();
+
+
+
+
+                /*
+                IntentIntegrator.forSupportFragment(AllBooksFragment.this)
+                                    .setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
+                                    .setOrientationLocked(false)
+                                    .setBeepEnabled(false)
+                                    .initiateScan();
+                 */
+        });
 
         //TODO: CREATE METHODS A ACTIONS FOR THIS FRAGMENT
 
@@ -119,7 +176,6 @@ public class AllBooksFragment extends Fragment {
                 if(td != null) {
                     for (String bookId : td.keySet()) {
 
-                        System.out.println(bookId);
                         Book newBook = new Book(
                                 bookId,
                                 td.get(bookId).get("isbn"),
