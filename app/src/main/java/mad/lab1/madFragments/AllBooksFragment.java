@@ -1,18 +1,24 @@
 package mad.lab1.madFragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,6 +51,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -58,12 +66,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import mad.lab1.Book;
 import mad.lab1.BookIdInfo;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
+import mad.lab1.LocalDB;
 import mad.lab1.R;
+import mad.lab1.StorageDB;
 
 public class AllBooksFragment extends Fragment {
 
@@ -73,6 +84,10 @@ public class AllBooksFragment extends Fragment {
     private String bookID;
     private ArrayList<Book> allBookList;
     private DatabaseReference dbRef;
+    FloatingActionButton fab;
+    private RecyclerView cardViewList;
+    private LinearLayoutManager layoutManager;
+    private AllBooksListAdapter adapter;
 
     @Nullable
     @Override
@@ -125,6 +140,53 @@ public class AllBooksFragment extends Fragment {
                         alertDialogBuilder.setView(promptsView);
 
                         EditText txt_isbn = promptsView.findViewById(R.id.txt_isbn);
+        cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
+        layoutManager = new LinearLayoutManager(getContext());
+
+        cardViewList.setLayoutManager(layoutManager);
+
+
+        //JUST TO TRY THE ADAPTER
+        ArrayList<String> prova = new ArrayList<>();
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+        prova.add("prova");
+
+
+        adapter = new AllBooksListAdapter(prova, new AllBooksListAdapter.OnBookClicked() {
+            @Override
+            public void onBookClicked(String value) {
+                //create a dialog fragment that shows all the informatio related to the book selected
+                Toast.makeText(getContext(), value, Toast.LENGTH_SHORT).show();
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                if (prev != null) {
+                    ft.remove(prev);
+                }
+                ft.addToBackStack(null);
+
+                // Create and show the dialog.
+                ShowSelelctedBookInfoDialogFragment newFragment = ShowSelelctedBookInfoDialogFragment.newInstance(value);
+                newFragment.show(ft, "dialog");
+            }
+        });
+        cardViewList.setAdapter(adapter);
+
+
+
+        fab.setOnClickListener(
+                new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v)
+                    {
 
                         // set dialog message
                         alertDialogBuilder
@@ -418,11 +480,19 @@ public class AllBooksFragment extends Fragment {
             ref.child(user.getUid()).child(bookID).child("encodedThumbnail").setValue(encodedImage);
 
 
+            StorageDB.putProfilePic(getImageUri(getActivity(), thumbImg).toString());
             //thumbView.setImageBitmap(thumbImg);
         }
 
     }
 
 
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
 
 }
