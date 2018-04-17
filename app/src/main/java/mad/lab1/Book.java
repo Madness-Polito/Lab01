@@ -85,7 +85,11 @@ public class Book implements Parcelable {
     }
 
     public Bitmap getDecodedThumbnail() {
-        return decodeToBitmap(encodedThumbnail);
+        if(encodedThumbnail != null) {
+            return decodeToBitmap(encodedThumbnail);
+        }else{
+            return null;
+        }
     }
 
     private Bitmap decodeToBitmap(String encodedImage){

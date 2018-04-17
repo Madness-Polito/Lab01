@@ -241,6 +241,8 @@ public class AllBooksFragment extends Fragment {
                 EditText txt_isbn = promptsView.findViewById(R.id.txt_isbn);
                            });
 
+            dialog.show();
+
         });
 
         cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
@@ -378,8 +380,8 @@ public class AllBooksFragment extends Fragment {
                 JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
                 JSONArray industryIdentifiers = volumeInfo.getJSONArray("industryIdentifiers");
 
-                //GetBookThumb getBookThumb = new GetBookThumb();
-                //getBookThumb.execute(imageLinks.getString("thumbnail"));
+                GetBookThumb getBookThumb = new GetBookThumb();
+                getBookThumb.execute(imageLinks.getString("thumbnail"));
 
                 isbn = industryIdentifiers.getJSONObject(0).getString("identifier");
                 author = authors.getString(0);
@@ -479,7 +481,7 @@ public class AllBooksFragment extends Fragment {
             ref.child(user.getUid()).child(bookID).child("encodedThumbnail").setValue(encodedImage);
 
 
-            StorageDB.putProfilePic(getImageUri(getActivity(), thumbImg).toString());
+            //StorageDB.putProfilePic(getImageUri(getActivity(), thumbImg).toString());
             //thumbView.setImageBitmap(thumbImg);
         }
 
