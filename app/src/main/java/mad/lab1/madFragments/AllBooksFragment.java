@@ -303,9 +303,6 @@ public class AllBooksFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-
-
-
     }
 
 

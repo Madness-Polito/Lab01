@@ -1,10 +1,13 @@
 package mad.lab1.madFragments;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
@@ -25,6 +28,8 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
     private TextView conditionTextView;
     private TextView descriptionTextView;
     private FloatingActionButton fab;
+
+    final Context context = this;
 
 
 
@@ -54,7 +59,17 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //TODO: ADD DIALOG WITH COMPLETE DESCRIPTION
-                Toast.makeText(ShowSelectedBookInfo.this, "Full Description", Toast.LENGTH_SHORT).show();
+                // custom dialog
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.description_layout);
+
+                // set the custom dialog components - text, image and button
+                TextView txt_description = dialog.findViewById(R.id.txt_description);
+
+                txt_description.setText(book.getDescription());
+
+                dialog.show();
+
             }
         });
 
