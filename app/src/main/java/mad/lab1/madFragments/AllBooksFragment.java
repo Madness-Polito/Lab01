@@ -91,6 +91,7 @@ public class AllBooksFragment extends Fragment {
     private RecyclerView cardViewList;
     private LinearLayoutManager layoutManager;
     private AllBooksListAdapter adapter;
+    private ChildEventListener bookIDListener;
 
 
     @Override
@@ -161,7 +162,7 @@ public class AllBooksFragment extends Fragment {
             }
         });
 
-        ChildEventListener bookIDListener = new ChildEventListener() {
+        bookIDListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Book b = dataSnapshot.getValue(Book.class);
@@ -188,11 +189,11 @@ public class AllBooksFragment extends Fragment {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                Toast.makeText(getActivity(), "Failed to load book list.",
-                        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Failed to load book list.",
+                  //      Toast.LENGTH_SHORT).show();
             }
         };
-        dbRef.addChildEventListener(bookIDListener);
+
 
     }
 
@@ -494,5 +495,18 @@ public class AllBooksFragment extends Fragment {
         return Uri.parse(path);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        //Remove childEventListener
+        dbRef.removeEventListener(bookIDListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //add childEventListener
+        dbRef.addChildEventListener(bookIDListener);
+    }
 }
 
