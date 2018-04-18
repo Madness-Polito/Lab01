@@ -248,7 +248,22 @@ public class AllBooksFragment extends Fragment {
                 alertDialogBuilder.setView(promptsView);
 
                 EditText txt_isbn = promptsView.findViewById(R.id.txt_isbn);
-                           });
+
+                alertDialogBuilder
+                        .setCancelable(true)
+                        .setPositiveButton(getString(R.string.ok), (dialog2, id) -> {
+                            GetBookInfo getBookInfo = new GetBookInfo();
+                            getBookInfo.execute(txt_isbn.getText().toString());
+                        })
+                        .setNegativeButton(getString(R.string.cancel), (dialog2, id) -> dialog2.cancel())
+                        .setTitle(R.string.insertISBN);
+
+                //create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                //show it
+                alertDialog.show();
+
+            });
 
             dialog.show();
 
