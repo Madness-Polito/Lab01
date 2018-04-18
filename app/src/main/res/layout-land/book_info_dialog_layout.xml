@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/showBookInfoToolbar"
@@ -15,18 +14,30 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <ImageView
+        android:id="@+id/showBookInfoImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/colorPrimaryDark" />
+
+
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/showBookInfoScrollView"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginTop="64dp"
         android:fillViewport="true"
         android:scrollbars="none"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,7 +69,7 @@
                 android:id="@+id/showBookInfoTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="10dp"
                 android:elevation="5dp"
                 android:ellipsize="end"
@@ -66,23 +77,15 @@
                 android:maxLines="1"
                 android:text="Il signore degli anelli"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/cardView"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="@+id/cardView" />
-
-            <ImageView
-                android:id="@+id/showBookInfoImage"
-                android:layout_width="0dp"
-                android:layout_height="248dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@color/colorPrimaryDark" />
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView"
-                android:layout_width="276dp"
+                android:layout_width="0dp"
                 android:layout_height="78dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="208dp"
                 app:cardElevation="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -123,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:elevation="5dp"
                 android:ellipsize="end"
@@ -132,7 +135,7 @@
                 android:text="Tolkien"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@+id/cardView"
-                app:layout_constraintStart_toStartOf="@+id/cardView"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/showBookInfoTitle" />
 
             <TextView
@@ -143,9 +146,9 @@
                 android:layout_marginStart="16dp"
                 android:elevation="5dp"
                 android:ellipsize="end"
-                android:maxEms="16"
+                android:maxEms="12"
                 android:maxLines="1"
-                android:text="publication year"
+                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa7"
                 app:layout_constraintBottom_toBottomOf="@+id/cardView2"
                 app:layout_constraintStart_toEndOf="@+id/imageView3" />
 
@@ -157,9 +160,9 @@
                 android:layout_marginTop="28dp"
                 android:elevation="5dp"
                 android:ellipsize="end"
-                android:maxEms="16"
+                android:maxEms="12"
                 android:maxLines="1"
-                android:text="publisher"
+                android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
                 app:layout_constraintStart_toEndOf="@+id/imageView"
                 app:layout_constraintTop_toTopOf="@+id/cardView2" />
 
@@ -191,7 +194,7 @@
 
             <TextView
                 android:id="@+id/showBookInfoDescription"
-                android:layout_width="299dp"
+                android:layout_width="241dp"
                 android:layout_height="138dp"
                 android:layout_margin="8dp"
                 android:layout_marginBottom="8dp"
@@ -275,7 +278,15 @@
         android:layout_marginEnd="16dp"
         android:background="@color/colorAccent"
         android:src="@drawable/borrowed_books_selected_24dp"
+        app:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="296dp" />
 
 </android.support.constraint.ConstraintLayout>

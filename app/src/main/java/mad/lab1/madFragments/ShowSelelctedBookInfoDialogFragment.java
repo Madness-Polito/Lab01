@@ -17,7 +17,6 @@ public class ShowSelelctedBookInfoDialogFragment extends DialogFragment {
 
     private Book book;
 
-    //TODO: CHANGE STRING TO THE BOOK ITEM TO BE DISPLAYED
     //Static method used to get an instance of this fragment
     public static ShowSelelctedBookInfoDialogFragment newInstance(Book b){
         ShowSelelctedBookInfoDialogFragment fragment = new ShowSelelctedBookInfoDialogFragment();
@@ -32,7 +31,8 @@ public class ShowSelelctedBookInfoDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.book_info_dialog_layout, container, false);
-        TextView text = v.findViewById(R.id.bookInfoDialogTextView);
+        TextView text = v.findViewById(R.id.showBookInfoTitle);
+
         //TODO:POPULATE THE VIEW
         text.setText(book.getTitle());
 

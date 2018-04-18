@@ -154,8 +154,8 @@ public class AllBooksFragment extends Fragment {
             @Override
             public void onBookClicked(Book b) {
                 //create a dialog fragment that shows all the informatio related to the book selected
-                Toast.makeText(getContext(), b.getTitle(), Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(getContext(), b.getTitle(), Toast.LENGTH_SHORT).show();
+                /*
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 //Checking if previous dialog are active
                 Fragment prev = getFragmentManager().findFragmentByTag("dialog");
@@ -167,6 +167,12 @@ public class AllBooksFragment extends Fragment {
                 // Create and show the dialog.
                 ShowSelelctedBookInfoDialogFragment newFragment = ShowSelelctedBookInfoDialogFragment.newInstance(b);
                 newFragment.show(ft, "dialog");
+                */
+                Bundle arg = new Bundle();
+                arg.putParcelable("book", b);
+                Intent i = new Intent(getContext(), ShowSelectedBookInfo.class);
+                i.putExtra("argument", b);
+                startActivity(i);
             }
         });
 
@@ -540,6 +546,9 @@ public class AllBooksFragment extends Fragment {
         super.onPause();
         //Remove childEventListener
         dbRef.removeEventListener(bookIDListener);
+        int size = allBookList.size();
+        allBookList.clear();
+        adapter.notifyItemRangeRemoved(0, size);
     }
 
     @Override

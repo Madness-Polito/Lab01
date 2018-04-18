@@ -32,4 +32,7 @@
     <string name="cond_used">Usato</string>
     <string name="cond_new">Nuovo</string>>
     <string name="missingCondition">Non hai selezionato uno stato!</string>
+    <string name="showInfoBookDescriptionCardHeader">Descrizione</string>
+    <string name="showInfoBookDescriptionConditionHeader">Condizione:</string>
+
 </resources>

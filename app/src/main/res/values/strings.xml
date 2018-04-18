@@ -35,4 +35,8 @@
     <string name="cond_used">Used</string>
     <string name="cond_new">New</string>
     <string name="missingCondition">You haven\'t selected a condition!</string>
+    <string name="showInfoBookDescriptionCardHeader">Description</string>
+    <string name="showInfoBookDescriptionConditionHeader">Condition:</string>
+
 </resources>
+
