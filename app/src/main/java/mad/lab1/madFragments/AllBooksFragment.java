@@ -181,6 +181,14 @@ public class AllBooksFragment extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                int i = 0;
+                Book b = dataSnapshot.getValue(Book.class);
+                b.setEncodedThumbnail(dataSnapshot.child("encodedThumbnail").getValue(String.class));
+                while (allBookList.get(i).getBookId() != b.getBookId()){
+                    i++;
+                }
+                allBookList.set(i, b);
+                adapter.notifyItemChanged(i);
 
             }
 
