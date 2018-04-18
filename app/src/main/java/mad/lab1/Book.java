@@ -19,9 +19,10 @@ public class Book implements Parcelable {
     private String condition;
     private String publisher;
     private String pubYear;
+    private String description;
     private String encodedThumbnail;
 
-    public Book(String bookId, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String encodedThumbnail) {
+    public Book(String bookId, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String description,String encodedThumbnail) {
         this.bookId = bookId;
         this.isbn = isbn;
         this.title = title;
@@ -30,6 +31,7 @@ public class Book implements Parcelable {
         this.condition = condition;
         this.publisher = publisher;
         this.pubYear = pubYear;
+        this.description = description;
         this.encodedThumbnail = encodedThumbnail;
     }
 
@@ -42,10 +44,11 @@ public class Book implements Parcelable {
         this.condition = in.readString();
         this.publisher = in.readString();
         this.pubYear = in.readString();
+        this.description = in.readString();
         this.encodedThumbnail = in.readString();
     }
     public Book(){
-        this("", "", "", "", "", "", "", "", "");
+        this("", "", "", "", "", "", "", "", "", "");
     }
 
     public String getBookId() {
@@ -80,6 +83,11 @@ public class Book implements Parcelable {
         return pubYear;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+
     public void setEncodedThumbnail(String encodedThumbnail){
         this.encodedThumbnail = encodedThumbnail;
     }
@@ -113,6 +121,7 @@ public class Book implements Parcelable {
         dest.writeString(this.condition);
         dest.writeString(this.publisher);
         dest.writeString(this.pubYear);
+        dest.writeString(this.description);
         dest.writeString(this.encodedThumbnail);
     }
 

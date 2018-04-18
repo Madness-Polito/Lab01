@@ -15,11 +15,12 @@ public class BookIdInfo implements Parcelable{
     private String condition;
     private String publisher;
     private String pubYear;
+    private String description;
 
 
     BookIdInfo(){}
 
-    public BookIdInfo(String uid, String isbn, String title, String author, String status, String condition, String publisher, String pubYear) {
+    public BookIdInfo(String uid, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String description) {
         this.uid = uid;
         this.isbn = isbn;
         this.title = title;
@@ -28,6 +29,7 @@ public class BookIdInfo implements Parcelable{
         this.condition = condition;
         this.publisher = publisher;
         this.pubYear = pubYear;
+        this.description = description;
     }
 
 
@@ -95,6 +97,14 @@ public class BookIdInfo implements Parcelable{
         this.pubYear = pubYear;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     // In constructor you will read the variables from Parcel. Make sure to read them in the same sequence in which you have written them in Parcel.
     private BookIdInfo(Parcel in) {
 
@@ -106,6 +116,7 @@ public class BookIdInfo implements Parcelable{
         condition   = in.readString();
         publisher   = in.readString();
         pubYear = in.readString();
+        description = in.readString();
     }
 
     @Override
@@ -118,6 +129,7 @@ public class BookIdInfo implements Parcelable{
         dest.writeString(condition);
         dest.writeString(publisher);
         dest.writeString(pubYear);
+        dest.writeString(description);
     }
 
     // This is to de-serialize the object

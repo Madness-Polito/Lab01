@@ -413,7 +413,8 @@ public class AllBooksFragment extends Fragment {
                         "free",
                         "good",
                         publisher,
-                        pubYear
+                        pubYear,
+                        description
                 );
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookID");
 
