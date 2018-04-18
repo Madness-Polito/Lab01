@@ -24,6 +24,12 @@
     <string name="booksHint">Quali sono i tuoi libri preferiti?</string>
     <string name="books">I tuoi libri preferiti</string>
     <string name="isbn">ISBN</string>
-    <string name="insertISBN">"Inserisci ISBN"</string>
-    <string name="addBook">"Aggiungi libro alla tua libreria"</string>
+    <string name="insertISBN">Inserisci ISBN</string>
+    <string name="addBook">Aggiungi libro alla tua libreria</string>
+    <string name="finishingAddingBook">Il tuo nuovo libro</string>
+    <string name="condition">Stato:</string>
+    <string name="cond_vUsed">Molto usato</string>
+    <string name="cond_used">Usato</string>
+    <string name="cond_new">Nuovo</string>>
+    <string name="missingCondition">Non hai selezionato uno stato!</string>
 </resources>

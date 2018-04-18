@@ -27,6 +27,12 @@
     <string name="unknown_error">Unknown error</string>
     <string name="sign_in_ok">Successful sign-in</string>
     <string name="isbn">ISBN</string>
-    <string name="insertISBN">"Insert ISBN"</string>
-    <string name="addBook">"Add a book to your library"</string>
+    <string name="insertISBN">Insert ISBN</string>
+    <string name="addBook">Add a book to your library</string>
+    <string name="finishingAddingBook">Your new book</string>
+    <string name="condition">Condition:</string>
+    <string name="cond_vUsed">Very used</string>
+    <string name="cond_used">Used</string>
+    <string name="cond_new">New</string>
+    <string name="missingCondition">You haven\'t selected a condition!</string>
 </resources>

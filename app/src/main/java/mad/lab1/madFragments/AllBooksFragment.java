@@ -1,5 +1,6 @@
 package mad.lab1.madFragments;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -70,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
+import mad.lab1.AddingBookActivity;
 import mad.lab1.Book;
 import mad.lab1.BookIdInfo;
 import mad.lab1.IsbnDB;
@@ -84,6 +86,12 @@ public class AllBooksFragment extends Fragment {
     private ListView lsv_Books;
     private String isbn;
     private String bookID;
+    private String title;
+    private String author;
+    private String publisher;
+    private String pubYear;
+    private String description;
+    private String imageLinks;
 
     private ArrayList<Book> allBookList;
 
@@ -273,14 +281,66 @@ public class AllBooksFragment extends Fragment {
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //TODO: fill in the listview
-        if(data != null) {
-            IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            String scanContent = scanningResult.getContents().toString();
-            //txt_isbn.setText(scanContent);
 
-            GetBookInfo getBookInfo = new GetBookInfo();
-            getBookInfo.execute(scanContent);
+        if(requestCode == IntentIntegrator.REQUEST_CODE) {
+            //result from zxing
+            if (data != null) {
+                IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                String scanContent = scanningResult.getContents().toString();
+                //txt_isbn.setText(scanContent);
+
+                GetBookInfo getBookInfo = new GetBookInfo();
+                getBookInfo.execute(scanContent);
+            }
+        }else if(requestCode == 1 && resultCode == Activity.RESULT_OK){
+
+            String condition = data.getStringExtra("condition");
+
+
+            // upload book to firebase
+            IsbnInfo isbnInfo = new IsbnInfo(
+                    isbn,
+                    title,
+                    author,
+                    publisher,
+                    pubYear,
+                    description,
+                    null);
+            IsbnDB.setBook(isbnInfo);
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+
+            BookIdInfo bookIdInfo = new BookIdInfo(
+                    user.getUid(),
+                    isbn,
+                    title,
+                    author,
+                    "free",
+                    condition,
+                    publisher,
+                    pubYear,
+                    description
+            );
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookID");
+
+            // read the bookId key and save bookId Info
+            bookID = ref.push().getKey();
+            ref.child(bookID).setValue(bookIdInfo);
+
+
+            //generate bookList
+            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference("bookList");
+
+            ref2.child(user.getUid())
+                    .child(bookID)
+                    .setValue(bookIdInfo);
+
+            //get the thumbnail
+
+            GetBookThumb getBookThumb = new GetBookThumb();
+            getBookThumb.execute(imageLinks);
+
         }
     }
 
@@ -363,26 +423,15 @@ public class AllBooksFragment extends Fragment {
             super.onPostExecute(jsonObject);
             try {
 
-                String title;
-                String author;
-                String publisher;
-                String pubYear;
-                String description;
-
-
-
-
                 JSONArray items = jsonObject.getJSONArray("items");
                 //get 1st item
                 JSONObject item = items.getJSONObject(0);
 
                 JSONObject volumeInfo = item.getJSONObject("volumeInfo");
                 JSONArray authors = volumeInfo.getJSONArray("authors");
-                JSONObject imageLinks = volumeInfo.getJSONObject("imageLinks");
+                JSONObject imageLinksJSON = volumeInfo.getJSONObject("imageLinks");
+                imageLinks = imageLinksJSON.getString("thumbnail");
                 JSONArray industryIdentifiers = volumeInfo.getJSONArray("industryIdentifiers");
-
-                GetBookThumb getBookThumb = new GetBookThumb();
-                getBookThumb.execute(imageLinks.getString("thumbnail"));
 
                 isbn = industryIdentifiers.getJSONObject(0).getString("identifier");
                 author = authors.getString(0);
@@ -391,45 +440,12 @@ public class AllBooksFragment extends Fragment {
                 publisher = volumeInfo.getString("publisher");
                 pubYear = volumeInfo.getString("publishedDate");
 
-                // upload book to firebase
-                IsbnInfo isbnInfo = new IsbnInfo(
-                        isbn,
-                        title,
-                        author,
-                        publisher,
-                        pubYear,
-                        description,
-                        null);
-                IsbnDB.setBook(isbnInfo);
+                Intent i = new Intent(getActivity(), AddingBookActivity.class);
+                i.putExtra("author",author);
+                i.putExtra("description",description);
+                i.putExtra("title",title);
+                startActivityForResult(i, 1);
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-                //TODO: fix status, condition
-
-                BookIdInfo bookIdInfo = new BookIdInfo(
-                        user.getUid(),
-                        isbn,
-                        title,
-                        author,
-                        "free",
-                        "good",
-                        publisher,
-                        pubYear,
-                        description
-                );
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookID");
-
-                // read the bookId key and save bookId Info
-                bookID = ref.push().getKey();
-                ref.child(bookID).setValue(bookIdInfo);
-
-
-                //generate bookList
-                DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference("bookList");
-
-                ref2.child(user.getUid())
-                        .child(bookID)
-                        .setValue(bookIdInfo);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -508,6 +524,41 @@ public class AllBooksFragment extends Fragment {
         super.onResume();
         //add childEventListener
         dbRef.addChildEventListener(bookIDListener);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+
+        savedInstanceState.putString("isbn", isbn);
+        savedInstanceState.putString("bookID", bookID);
+        savedInstanceState.putString("title", title);
+        savedInstanceState.putString("author", author);
+        savedInstanceState.putString("publisher", publisher);
+        savedInstanceState.putString("pubYear", pubYear);
+        savedInstanceState.putString("description", description);
+        savedInstanceState.putString("imageLinks", imageLinks);
+
+
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+
+        if(savedInstanceState != null) {
+            isbn = savedInstanceState.getString("isbn");
+            bookID = savedInstanceState.getString("bookID");
+            title = savedInstanceState.getString("title");
+            author = savedInstanceState.getString("author");
+            publisher = savedInstanceState.getString("publisher");
+            pubYear = savedInstanceState.getString("pubYear");
+            description = savedInstanceState.getString("description");
+            imageLinks = savedInstanceState.getString("imageLinks");
+        }
     }
 }
 
