@@ -55,8 +55,6 @@ public class LocalDB {
         File src = new File(tmpPicUri);
         File dst = new File(getProfilePicPath(context));
 
-        System.out.println("-------------------->putProfilePic src: " + src.getPath() + ", dst: " + dst.getPath());
-
         try {
             LocalDB.copyFile(src, dst);
         }
@@ -64,6 +62,23 @@ public class LocalDB {
             ioe.printStackTrace();
         }
 
+    }
+
+    private static void deleteProfilePic(Context context){
+
+        File file = new File(getProfilePicPath(context));
+        file.delete();
+    }
+
+    // clears all the local files of the user (used when logging out)
+    public static void clearProfile(Context context){
+
+        // remove shared prefs
+        SharedPreferences prefs = getPrefs(context);
+        prefs.edit().clear().apply();
+
+        // remove profile pic
+        deleteProfilePic(context);
     }
 
     // read the

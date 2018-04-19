@@ -44,9 +44,6 @@ public class Authentication {
 
     public static void signIn(Activity activity){
 
-
-
-
         activity.startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -58,6 +55,7 @@ public class Authentication {
     }
 
     public static void signOut(Activity activity){
+
         AuthUI.getInstance()
                 .signOut(activity)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -68,6 +66,8 @@ public class Authentication {
                     }
                 });
 
+        // remove local user data
+        LocalDB.clearProfile(activity);
     }
 
     // deletes an authentication account: note that user data still has to be removed from firebase db
