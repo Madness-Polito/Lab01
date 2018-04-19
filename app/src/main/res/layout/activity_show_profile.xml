@@ -29,21 +29,21 @@
                 android:layout_height="match_parent">
 
 
-                    <RatingBar
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:isIndicator="true"
-                        android:numStars="5"
-                        android:layout_marginRight="18dp"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_toLeftOf="@id/profile_separator_view"
+                <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:isIndicator="true"
+                    android:numStars="5"
+                    android:layout_marginRight="18dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toLeftOf="@id/profile_separator_view"
 
-                        style="@style/Widget.AppCompat.RatingBar.Small"
-                        android:rating="5.0"
-                        android:progressTint="@color/colorAccent"
-                        android:stepSize="1.0" />
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:rating="5.0"
+                    android:progressTint="@color/colorAccent"
+                    android:stepSize="1.0" />
 
 
                 <View
@@ -140,8 +140,8 @@
                 android:layout_height="wrap_content"
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="8dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="56dp"
                 android:layout_marginBottom="8dp"
                 card_view:cardBackgroundColor="#EEEEEE"
@@ -253,8 +253,8 @@
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="8dp"
                 card_view:cardBackgroundColor="#EEEEEE"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp">
 
@@ -310,8 +310,8 @@
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="8dp"
                 card_view:cardBackgroundColor="#EEEEEE"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="32dp">
 
@@ -362,4 +362,3 @@
     </RelativeLayout>
 
 </ScrollView>
-

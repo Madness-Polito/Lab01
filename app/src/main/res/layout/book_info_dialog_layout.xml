@@ -179,14 +179,17 @@
 
             <TextView
                 android:id="@+id/showBookInfoCondition"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
                 android:elevation="5dp"
-                android:text="condition: "
-                android:textAllCaps="true"
+                android:ellipsize="end"
+                android:maxEms="10"
+                android:maxLines="1"
                 app:layout_constraintBottom_toBottomOf="@+id/cardView3"
+                app:layout_constraintEnd_toEndOf="@+id/cardView3"
                 app:layout_constraintStart_toEndOf="@+id/textView5" />
 
             <TextView
@@ -257,6 +260,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:textAllCaps="true"
                 android:elevation="5dp"
                 android:text="@string/showInfoBookDescriptionConditionHeader"
                 app:layout_constraintBottom_toBottomOf="@+id/cardView3"

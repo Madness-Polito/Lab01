@@ -107,7 +107,9 @@ public class AllBooksFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //initialize db
+
         dbRef = FirebaseDatabase.getInstance().getReference().child("bookID");
+
         /*
         ValueEventListener bookIdListener = new ValueEventListener() {
             @Override
