@@ -35,8 +35,8 @@
     <string name="cond_used">Used</string>
     <string name="cond_new">New</string>
     <string name="missingCondition">You haven\'t selected a condition!</string>
-    <string name="showInfoBookDescriptionCardHeader">Description</string>
-    <string name="showInfoBookDescriptionConditionHeader">Condition:</string>
-
+    <string name="facebook_application_id" translatable="false">210891089496907</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb210891089496907</string>
+    <string name="twitter_consumer_key" translatable="false">IzDjvZBZFmgBYCffo8OZQjUa0</string>
+    <string name="twitter_consumer_secret" translatable="false">cOWgHpiJQpdLYuJXvP6E25M5ehchCBSomqcaZEVDDjYpc0WHZj</string>
 </resources>
-

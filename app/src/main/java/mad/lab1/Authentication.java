@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -18,11 +19,15 @@ public class Authentication {
 
     // providers
     private final static List<AuthUI.IdpConfig> providers = Arrays.asList(
+            new AuthUI.IdpConfig.FacebookBuilder().build(),
+            new AuthUI.IdpConfig.GoogleBuilder().build(),
+            new AuthUI.IdpConfig.TwitterBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build(),
             new AuthUI.IdpConfig.PhoneBuilder().build());
 
     // return code of sign-in
     public static final int RC_SIGN_IN = 123;
+    public static final int RC_FACEBOOK_SIGN_IN = 999;
 
     // check that user is logged in: if not starts login/signup activity
     public static boolean checkSession(){
@@ -39,7 +44,9 @@ public class Authentication {
 
     public static void signIn(Activity activity){
 
-        // create and launch sign-in intent
+
+
+
         activity.startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
@@ -47,6 +54,7 @@ public class Authentication {
                         .setAvailableProviders(providers)
                         .build(),
                 RC_SIGN_IN);
+
     }
 
     public static void signOut(Activity activity){

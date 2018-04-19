@@ -1,5 +1,6 @@
 package mad.lab1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.design.widget.TabLayout;
@@ -9,15 +10,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
 
 
 public class MainPageMenu extends AppCompatActivity {
@@ -80,13 +86,54 @@ public class MainPageMenu extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == Authentication.RC_SIGN_IN && resultCode == RESULT_CANCELED) {
-            //If user pressed back button, closing app
-            finish();
-        } else if (requestCode == Authentication.RC_SIGN_IN && resultCode == RESULT_OK) {
-            //User logged in, to be used in case of profile related info in the main page
-        }
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast;
+        CharSequence text;
+            /*
+            if (requestCode == Authentication.RC_SIGN_IN && resultCode == RESULT_CANCELED) {
+                //If user pressed back button, closing app
+                finish();
+            } else if (requestCode == Authentication.RC_SIGN_IN && resultCode == RESULT_OK) {
+                //User logged in, to be used in case of profile related info in the main page
+            }
+            */
+            if(requestCode == Authentication.RC_SIGN_IN){
 
+                IdpResponse response = IdpResponse.fromResultIntent(data);
+
+                if (resultCode == RESULT_OK) {
+                    // succesfully signed in
+
+                }
+                else{
+                    //sign in failed
+                    Log.d("EDO", "back pressed or else");
+                    if(response == null){
+                        // back button pressed
+
+                        text = "Back pressed";
+                        toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                        //showSnackbar(R.string.sign_in_cancelled);
+                        //finishAfterTransition();
+                    }
+                    else if (response.getError().getErrorCode() == ErrorCodes.NO_NETWORK) {
+                        text = "No internet connection";
+                        toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                        //return;
+                        //finishAfterTransition();
+                    }
+                    else{
+                        //unknown error
+                        text = "Unknown error";
+                        toast = Toast.makeText(context, text, duration);
+                        toast.show();
+                        //finishAfterTransition();
+                    }
+                }
+            }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
