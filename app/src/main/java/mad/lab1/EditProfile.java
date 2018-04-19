@@ -228,17 +228,23 @@ public class EditProfile extends AppCompatActivity{
         });
 
         ImageButton saveButton = findViewById(R.id.saveButton);
-        saveButton.setOnClickListener((View view) ->{
+        saveButton.setOnClickListener((View view) -> {
+            if(name.getText().toString().equals("") || mail.getText().toString().equals("") || city.getText().toString().equals("") || phone.getText().toString().equals("")){
 
+                Toast toast = Toast.makeText(this, "Please make sure that name, phone#, mail and city are filled", Toast.LENGTH_LONG);
+                toast.show();
+
+
+            }else{
                 // save user data to firebase & locally
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 UserInfo userInfo = new UserInfo(user.getUid(),
-                                                name.getText().toString(),
-                                                mail.getText().toString(),
-                                                phone.getText().toString(),
-                                                city.getText().toString(),
-                                                DoB.getText().toString(),
-                                                bio.getText().toString());
+                        name.getText().toString(),
+                        mail.getText().toString(),
+                        phone.getText().toString(),
+                        city.getText().toString(),
+                        DoB.getText().toString(),
+                        bio.getText().toString());
                 UsersDB.setUser(userInfo);
                 LocalDB.putUserInfo(this, userInfo);
 
@@ -249,30 +255,30 @@ public class EditProfile extends AppCompatActivity{
                 }
 
                 // save strings through sharedPreferences
-                /*SharedPreferences.Editor editor = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE).edit();
-                for (int j = 0; j < KEYS.length; j++)
-                    editor.putString(KEYS[j], TEXTVIEWS[j].getText().toString());
-                editor.apply();
+                    /*SharedPreferences.Editor editor = getSharedPreferences(Globals.PREFS_NAME, MODE_PRIVATE).edit();
+                    for (int j = 0; j < KEYS.length; j++)
+                        editor.putString(KEYS[j], TEXTVIEWS[j].getText().toString());
+                    editor.apply();
 
-                // save pic to file
-                try {
-                    Bitmap bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
-                    if (bmp != null) {
-                        FileOutputStream outStream = openFileOutput(Globals.PIC_FILE, Context.MODE_PRIVATE);
-                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
-                        outStream.close();
+                    // save pic to file
+                    try {
+                        Bitmap bmp = ((BitmapDrawable) pic.getDrawable()).getBitmap();
+                        if (bmp != null) {
+                            FileOutputStream outStream = openFileOutput(Globals.PIC_FILE, Context.MODE_PRIVATE);
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                            outStream.close();
+                        }
                     }
-                }
-                catch (Exception e ){
-                    e.printStackTrace();
-                }*/
+                    catch (Exception e ){
+                        e.printStackTrace();
+                    }*/
 
                 // return data to ShowProfile
                 Intent intent = new Intent();
                 intent.putExtra("userInfo", userInfo);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
-
+            }
         });
     }
 

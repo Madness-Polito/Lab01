@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -35,13 +36,44 @@ public class MainPageMenu extends AppCompatActivity {
     private TabLayout tabLayout;
     private Toolbar toolbar;
 
+    private DatabaseReference dbRef;
+
 
     @Override
     protected void onStart() {
         super.onStart();
         loginCheck();                                               //Checking if user logged in or not
+        userCreatedCheck();                                         //check if user has filled in all necessary data
 
     }
+
+    private void userCreatedCheck() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
+
+            dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (!snapshot.exists()) {
+                        //user needs to be created!
+                        Intent intent = new Intent(MainPageMenu.this, EditProfile.class);
+                        MainPageMenu.this.startActivity(intent);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+
+
+            });
+        }
+
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
