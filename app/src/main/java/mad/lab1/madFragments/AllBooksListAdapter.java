@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import java.util.ArrayList;
 
 import mad.lab1.Book;
@@ -77,7 +80,15 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         holder.titleText.setText(allSharedBooks.get(position).getTitle());
         holder.authorText.setText(allSharedBooks.get(position).getAuthor());
-        holder.image.setImageBitmap(allSharedBooks.get(position).getDecodedThumbnail());
+        //holder.image.setImageBitmap(allSharedBooks.get(position).getDecodedThumbnail());
+        Glide.with(holder.image.getContext())
+                .load(allSharedBooks.get(position).getThumbURL())
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.my_library_selected_24dp)
+                        .centerCrop()
+                        .dontAnimate()
+                        .dontTransform())
+                .into(holder.image);
         //The view holder gets the listener
         holder.bind(allSharedBooks.get(position), listener);
     }

@@ -34,6 +34,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -42,6 +44,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -83,7 +88,6 @@ import mad.lab1.StorageDB;
 public class AllBooksFragment extends Fragment {
 
     private FloatingActionButton fab;
-    private ListView lsv_Books;
     private String isbn;
     private String bookID;
     private String title;
@@ -108,49 +112,8 @@ public class AllBooksFragment extends Fragment {
 
         //initialize db
 
-        dbRef = FirebaseDatabase.getInstance().getReference().child("bookID");
+        dbRef = FirebaseDatabase.getInstance().getReference().child("isbn");
 
-        /*
-        ValueEventListener bookIdListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                allBookList = new ArrayList<>();
-                // Get Post object and use the values to update the UI
-
-                for(DataSnapshot d : dataSnapshot.getChildren()){
-                    allBookList.add(d.getValue(Book.class));
-                }
-
-
-                Map<String, Map<String, String>> td = (HashMap<String, Map<String, String>>)dataSnapshot.getValue();
-                if(td != null) {
-                    for (String bookId : td.keySet()) {
-
-                        Book newBook = new Book(
-                                bookId,
-                                td.get(bookId).get("isbn"),
-                                td.get(bookId).get("title"),
-                                td.get(bookId).get("author"),
-                                td.get(bookId).get("status"),
-                                td.get(bookId).get("condition"),
-                                td.get(bookId).get("publisher"),
-                                td.get(bookId).get("pubYear"),
-                                td.get(bookId).get("encodedThumbnail")
-                        );
-                        allBookList.add(newBook);
-                    }
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        dbRef.addValueEventListener(bookIdListener);
-        */
         allBookList = new ArrayList<>();
         adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
             @Override
@@ -182,7 +145,6 @@ public class AllBooksFragment extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Book b = dataSnapshot.getValue(Book.class);
-                b.setEncodedThumbnail(dataSnapshot.child("encodedThumbnail").getValue(String.class));
                 allBookList.add(b);
                 adapter.notifyItemInserted(allBookList.indexOf(b));
             }
@@ -191,7 +153,6 @@ public class AllBooksFragment extends Fragment {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 int i = 0;
                 Book b = dataSnapshot.getValue(Book.class);
-                b.setEncodedThumbnail(dataSnapshot.child("encodedThumbnail").getValue(String.class));
                 while (allBookList.get(i).getBookId() != b.getBookId()){
                     i++;
                 }
@@ -514,7 +475,7 @@ public class AllBooksFragment extends Fragment {
             thumbImg.compress(Bitmap.CompressFormat.PNG, 100, bYtE);
             thumbImg.recycle();
             byte[] byteArray = bYtE.toByteArray();
-            String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            /*String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
             ref.child(isbn).child("encodedThumbnail").setValue(encodedImage);
@@ -524,7 +485,35 @@ public class AllBooksFragment extends Fragment {
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             ref = FirebaseDatabase.getInstance().getReference("bookList");
-            ref.child(user.getUid()).child(bookID).child("encodedThumbnail").setValue(encodedImage);
+            ref.child(user.getUid()).child(bookID).child("encodedThumbnail").setValue(encodedImage);*/
+
+            //save the thumbnail in FirebaseStorage
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            StorageReference imageRef = storageRef.child("thumbnails/"+ isbn +".png");
+            UploadTask uploadTask = imageRef.putBytes(byteArray);
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    //save the URL for the thumbnail on the database
+                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
+                    ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
+
+                    ref = FirebaseDatabase.getInstance().getReference("bookID");
+                    ref.child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    ref = FirebaseDatabase.getInstance().getReference("bookList");
+                    ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+                }
+            });
 
 
             //StorageDB.putProfilePic(getImageUri(getActivity(), thumbImg).toString());
@@ -533,12 +522,6 @@ public class AllBooksFragment extends Fragment {
 
     }
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
 
     @Override
     public void onPause() {

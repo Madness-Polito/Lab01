@@ -13,6 +13,9 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
 import mad.lab1.Book;
 import mad.lab1.R;
 
@@ -48,7 +51,15 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
 
         titleTextView.setText(book.getTitle());
         authorTextView.setText(book.getAuthor());
-        bookImageView.setImageBitmap(book.getDecodedThumbnail());
+        //bookImageView.setImageBitmap(book.getDecodedThumbnail());
+        Glide.with(bookImageView.getContext())
+                .load(book.getThumbURL())
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.my_library_selected_24dp)
+                        .centerCrop()
+                        .dontAnimate()
+                        .dontTransform())
+                .into(bookImageView);
         publisherTextView.setText(book.getPublisher());
         publicationYearTextView.setText(book.getPubYear());
         conditionTextView.setText(book.getCondition());
@@ -109,3 +120,5 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
 
     }
 }
+
+

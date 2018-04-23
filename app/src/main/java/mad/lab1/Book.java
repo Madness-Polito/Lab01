@@ -20,9 +20,9 @@ public class Book implements Parcelable {
     private String publisher;
     private String pubYear;
     private String description;
-    private String encodedThumbnail;
+    private String thumbURL;
 
-    public Book(String bookId, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String description,String encodedThumbnail) {
+    public Book(String bookId, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String description,String thumbURL) {
         this.bookId = bookId;
         this.isbn = isbn;
         this.title = title;
@@ -32,7 +32,7 @@ public class Book implements Parcelable {
         this.publisher = publisher;
         this.pubYear = pubYear;
         this.description = description;
-        this.encodedThumbnail = encodedThumbnail;
+        this.thumbURL = thumbURL;
     }
 
     public Book(Parcel in){
@@ -45,7 +45,7 @@ public class Book implements Parcelable {
         this.publisher = in.readString();
         this.pubYear = in.readString();
         this.description = in.readString();
-        this.encodedThumbnail = in.readString();
+        this.thumbURL = in.readString();
     }
     public Book(){
         this("", "", "", "", "", "", "", "", "", "");
@@ -88,23 +88,14 @@ public class Book implements Parcelable {
     }
 
 
-    public void setEncodedThumbnail(String encodedThumbnail){
-        this.encodedThumbnail = encodedThumbnail;
+    public void setThumbURL(String thumbURL){
+        this.thumbURL = thumbURL;
     }
 
-    public Bitmap getDecodedThumbnail() {
-        if(encodedThumbnail != null) {
-            return decodeToBitmap(encodedThumbnail);
-        }else{
-            return null;
-        }
+    public String getThumbURL() {
+        return thumbURL;
     }
 
-    private Bitmap decodeToBitmap(String encodedImage){
-        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        return decodedByte;
-    }
 
     @Override
     public int describeContents() {
@@ -122,7 +113,7 @@ public class Book implements Parcelable {
         dest.writeString(this.publisher);
         dest.writeString(this.pubYear);
         dest.writeString(this.description);
-        dest.writeString(this.encodedThumbnail);
+        dest.writeString(this.thumbURL);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){

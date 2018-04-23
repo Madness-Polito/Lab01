@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MAD_Lab1</string>
+    <string name="app_name">Pazzia Libro Condivisione</string>
     <string name="name">Nome</string>
     <string name="mail">E-mail</string>
     <string name="bio">Descrizione</string>

@@ -12,7 +12,7 @@ public class IsbnInfo implements Parcelable{
     private String publisher;
     private String pubYear;
     private String description;
-    private String encodedThumbnail;
+    private String thumbURL;
 
     IsbnInfo(){}
 
@@ -23,7 +23,7 @@ public class IsbnInfo implements Parcelable{
         this.publisher = publisher;
         this.pubYear = pubYear;
         this.description = description;
-        this.encodedThumbnail = encodedThumbnail;
+        this.thumbURL = encodedThumbnail;
     }
 
     public String getIsbn() {
@@ -74,12 +74,12 @@ public class IsbnInfo implements Parcelable{
         this.description = description;
     }
 
-    public String getEncodedThumbnail() {
-        return encodedThumbnail;
+    public String getThumbURL() {
+        return thumbURL;
     }
 
-    public void setEncodedThumbnail(String encodedThumbnail) {
-        this.encodedThumbnail = encodedThumbnail;
+    public void setThumbURL(String thumbURL) {
+        this.thumbURL = thumbURL;
     }
 
     // In constructor you will read the variables from Parcel. Make sure to read them in the same sequence in which you have written them in Parcel.
@@ -90,7 +90,7 @@ public class IsbnInfo implements Parcelable{
         publisher = in.readString();
         pubYear = in.readString();
         description  = in.readString();
-        encodedThumbnail = in.readString();
+        thumbURL = in.readString();
 
     }
 
@@ -102,7 +102,7 @@ public class IsbnInfo implements Parcelable{
         dest.writeString(publisher);
         dest.writeString(pubYear);
         dest.writeString(description);
-        dest.writeString(encodedThumbnail);
+        dest.writeString(thumbURL);
     }
 
     // This is to de-serialize the object
