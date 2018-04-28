@@ -76,8 +76,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     compile 'com.android.support:support-v4:27.1.1'
 
-    implementation 'br.com.mauker.materialsearchview:materialsearchview:1.2.2'
-
+    compile 'com.miguelcatalan:materialsearchview:1.4.0'
 
 }
 

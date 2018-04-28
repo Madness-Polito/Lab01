@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_action_action_search"
+        android:orderInCategory="100"
+        android:title="@string/abc_search_hint"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/profile_toolbar_button"
         android:title="profile button"
         app:showAsAction="always"
@@ -13,6 +20,7 @@
         android:id="@+id/logout_toolbar_button"
         android:title="logout"
         app:showAsAction="never"/>
+
 
 
 </menu>

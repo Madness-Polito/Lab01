@@ -24,7 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class MainPageMenu extends AppCompatActivity {
@@ -35,8 +38,15 @@ public class MainPageMenu extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
+    private ValueEventListener bookTitleListener;
+
+    private ArrayList<String> searchableBookTitles;
+    private HashMap<String, String> titleToISBN;
 
     private DatabaseReference dbRef;
+    private DatabaseReference dbTitleRef;
+
+    private MaterialSearchView searchView;
 
 
     @Override
@@ -80,6 +90,65 @@ public class MainPageMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page_menu);
 
+        searchView = findViewById(R.id.search_view);
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //Do some magic
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //Do some magic
+                return false;
+            }
+        });
+
+        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewShown() {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+                //Do some magic
+            }
+        });
+
+        searchView.setVoiceSearch(false);
+
+        dbTitleRef = FirebaseDatabase.getInstance().getReference().child("titleList");
+        searchableBookTitles = new ArrayList<>();
+        titleToISBN = new HashMap<>();
+
+        bookTitleListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
+                    BookTitleInfo b = childSnapshot.getValue(BookTitleInfo.class);
+                    searchableBookTitles.add(b.getTitle());
+                    titleToISBN.put(b.getTitle(), b.getIsbn());
+                }
+
+                searchView.setSuggestions(searchableBookTitles.toArray(new String[0]));
+
+                System.out.println("");
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        dbTitleRef.addListenerForSingleValueEvent(bookTitleListener);
+
 
         initialization();                                           //Initialization and getting views references
 
@@ -112,7 +181,9 @@ public class MainPageMenu extends AppCompatActivity {
         });
 
 
+
     }
+
 
 
     @Override
@@ -153,6 +224,8 @@ public class MainPageMenu extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView.setMenuItem(item);
         return true;
     }
 
