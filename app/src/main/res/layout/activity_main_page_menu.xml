@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainPageMenu"
-        android:id="@+id/constraint_layout_main_menu"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-                <include layout="@layout/toolbar"
-                    android:id="@+id/toolbar"/>
-
-
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraint_layout_main_menu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainPageMenu">
 
 
     <android.support.v4.view.ViewPager
@@ -25,36 +19,52 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tab_layout_main_menu" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_container" />
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_layout_main_menu"
-        style="@style/TabLayoutStyle"
-        android:layout_width="match_parent"
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/shadow"
-
-        android:elevation="4dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:tabGravity="fill" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <FrameLayout
-        android:id="@+id/toolbar_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.Toolbar
+        <include
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
+            layout="@layout/toolbar"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <com.miguelcatalan.materialsearchview.MaterialSearchView
             android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </FrameLayout>
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_layout_main_menu"
+            style="@style/TabLayoutStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/shadow"
+
+            android:elevation="4dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_view"
+            app:tabGravity="fill" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
