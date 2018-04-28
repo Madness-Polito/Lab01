@@ -55,6 +55,7 @@ public class MainPageMenu extends AppCompatActivity {
         loginCheck();                                               //Checking if user logged in or not
         userCreatedCheck();                                         //check if user has filled in all necessary data
 
+
     }
 
     private void userCreatedCheck() {
@@ -150,6 +151,7 @@ public class MainPageMenu extends AppCompatActivity {
         dbTitleRef.addListenerForSingleValueEvent(bookTitleListener);
 
 
+
         initialization();                                           //Initialization and getting views references
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -181,6 +183,16 @@ public class MainPageMenu extends AppCompatActivity {
         });
 
 
+
+        //I hate this.
+        searchView.post(new Runnable() {
+            @Override
+            public void run() {
+                //create your anim here
+                searchView.showSearch();
+                searchView.closeSearch();
+            }
+        });
 
     }
 
