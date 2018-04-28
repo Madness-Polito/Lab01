@@ -17,10 +17,10 @@
             android:id="@+id/editProfileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_more_vert_32dp"
+            android:src="@drawable/ic_edit_32dp_white"
             android:layout_margin="8dp"
             android:layout_alignParentRight="true"
-            android:onClick="showPopup"
+
             android:background="@android:color/transparent"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -29,7 +29,7 @@
             android:layout_centerVertical="true"
             android:layout_width="144dp"
             android:layout_height="144dp"
-            android:src="@drawable/ic_account_circle_128dp"
+            android:src="@drawable/ic_account_circle_144dp"
             android:elevation="0dp"/>
 
         <TextView
@@ -39,6 +39,7 @@
             android:gravity="center_horizontal"
             android:layout_centerHorizontal="true"
             android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white"
             android:id="@+id/showTextName"
             android:textSize="18sp"
             android:layout_marginTop="8dp"
@@ -52,6 +53,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/showTextName"
             android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white"
             android:id="@+id/showTextCityStateName"
             android:textSize="14sp"
             android:hint="@string/cityHint"/>
