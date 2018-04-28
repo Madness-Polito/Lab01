@@ -79,6 +79,8 @@ import java.util.ArrayList;
 import mad.lab1.AddingBookActivity;
 import mad.lab1.Book;
 import mad.lab1.BookIdInfo;
+import mad.lab1.BookTitleDB;
+import mad.lab1.BookTitleInfo;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
 import mad.lab1.LocalDB;
@@ -98,12 +100,16 @@ public class AllBooksFragment extends Fragment {
     private String imageLinks;
 
     private ArrayList<Book> allBookList;
+    private ArrayList<String> searchableBookTitles;
+    private HashMap<String, String> titleToISBN;
 
     private DatabaseReference dbRef;
+    private DatabaseReference dbTitleRef;
     private RecyclerView cardViewList;
     private LinearLayoutManager layoutManager;
     private AllBooksListAdapter adapter;
     private ChildEventListener bookIDListener;
+    private ValueEventListener bookTitleListener;
 
 
     @Override
@@ -113,8 +119,11 @@ public class AllBooksFragment extends Fragment {
         //initialize db
 
         dbRef = FirebaseDatabase.getInstance().getReference().child("isbn");
+        dbTitleRef = FirebaseDatabase.getInstance().getReference().child("titleList");
 
         allBookList = new ArrayList<>();
+        searchableBookTitles = new ArrayList<>();
+        titleToISBN = new HashMap<>();
         adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
             @Override
             public void onBookClicked(Book b) {
@@ -176,6 +185,24 @@ public class AllBooksFragment extends Fragment {
                 //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
                 //Toast.makeText(getActivity(), "Failed to load book list.",
                   //      Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        bookTitleListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
+                    BookTitleInfo b = childSnapshot.getValue(BookTitleInfo.class);
+                    searchableBookTitles.add(b.getTitle());
+                    titleToISBN.put(b.getTitle(), b.getIsbn());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         };
 
@@ -296,6 +323,11 @@ public class AllBooksFragment extends Fragment {
                     description,
                     null);
             IsbnDB.setBook(isbnInfo);
+
+            BookTitleInfo bookTitleInfo = new BookTitleInfo(
+                    title,
+                    isbn);
+            BookTitleDB.setBook(bookTitleInfo);
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -528,6 +560,7 @@ public class AllBooksFragment extends Fragment {
         super.onPause();
         //Remove childEventListener
         dbRef.removeEventListener(bookIDListener);
+        dbTitleRef.removeEventListener(bookTitleListener);
         int size = allBookList.size();
         allBookList.clear();
         adapter.notifyItemRangeRemoved(0, size);
@@ -538,6 +571,7 @@ public class AllBooksFragment extends Fragment {
         super.onResume();
         //add childEventListener
         dbRef.addChildEventListener(bookIDListener);
+        dbTitleRef.addListenerForSingleValueEvent(bookTitleListener);
     }
 
     @Override

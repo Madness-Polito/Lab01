@@ -234,6 +234,11 @@ public class EditProfile extends AppCompatActivity{
                 Toast toast = Toast.makeText(this, "Please make sure that name, phone#, mail and city are filled", Toast.LENGTH_LONG);
                 toast.show();
 
+                name.setHintTextColor(Color.RED);
+                phone.setHintTextColor(Color.RED);
+                mail.setHintTextColor(Color.RED);
+                city.setHintTextColor(Color.RED);
+
 
             }else{
                 // save user data to firebase & locally
