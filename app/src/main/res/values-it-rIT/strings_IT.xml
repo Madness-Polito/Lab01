@@ -34,5 +34,6 @@
     <string name="missingCondition">Non hai selezionato uno stato!</string>
     <string name="showInfoBookDescriptionCardHeader">Descrizione</string>
     <string name="showInfoBookDescriptionConditionHeader">Condizione:</string>
-
+    <string name="title_location_permission">Richiesta posizione dispositivo</string>
+    <string name="text_location_permission">Pazzia Libro Condivisione vorrebbe accedere alla posizione del tuo dispositivo</string>
 </resources>

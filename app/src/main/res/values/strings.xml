@@ -41,4 +41,7 @@
     <string name="twitter_consumer_secret" translatable="false">cOWgHpiJQpdLYuJXvP6E25M5ehchCBSomqcaZEVDDjYpc0WHZj</string>
     <string name="showInfoBookDescriptionConditionHeader">Condition:</string>
     <string name="showInfoBookDescriptionCardHeader">Description</string>
+    <string name="google_maps_key">AIzaSyDpOyrC-3yyGgOqGNMXwL2k8FOba2LKMh8</string>
+    <string name="title_location_permission">Device location request</string>
+    <string name="text_location_permission">Pazzia Libro Condivisione would like to access your device position</string>
 </resources>

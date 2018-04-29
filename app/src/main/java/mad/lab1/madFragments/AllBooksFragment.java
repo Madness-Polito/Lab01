@@ -84,11 +84,13 @@ import mad.lab1.BookTitleInfo;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
 import mad.lab1.LocalDB;
+import mad.lab1.MapsActivity;
 import mad.lab1.R;
 import mad.lab1.StorageDB;
 
 public class AllBooksFragment extends Fragment {
 
+    private FloatingActionButton map;
     private FloatingActionButton fab;
     private String isbn;
     private String bookID;
@@ -194,6 +196,13 @@ public class AllBooksFragment extends Fragment {
 
         //Inflating the layout for the fragment
         View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
+
+        map = v.findViewById(R.id.showMapActionButton);
+
+        map.setOnClickListener(view -> {
+            Intent i = new Intent(getActivity(), MapsActivity.class);
+            startActivity(i);
+        });
 
         fab = v.findViewById(R.id.addBookToShareActionButton);
 
