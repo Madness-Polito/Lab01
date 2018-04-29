@@ -29,6 +29,8 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import mad.lab1.madFragments.ShowSelectedBookInfo;
+
 
 public class MainPageMenu extends AppCompatActivity {
 
@@ -96,13 +98,16 @@ public class MainPageMenu extends AppCompatActivity {
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //Do some magic
+                //query contains the title of the book searched
+                String isbn = titleToISBN.get(query);
+                showBookInfo(isbn);
+
+
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //Do some magic
                 return false;
             }
         });
@@ -118,6 +123,8 @@ public class MainPageMenu extends AppCompatActivity {
                 //Do some magic
             }
         });
+
+
 
         searchView.setVoiceSearch(false);
 
@@ -137,7 +144,13 @@ public class MainPageMenu extends AppCompatActivity {
 
                 searchView.setSuggestions(searchableBookTitles.toArray(new String[0]));
 
-                System.out.println("");
+                //declare the listener here because the suggestions must be filled for it to work.
+                searchView.setOnItemClickListener((adapterView, view, i, l) -> {
+                    String query = adapterView.getItemAtPosition(i).toString();
+                    String isbn = titleToISBN.get(query);
+                    showBookInfo(isbn);
+                    searchView.closeSearch();
+                });
 
 
             }
@@ -197,7 +210,6 @@ public class MainPageMenu extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -239,6 +251,15 @@ public class MainPageMenu extends AppCompatActivity {
         MenuItem item = menu.findItem(R.id.action_search);
         searchView.setMenuItem(item);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (searchView.isSearchOpen()) {
+            searchView.closeSearch();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void initialization() {
@@ -314,4 +335,31 @@ public class MainPageMenu extends AppCompatActivity {
         else
             Authentication.signIn(this);
     }
+
+    private void showBookInfo(String isbn) {
+
+        dbRef = FirebaseDatabase.getInstance().getReference().child("isbn").child(isbn);
+
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Book searchedBook = snapshot.getValue(Book.class);
+                Bundle arg = new Bundle();
+                arg.putParcelable("book", searchedBook);
+                Intent i = new Intent(getApplicationContext(), ShowSelectedBookInfo.class);
+                i.putExtra("argument", searchedBook);
+                startActivity(i);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+
+        });
+
+    }
+
 }
