@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -24,13 +25,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.lang.reflect.Array;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -42,6 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     //private MapView mapView;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationManager mLocationManager;
+    //private List<Marker> markerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +82,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //location = mMap.getMyLocation();
                     LatLng myLatLng = new LatLng(location.getLatitude(),
                             location.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(myLatLng));
-
+                    Marker me = mMap.addMarker(new MarkerOptions().position(myLatLng).title("Me"));
+                    me.showInfoWindow();
                 }
                 else
                     Toast.makeText(getApplicationContext(), "no location found", Toast.LENGTH_SHORT).show();
@@ -106,22 +111,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // get permissions
         checkLocationPermission();
 
-        mMap.setMyLocationEnabled(true);
-
         getLastKnownLocation();
 
         addMarkers();
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                //todo create a view to specify profile name, distance, ecc
+                // todo or open the bookInfoPage
+                //Toast.makeText(getApplicationContext(), "BAUUU", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
 
     }
 
     public void addMarkers(){
         Location location = getLastKnownLocation();
+        //markerList = new LinkedList<>();
         if(location != null) {
             for(int i = 1; i< 11; i++) {
                 LatLng myLatLng = new LatLng(location.getLatitude() + i,
                         location.getLongitude() + i);
-                mMap.addMarker(new MarkerOptions().position(myLatLng));
+                //mMap.addMarker(new MarkerOptions().position(myLatLng));
+
+                Location l = new Location("");
+                l.setLatitude(myLatLng.latitude);
+                l.setLongitude(myLatLng.longitude);
+                //markerList.add(m);
+                Float distanceInMt = location.distanceTo(l);
+                Float distanceInKm = location.distanceTo(l) / 1000;
+                String distKm = String.format("%.2f", distanceInKm);
+                Integer distanceInKmInt = new Integer(distanceInKm.intValue());
+                Marker m;
+                if (distanceInKm < 0.1)
+                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt+" m"));
+                if (distanceInKm < 1)
+                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm+" km"));
+                if (distanceInKm < 5)
+                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString()+" km"));
+                else
+                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString()+" km"));
             }
+            //for(Marker m1 : markerList)
+            //    m1.showInfoWindow();
         }
     }
 
@@ -164,6 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return false;
         } else {
+            mMap.setMyLocationEnabled(true);
             return true;
         }
     }
@@ -226,45 +261,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return bestLocation;
     }
-
-    /*private void getMyCurrentLocation(){
-        Location location;
-        //location = mMap.getMyLocation();
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        try {
-            Task t = mFusedLocationClient.getLastLocation();
-            t.addOnSuccessListener(new OnSuccessListener() {
-                @Override
-                public void onSuccess(Object o) {
-
-                    location = mFusedLocationClient.getLastLocation().getResult();
-                }
-            });
-            //location = mFusedLocationClient.getLastLocation().getResult();
-        } catch (SecurityException e){
-            e.printStackTrace();
-        }
-
-
-        // todo location is null
-        if(location == null){
-            Toast.makeText(getApplicationContext(),"Location not available!",
-                    Toast.LENGTH_SHORT).show();
-            //Log.d("EDO", "porcodio non va");
-        }
-        Toast.makeText(getApplicationContext(),"Location available!",
-                Toast.LENGTH_SHORT).show();
-        //Log.d("EDO", "kessieeeee");
-
-        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new
-                MarkerOptions().position(myLocation).title("IT'S ME!"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
-    }
-    */
-
-
-
-
 
 }

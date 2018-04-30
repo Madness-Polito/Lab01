@@ -16,6 +16,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add_white_24dp" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/showMapActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@android:drawable/ic_menu_mylocation" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewAllBooks"
         android:layout_width="match_parent"
