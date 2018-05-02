@@ -3,8 +3,10 @@ package mad.lab1;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 // represents the book isbn info stored in firebase
-public class IsbnInfo implements Parcelable{
+public class IsbnInfo implements Parcelable, Serializable{
 
     private String isbn;
     private String title;

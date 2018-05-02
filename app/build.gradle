@@ -57,14 +57,14 @@ dependencies {
     implementation 'com.twitter.sdk.android:twitter:3.0.0'
 
     ////
-    compile 'com.github.bumptech.glide:glide:4.1.1'
+    implementation 'com.github.bumptech.glide:glide:4.1.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
     ////
     //implementation "com.twitter.sdk.android:twitter-core:3.0.0@aar"
 
-    compile 'com.google.android.gms:play-services-maps:12.0.1'
-    compile "com.google.android.gms:play-services-location:12.0.1"
-    compile 'com.google.maps.android:android-maps-utils:0.5+'
+    implementation 'com.google.android.gms:play-services-maps:12.0.1'
+    implementation "com.google.android.gms:play-services-location:12.0.1"
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
 
     implementation 'com.journeyapps:zxing-android-embedded:3.1.0@aar'
     implementation 'com.google.zxing:core:3.3.0'
@@ -78,7 +78,7 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
-    compile 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
 
 
 }

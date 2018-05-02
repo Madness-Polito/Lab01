@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import mad.lab1.Book;
+import mad.lab1.IsbnInfo;
 import mad.lab1.R;
 
 public class ShowSelectedBookInfo extends AppCompatActivity {
@@ -44,27 +45,27 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
         Intent i = getIntent();
         //Bundle b = i.getBundleExtra("argument");
         //Book book = b.getParcelable("book");
-        Book book = i.getParcelableExtra("argument");
+        IsbnInfo isbn = i.getParcelableExtra("argument");
 
 
         initialization();
 
-        titleTextView.setText(book.getTitle());
-        authorTextView.setText(book.getAuthor());
+        titleTextView.setText(isbn.getTitle());
+        authorTextView.setText(isbn.getAuthor());
         //bookImageView.setImageBitmap(book.getDecodedThumbnail());
         Glide.with(bookImageView.getContext())
-                .load(book.getThumbURL())
+                .load(isbn.getThumbURL())
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.my_library_selected_24dp)
                         .centerCrop()
                         .dontAnimate()
                         .dontTransform())
                 .into(bookImageView);
-        publisherTextView.setText(book.getPublisher());
-        publicationYearTextView.setText(book.getPubYear());
-        conditionTextView.setText(book.getCondition());
-        isbnTextView.setText("ISBN: " + book.getIsbn());
-        descriptionTextView.setText(book.getDescription());
+        publisherTextView.setText(isbn.getPublisher());
+        publicationYearTextView.setText(isbn.getPubYear());
+        //conditionTextView.setText(isbn.getCondition());
+        isbnTextView.setText("ISBN: " + isbn.getIsbn());
+        descriptionTextView.setText(isbn.getDescription());
         
         descriptionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +78,7 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
                 // set the custom dialog components - text, image and button
                 TextView txt_description = dialog.findViewById(R.id.txt_description);
 
-                txt_description.setText(book.getDescription());
+                txt_description.setText(isbn.getDescription());
 
                 dialog.show();
 

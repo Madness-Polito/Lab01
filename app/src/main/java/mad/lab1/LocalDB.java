@@ -11,12 +11,18 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
+import java.util.List;
+import java.io.PrintWriter;
+import java.io.FileNotFoundException;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 
 public class LocalDB {
 
     private final static String PREFS_NAME  = "Madness_prefs";   // name of shared prefs file
     private final static String USER_INFO   = "UserInfo";        // name of key of userInfo object stored into the shared prefs
     public  final static String PROFILE_PIC = "profilePic";     // name of local file where we store the profile picture
+    private final static String BOOKS_FILE  = "books";          // filename whre to store book info
 
 
     // returns the shared preferences of this app
@@ -125,5 +131,44 @@ public class LocalDB {
                 destination.close();
             }
         }
+    }
+
+    private static File getBooksFile(Context c){
+        return new File(c.getFilesDir(), BOOKS_FILE);
+    }
+
+    // saves a list of books to a file
+    public static void putIsbnList(Context c, List<IsbnInfo> books){
+
+        try{
+            File f = getBooksFile(c);
+            FileOutputStream fos = new FileOutputStream(f);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(books);
+            oos.close();
+            System.out.println("---------->putIsbnList " + f.getPath());
+        }
+        catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+    }
+
+    // retrieves a list of books from a file
+    public static List<IsbnInfo> getIsbnList(Context c){
+
+        List<IsbnInfo> isbnList = null;
+
+        try{
+            File f = getBooksFile(c);
+            FileInputStream fis = new FileInputStream(f);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            isbnList = (List<IsbnInfo>)ois.readObject();
+            ois.close();
+        }
+        catch(IOException | ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+
+        return isbnList;
     }
 }

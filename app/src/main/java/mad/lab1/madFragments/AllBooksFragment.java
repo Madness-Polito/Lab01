@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -101,7 +102,7 @@ public class AllBooksFragment extends Fragment {
     private String description;
     private String imageLinks;
 
-    private ArrayList<Book> allBookList;
+    private List<IsbnInfo> isbnList;
 
 
     private DatabaseReference dbRef;
@@ -121,10 +122,10 @@ public class AllBooksFragment extends Fragment {
         dbRef = FirebaseDatabase.getInstance().getReference().child("isbn");
 
 
-        allBookList = new ArrayList<>();
-        adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
+        isbnList = LocalDB.getIsbnList(getContext());//new ArrayList<>();
+        adapter = new AllBooksListAdapter(isbnList, new AllBooksListAdapter.OnBookClicked() {
             @Override
-            public void onBookClicked(Book b) {
+            public void onBookClicked(IsbnInfo isbn) {
                 //create a dialog fragment that shows all the informatio related to the book selected
                 //Toast.makeText(getContext(), b.getTitle(), Toast.LENGTH_SHORT).show();
                 /*
@@ -141,19 +142,20 @@ public class AllBooksFragment extends Fragment {
                 newFragment.show(ft, "dialog");
                 */
                 Bundle arg = new Bundle();
-                arg.putParcelable("book", b);
+                arg.putParcelable("isbn", isbn);
                 Intent i = new Intent(getContext(), ShowSelectedBookInfo.class);
-                i.putExtra("argument", b);
+                i.putExtra("argument", (Parcelable) isbn);
                 startActivity(i);
             }
         });
 
-        bookIDListener = new ChildEventListener() {
+       /* bookIDListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Book b = dataSnapshot.getValue(Book.class);
                 allBookList.add(b);
                 adapter.notifyItemInserted(allBookList.indexOf(b));
+                System.out.println("-------->onChildAdded book: " + b.getTitle());
             }
 
             @Override
@@ -184,7 +186,7 @@ public class AllBooksFragment extends Fragment {
                 //Toast.makeText(getActivity(), "Failed to load book list.",
                   //      Toast.LENGTH_SHORT).show();
             }
-        };
+        };*/
 
 
 
@@ -547,17 +549,17 @@ public class AllBooksFragment extends Fragment {
     public void onPause() {
         super.onPause();
         //Remove childEventListener
-        dbRef.removeEventListener(bookIDListener);
+        /*dbRef.removeEventListener(bookIDListener);
         int size = allBookList.size();
         allBookList.clear();
-        adapter.notifyItemRangeRemoved(0, size);
+        adapter.notifyItemRangeRemoved(0, size);*/
     }
 
     @Override
     public void onResume() {
         super.onResume();
         //add childEventListener
-        dbRef.addChildEventListener(bookIDListener);
+        //dbRef.addChildEventListener(bookIDListener);
     }
 
     @Override

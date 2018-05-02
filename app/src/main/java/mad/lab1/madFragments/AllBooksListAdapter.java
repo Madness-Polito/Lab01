@@ -13,16 +13,17 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import mad.lab1.Book;
+import mad.lab1.IsbnInfo;
 import mad.lab1.R;
 
 public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapter.CardViewHolder> {
 
 
     public interface OnBookClicked {
-        void onBookClicked(Book b);       //TODO: SET BOOKS INSTEAD OF STRING
+        void onBookClicked(IsbnInfo isbn);       //TODO: SET BOOKS INSTEAD OF STRING
     }
 
     class CardViewHolder extends  RecyclerView.ViewHolder{
@@ -42,30 +43,30 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
         }
 
 
-        public void bind(Book b, final OnBookClicked listener){
+        public void bind(IsbnInfo isbn, final OnBookClicked listener){
             card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Calling the interface method, it will start a new activity to show all the info relative to the book
-                    listener.onBookClicked(b);
+                    listener.onBookClicked(isbn);
                 }
             });
         }
 
     }
 
-    private ArrayList<Book> allSharedBooks;
+    private List<IsbnInfo> isbnList;
     private final OnBookClicked listener;
 
     //TODO: IT WILL RECEIVE THE LIST OF BOOK ITEMS TO DISPLAY
-    public AllBooksListAdapter(ArrayList<Book> allSharedBooks, OnBookClicked listener){
-        this.allSharedBooks = allSharedBooks;
+    public AllBooksListAdapter(List<IsbnInfo> isbnList, OnBookClicked listener){
+        this.isbnList = isbnList;
         this.listener = listener;
     }
 
     @Override
     public int getItemCount() {
-        return allSharedBooks.size();
+        return isbnList.size();
     }
 
     @NonNull
@@ -78,11 +79,11 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        holder.titleText.setText(allSharedBooks.get(position).getTitle());
-        holder.authorText.setText(allSharedBooks.get(position).getAuthor());
+        holder.titleText.setText(isbnList.get(position).getTitle());
+        holder.authorText.setText(isbnList.get(position).getAuthor());
         //holder.image.setImageBitmap(allSharedBooks.get(position).getDecodedThumbnail());
         Glide.with(holder.image.getContext())
-                .load(allSharedBooks.get(position).getThumbURL())
+                .load(isbnList.get(position).getThumbURL())
                 .apply(new RequestOptions()
                         .placeholder(R.drawable.my_library_selected_24dp)
                         .centerCrop()
@@ -90,7 +91,7 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
                         .dontTransform())
                 .into(holder.image);
         //The view holder gets the listener
-        holder.bind(allSharedBooks.get(position), listener);
+        holder.bind(isbnList.get(position), listener);
     }
 
     @Override

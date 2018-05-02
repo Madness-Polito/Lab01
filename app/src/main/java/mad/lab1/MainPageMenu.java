@@ -57,7 +57,6 @@ public class MainPageMenu extends AppCompatActivity {
         loginCheck();                                               //Checking if user logged in or not
         userCreatedCheck();                                         //check if user has filled in all necessary data
 
-
     }
 
     private void userCreatedCheck() {
@@ -91,6 +90,11 @@ public class MainPageMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // download books and store them locally only if did not rotate screen
+        if (savedInstanceState == null)
+            IsbnDB.getIsbnList(this);
+
         setContentView(R.layout.activity_main_page_menu);
 
         searchView = findViewById(R.id.search_view);
