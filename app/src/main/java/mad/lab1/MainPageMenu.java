@@ -341,6 +341,7 @@ public class MainPageMenu extends AppCompatActivity {
     }
 
     private void showBookInfo(String isbn) {
+        //TODO: Make seachedBook into ISBNInfo, not Book.
 
         dbRef = FirebaseDatabase.getInstance().getReference().child("isbn").child(isbn);
 

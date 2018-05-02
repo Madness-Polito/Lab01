@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 public class EditProfile extends AppCompatActivity{
@@ -345,7 +347,16 @@ public class EditProfile extends AppCompatActivity{
                     LatLng coo = (LatLng) coordinates.get("LatLng");
                     String lat = new Double(coo.latitude).toString();
                     String lng = new Double(coo.longitude).toString();
-                    //todo upload in firebase
+                    //upload in firebase
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
+                    ref.child(user.getUid())
+                            .child("Lat")
+                            .setValue(coo.latitude);
+                    ref.child(user.getUid())
+                            .child("Long")
+                            .setValue(coo.longitude);
+
                     //Toast.makeText(this, "lat "+lat+" , lng "+lng, Toast.LENGTH_SHORT).show();
                 }
                 else
@@ -360,7 +371,6 @@ public class EditProfile extends AppCompatActivity{
                 Toast.makeText(this, "unknown error", Toast.LENGTH_SHORT).show();
             }
         }
-
 
     }
 
