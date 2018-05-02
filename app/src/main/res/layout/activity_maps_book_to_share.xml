@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapsBookToShare">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.tutorialspoint7.myapplication.MapsActivity" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/doneButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@android:drawable/stat_sys_upload_done" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/cancelLocationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:backgroundTint="@color/tw__composer_red"
+        android:tint="@color/text_white"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toTopOf="@id/doneButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@android:drawable/stat_sys_upload_done" />
+
+    <view
+        class="android.support.v4.view.ViewPager"
+        android:id="@+id/containerFlag"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+
+
+        />
+
+
+</android.support.constraint.ConstraintLayout>

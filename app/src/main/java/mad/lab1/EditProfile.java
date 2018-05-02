@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -33,6 +34,7 @@ public class EditProfile extends AppCompatActivity{
     private final String[] KEYS = Globals.KEYS;
     private TextView[] TEXTVIEWS;
     private String picUri;
+    private int BOOK_LOCATION_CODE = 1234;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -43,6 +45,7 @@ public class EditProfile extends AppCompatActivity{
         pic = findViewById(R.id.showImageProfile);
         ImageButton imgBtn = findViewById(R.id.selectImage);
         ImageButton but_nameCity = findViewById(R.id.editTextNameCity);
+        ImageButton but_bookLocation = findViewById(R.id.editBookToShareLocation);
         ImageButton but_persInfo = findViewById(R.id.editPersonalInfo);
         ImageButton but_bio = findViewById(R.id.editBio);
         bio = findViewById(R.id.showTextBio);
@@ -73,6 +76,14 @@ public class EditProfile extends AppCompatActivity{
             if (v.getId() == R.id.selectImage)
             CropImage.startPickImageActivity(this);}
         );
+
+        but_bookLocation.setOnClickListener((View v) ->{
+            // start an activity that returns long and lat
+            Intent intent = new Intent(getApplicationContext(), MapsBookToShare.class);
+            startActivityForResult(intent, BOOK_LOCATION_CODE);
+            //then manage activity result, take long and lat and load them on firebase
+        });
+
         but_nameCity.setOnClickListener((View v) -> {
             // get prompts.xml view
             LayoutInflater li = LayoutInflater.from(this);
@@ -299,6 +310,7 @@ public class EditProfile extends AppCompatActivity{
     @Override
     @SuppressLint("NewApi")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         // handle result of pick image chooser
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
@@ -324,7 +336,32 @@ public class EditProfile extends AppCompatActivity{
                 Exception error = result.getError();
                 error.printStackTrace();
             }
+
+        } else if (requestCode == BOOK_LOCATION_CODE){
+
+            if (resultCode == RESULT_OK){
+                Bundle coordinates =  data.getExtras();
+                if(coordinates != null){
+                    LatLng coo = (LatLng) coordinates.get("LatLng");
+                    String lat = new Double(coo.latitude).toString();
+                    String lng = new Double(coo.longitude).toString();
+                    //todo upload in firebase
+                    //Toast.makeText(this, "lat "+lat+" , lng "+lng, Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(this, "ERROR, coo is null", Toast.LENGTH_SHORT).show();
+
+            }
+            else if (resultCode == RESULT_CANCELED){
+                //nothing
+                //Toast.makeText(this, "nothing to be returned", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "unknown error", Toast.LENGTH_SHORT).show();
+            }
         }
+
+
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {

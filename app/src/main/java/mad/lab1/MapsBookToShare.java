@@ -1,6 +1,7 @@
 package mad.lab1;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,69 +9,102 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
+
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
-import java.lang.reflect.Array;
-import java.util.LinkedList;
 import java.util.List;
 
+import mad.lab1.madFragments.PlaceholderFragment;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsBookToShare extends AppCompatActivity {
+
 
     private GoogleMap mMap;
-    //private FloatingActionButton currLocationBtn;
-    //private Location location;
-    //private MapView mapView;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationManager mLocationManager;
+    private FloatingActionButton btn_done;
+    private FloatingActionButton btn_cancel;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private Marker m; // only one that must be returned to the editProfile activity
+    private GPSTracker gps;
+    private LatLng finalPosition = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkLocationPermission();
+
+        //getLastKnownLocation();
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.containerFlag, new PlaceholderFragment()).commit();
+
+        }
+
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         if(mLocationManager == null){
             Toast.makeText(getApplicationContext(), "null location manager", Toast.LENGTH_SHORT).show();
         }
         // set view
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_maps_book_to_share);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
+        mapFragment.getMapAsync(this::onMapReady);
+        //mapFragment.getMapAsync(this);
 
+        // set location done and cancel button -> return null or Location chosen
 
-        // set location enabled
-        //mMap.setMyLocationEnabled(true);
+        btn_done = findViewById(R.id.doneButton);
+        btn_cancel = findViewById(R.id.cancelLocationButton);
 
-        mapFragment.getMapAsync(this);
+        btn_done.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LatLng markerLocation = m.getPosition();
+                if(markerLocation != null){
+                    finalPosition = markerLocation;
+                    Intent intent = new Intent();
+                    intent.putExtra("LatLng", finalPosition);
+                    setResult(Activity.RESULT_OK, intent);
+                    finish();
+                }
+                else
+                    Toast.makeText(getApplicationContext(), "ERROR, FINAL POSITION NULL", Toast.LENGTH_LONG).show();
+            }
+        });
 
-        // set location button
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                //intent.putExtra("LatLng", userInfo);
+                setResult(Activity.RESULT_CANCELED, intent);
+                finish();
+            }
+        });
         /*
         currLocationBtn = findViewById(R.id.currentLocationFloatingActionButton);
 
@@ -90,87 +124,119 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         */
-
-
-
+        Toast.makeText(getApplicationContext(), "choose a location", Toast.LENGTH_LONG).show();
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * In this case, we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device.
-     * This method will only be triggered once the user has installed
-     Google Play services and returned to the app.
-     */
 
-    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         // get permissions
-        checkLocationPermission();
+        //checkLocationPermission();
 
-        getLastKnownLocation();
+        gps=new GPSTracker(getApplicationContext(), this);
+        Location l = getLastKnownLocation();
+        double curlat= l.getLatitude();//gps.getLatitude();
+        double curlon= l.getLongitude();//gps.getLongitude();
+        LatLng currentpos=new LatLng(curlat, curlon);
 
-        addMarkers();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat,curlon), 10));
+        //getLastKnownLocation();
+        m = mMap.addMarker(new MarkerOptions().position(currentpos)
+                .title("Draggable Marker")
+                .snippet("Long press and move the marker if needed.")
+                .draggable(true)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+
             @Override
-            public boolean onMarkerClick(Marker marker) {
-                //todo create a view to specify profile name, distance, ecc
-                // todo or open the bookInfoPage
-                //Toast.makeText(getApplicationContext(), "BAUUU", Toast.LENGTH_SHORT).show();
-                return false;
+            public void onMarkerDrag(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("Marker", "Dragging");
+            }
+
+            @Override
+            public void onMarkerDragEnd(Marker arg0) {
+                // TODO Auto-generated method stub
+                LatLng markerLocation = m.getPosition();
+                Toast.makeText(MapsBookToShare.this, markerLocation.toString(), Toast.LENGTH_LONG).show();
+                Log.d("Marker", "finished");
+            }
+
+            @Override
+            public void onMarkerDragStart(Marker arg0) {
+                // TODO Auto-generated method stub
+                Log.d("Marker", "Started");
+
             }
         });
+       // set listeners for buttons
 
+
+        /*
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener()
+        {
+            @Override
+            public void onMapClick(LatLng arg0)
+            {
+                Location location = getLastKnownLocation();
+                LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            }
+        });
+        */
     }
+    /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+    */
+    /*
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    */
     public void addMarkers(){
+        /*
         Location location = getLastKnownLocation();
         //markerList = new LinkedList<>();
         if(location != null) {
-            for(int i = 1; i< 11; i++) {
-                LatLng myLatLng = new LatLng(location.getLatitude() + i,
-                        location.getLongitude() + i);
-                //mMap.addMarker(new MarkerOptions().position(myLatLng));
-
-                Location l = new Location("");
-                l.setLatitude(myLatLng.latitude);
-                l.setLongitude(myLatLng.longitude);
-                //markerList.add(m);
-                Float distanceInMt = location.distanceTo(l);
-                Float distanceInKm = location.distanceTo(l) / 1000;
-                String distKm = String.format("%.2f", distanceInKm);
-                Integer distanceInKmInt = new Integer(distanceInKm.intValue());
-                Marker m;
-                if (distanceInKm < 0.1)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt+" m"));
-                if (distanceInKm < 1)
-                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm+" km"));
-                if (distanceInKm < 5)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString()+" km"));
-                else
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString()+" km"));
-            }
+                //Marker m;
+                LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                //m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                // todo add title with some info on the marker if necessary
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(myLatLng) // set to Center
+                    .build();                   // Creates a CameraPosition
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
             //for(Marker m1 : markerList)
             //    m1.showInfoWindow();
+         */
         }
-    }
-
-
 
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -182,8 +248,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(MapsActivity.this,
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                ActivityCompat.requestPermissions(MapsBookToShare.this,
+                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION);
                             }
                         })
@@ -199,7 +265,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             return false;
         } else {
-            mMap.setMyLocationEnabled(true);
+            //mMap.setMyLocationEnabled(true);
             return true;
         }
     }
@@ -262,5 +328,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         return bestLocation;
     }
-
 }

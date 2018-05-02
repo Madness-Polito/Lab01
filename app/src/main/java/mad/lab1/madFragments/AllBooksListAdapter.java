@@ -66,6 +66,8 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
 
     @Override
     public int getItemCount() {
+        if(isbnList == null)
+            return 0;
         return isbnList.size();
     }
 
