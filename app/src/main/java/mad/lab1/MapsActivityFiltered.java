@@ -15,6 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -92,7 +93,10 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
         // get permissions
         checkLocationPermission();
 
-        getLastKnownLocation();
+        Location currentLocation =  getLastKnownLocation();
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        float zoomLevel = 10.0f; //This goes up to 21
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
 
         addMarkers();
 
