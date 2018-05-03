@@ -84,6 +84,7 @@ import mad.lab1.BookTitleInfo;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
 import mad.lab1.LocalDB;
+import mad.lab1.MainPageMenu;
 import mad.lab1.MapsActivity;
 import mad.lab1.R;
 import mad.lab1.StorageDB;
@@ -186,43 +187,6 @@ public class AllBooksFragment extends Fragment {
             }
         };
 
-        bookIDListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Book b = dataSnapshot.getValue(Book.class);
-                allBookList.add(b);
-                adapter.notifyItemInserted(allBookList.indexOf(b));
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                int i = 0;
-                Book b = dataSnapshot.getValue(Book.class);
-                while (allBookList.get(i).getBookId() != b.getBookId()){
-                    i++;
-                }
-                allBookList.set(i, b);
-                adapter.notifyItemChanged(i);
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                //Toast.makeText(getActivity(), "Failed to load book list.",
-                //      Toast.LENGTH_SHORT).show();
-            }
-        };
 
 
 
@@ -236,6 +200,7 @@ public class AllBooksFragment extends Fragment {
         View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
 
         map = v.findViewById(R.id.showMapActionButton);
+        map.setVisibility(View.GONE);
 
         map.setOnClickListener(view -> {
             Intent i = new Intent(getActivity(), MapsActivity.class);
@@ -243,6 +208,7 @@ public class AllBooksFragment extends Fragment {
         });
 
         fab = v.findViewById(R.id.addBookToShareActionButton);
+        fab.setVisibility(View.GONE);
 
         fab.setOnClickListener(view -> {
 
@@ -596,6 +562,7 @@ public class AllBooksFragment extends Fragment {
         super.onResume();
         //add childEventListener
         dbRef.addChildEventListener(bookIDListener);
+
     }
 
     @Override

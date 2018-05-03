@@ -86,11 +86,19 @@ public class MainPageMenu extends AppCompatActivity {
 
     }
 
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
         setContentView(R.layout.activity_main_page_menu);
 
         searchView = findViewById(R.id.search_view);
@@ -168,6 +176,11 @@ public class MainPageMenu extends AppCompatActivity {
         initialization();                                           //Initialization and getting views references
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            String[] titles = {getApplicationContext().getString(R.string.AllBooks),
+                    getApplicationContext().getString(R.string.Library),
+                    getApplicationContext().getString(R.string.BorrowedBooks)};
+
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -187,6 +200,10 @@ public class MainPageMenu extends AppCompatActivity {
                         tabLayout.setVisibility(View.VISIBLE);
                     }
                 }
+
+                toolbar.setTitle(titles[position]);
+
+
             }
 
             @Override
@@ -273,6 +290,7 @@ public class MainPageMenu extends AppCompatActivity {
         setIcons();
 
         toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(getApplicationContext().getString(R.string.AllBooks));
         setSupportActionBar(toolbar);
 
 

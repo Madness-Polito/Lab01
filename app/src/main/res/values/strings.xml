@@ -46,4 +46,7 @@
     <string name="text_location_permission">Pazzia Libro Condivisione would like to access your device position</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="AllBooks">All Books</string>
+    <string name="Library">My Library</string>
+    <string name="BorrowedBooks">Borrowed Books</string>
 </resources>
