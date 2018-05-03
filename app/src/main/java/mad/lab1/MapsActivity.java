@@ -4,36 +4,30 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,6 +41,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationManager mLocationManager;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private ValueEventListener userPositionListener;
+    private List<UserInfo> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,36 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-
-
-        // set location enabled
-        //mMap.setMyLocationEnabled(true);
-
         mapFragment.getMapAsync(this);
-
-        // set location button
-        /*
-        currLocationBtn = findViewById(R.id.currentLocationFloatingActionButton);
-
-        currLocationBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Location location = getLastKnownLocation();
-                if(location != null){
-                    //location = mMap.getMyLocation();
-                    LatLng myLatLng = new LatLng(location.getLatitude(),
-                            location.getLongitude());
-                    Marker me = mMap.addMarker(new MarkerOptions().position(myLatLng).title("Me"));
-                    me.showInfoWindow();
-                }
-                else
-                    Toast.makeText(getApplicationContext(), "no location found", Toast.LENGTH_SHORT).show();
-            }
-        });
-        */
-
-
-
     }
 
     /**
@@ -129,9 +96,93 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void addMarkers(){
+        // add a list of all book titles of a user and the distance between curr position and users
         Location location = getLastKnownLocation();
+        users = new LinkedList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");//FirebaseDatabase.getInstance().getReference("users");
+
         //markerList = new LinkedList<>();
         if(location != null) {
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //DataSnapshot userSnapshot = dataSnapshot.child("users");
+                    //Iterable<DataSnapshot> usersChildren = userSnapshot.getChildren();
+
+                    //Toast.makeText(MapsActivity.this, "bauuuuuu", Toast.LENGTH_SHORT).show();
+                    for(DataSnapshot user : dataSnapshot.getChildren()){
+
+                        UserInfo u = user.getValue(UserInfo.class);
+                        users.add(u);
+                        //Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
+                        Log.d("ADD", u.getName()+" "+u.getLatitude()+" "+users.size());
+                        if(u.getLatitude() != null && u.getLongitude() != null) {
+                            Double lat = new Double(u.getLatitude());
+                            Double lng = new Double(u.getLongitude());
+                            LatLng myLatLng = new LatLng(lat, lng);
+
+                            Location l = new Location("");
+                            l.setLatitude(lat);
+                            l.setLongitude(lng);
+
+                            Float distanceInMt = location.distanceTo(l);
+                            Float distanceInKm = location.distanceTo(l) / 1000;
+                            String distKm = String.format("%.2f", distanceInKm);
+                            Integer distanceInKmInt = new Integer(distanceInKm.intValue());
+
+                            Marker m;
+                            if (distanceInKm < 0.1)
+                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt + " m"));
+                            if (distanceInKm < 1)
+                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm + " km"));
+                            if (distanceInKm < 5)
+                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString() + " km"));
+                            else
+                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString() + " km"));
+                        }
+                    }
+
+
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            /*
+            Log.d("ADD", " --> "+users.size());
+            // the asynchronous listener is called after this -> problem
+            if(users.size() == 0)
+                Toast.makeText(this, "no users", Toast.LENGTH_SHORT).show();
+            for(UserInfo u : users){
+                Double lat = new Double(u.getLatitude());
+                Double lng = new Double(u.getLongitude());
+                LatLng myLatLng = new LatLng(lat, lng);
+
+                Location l = new Location("");
+                l.setLatitude(lat);
+                l.setLongitude(lng);
+
+                Float distanceInMt = location.distanceTo(l);
+                Float distanceInKm = location.distanceTo(l) / 1000;
+                String distKm = String.format("%.2f", distanceInKm);
+                Integer distanceInKmInt = new Integer(distanceInKm.intValue());
+
+                Marker m;
+                if (distanceInKm < 0.1)
+                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt+" m"));
+                if (distanceInKm < 1)
+                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm+" km"));
+                if (distanceInKm < 5)
+                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString()+" km"));
+                else
+                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString()+" km"));
+            }
+            */
+            /*
             for(int i = 1; i< 11; i++) {
                 LatLng myLatLng = new LatLng(location.getLatitude() + i,
                         location.getLongitude() + i);
@@ -155,9 +206,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else
                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString()+" km"));
             }
+            */
             //for(Marker m1 : markerList)
             //    m1.showInfoWindow();
         }
+
     }
 
 
