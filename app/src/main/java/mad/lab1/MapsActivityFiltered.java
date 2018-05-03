@@ -22,6 +22,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,6 +48,7 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
     private List<UserInfo> users;
     private List<String> userIds;
     private String isbn;
+    private Book book;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
         if (extras != null) {
             isbn = extras.getString("isbn");
         }
+
+        getBook();
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         if(mLocationManager == null){
@@ -96,7 +101,15 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
             public boolean onMarkerClick(Marker marker) {
                 //todo create a view to specify profile name, distance, ecc
                 // todo or open the bookInfoPage
-                //Toast.makeText(getApplicationContext(), "BAUUU", Toast.LENGTH_SHORT).show();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
+                ref.child(user.getUid())
+                        .child(book.getBookId())
+                        .setValue(book);
+
+
+                Toast.makeText(getApplicationContext(), "Book borrowed", Toast.LENGTH_SHORT).show();
+                finish();
                 return false;
             }
         });
@@ -116,17 +129,22 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                     //select the keys of owners of this book
                     userIds.add(user.getKey());
                 }
+
+                placeMarkers(location);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                System.out.println("");
 
             }
         });
 
 
+    }
 
-        ref = FirebaseDatabase.getInstance().getReference().child("users");//FirebaseDatabase.getInstance().getReference("users");
+    private void placeMarkers(Location location){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");//FirebaseDatabase.getInstance().getReference("users");
 
         //markerList = new LinkedList<>();
         if(location != null) {
@@ -183,7 +201,6 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
             });
 
         }
-
     }
 
 
@@ -287,6 +304,30 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
             return null;
         }
         return bestLocation;
+    }
+
+    private void getBook(){
+        //gets a book with the specified isbn. Doesn't use the specified user yet.
+        //TODO: link marker to user
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("bookID");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot bookDS : dataSnapshot.getChildren()){
+                    Book currentBook = bookDS.getValue(Book.class);
+                    if(currentBook.getIsbn().equals(isbn)){
+                        book = currentBook;
+                        book.setBookId(bookDS.getKey());
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 }

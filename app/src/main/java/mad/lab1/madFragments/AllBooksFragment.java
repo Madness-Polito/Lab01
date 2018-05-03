@@ -462,6 +462,7 @@ public class AllBooksFragment extends Fragment {
 
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(getContext(), getContext().getString(R.string.uploadError), Toast.LENGTH_SHORT);
             }
         }
     }

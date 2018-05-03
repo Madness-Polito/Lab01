@@ -88,6 +88,10 @@ public class Book implements Parcelable {
     }
 
 
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
     public void setThumbURL(String thumbURL){
         this.thumbURL = thumbURL;
     }
