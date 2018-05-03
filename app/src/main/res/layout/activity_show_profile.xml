@@ -87,6 +87,15 @@
                     android:layout_alignParentRight="true"
                     android:background="@android:color/transparent"/>
 
+                <ImageButton
+                    android:id="@+id/showProfileBackButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_back_white_32dp"
+                    android:layout_margin="8dp"
+                    android:layout_alignParentLeft="true"
+                    android:background="@android:color/transparent"/>
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/showImageProfile"
@@ -103,19 +112,27 @@
 
                 <TextView
                     android:id="@+id/showTextName"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/showImageProfile"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="8dp"
                     android:gravity="center_horizontal"
                     android:hint="@string/nameHint"
+
+                    android:maxLines="1"
+                    android:maxEms="14"
+                    android:ellipsize="end"
                     android:textColorHint="@color/text_white"
                     android:textColor="@color/text_white"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
+                    android:maxLines="1"
+
+                    android:ellipsize="end"
+                    android:maxEms="14"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:gravity="center_horizontal"

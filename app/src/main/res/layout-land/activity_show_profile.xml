@@ -23,6 +23,15 @@
 
             android:background="@android:color/transparent"/>
 
+        <ImageButton
+            android:id="@+id/showProfileBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_white_32dp"
+            android:layout_margin="8dp"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"/>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/showImageProfile"
             android:layout_centerHorizontal="true"
@@ -33,7 +42,11 @@
             android:elevation="0dp"/>
 
         <TextView
-            android:layout_width="match_parent"
+
+            android:maxLines="1"
+            android:maxEms="8"
+            android:ellipsize="end"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/showImageProfile"
             android:gravity="center_horizontal"
@@ -46,7 +59,11 @@
             android:hint="@string/nameHint"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:maxLines="1"
+            android:maxEms="10"
+
+            android:ellipsize="end"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:gravity="center_horizontal"
@@ -72,296 +89,296 @@
 
 
 
-            <LinearLayout
-                android:orientation="vertical"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F5F5F5">
+
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rating_card"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp"
+                card_view:cardBackgroundColor="#EEEEEE"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <RatingBar
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:isIndicator="true"
+                        android:numStars="5"
+                        android:layout_marginRight="48dp"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toLeftOf="@id/profile_separator_view"
+
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:rating="5.0"
+                        android:progressTint="@color/colorAccent"
+                        android:stepSize="1.0" />
+
+
+                    <View
+                        android:id="@+id/profile_separator_view"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="6dp"
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/light_gray"
+                        android:layout_centerHorizontal="true"/>
+
+                    <TextView
+                        android:text="Prova"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:layout_toRightOf="@id/profile_separator_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/general_info_card"
+                android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#F5F5F5">
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                card_view:cardBackgroundColor="#EEEEEE"
+                >
 
 
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/rating_card"
-                    android:layout_gravity="center"
+                <LinearLayout
+                    android:layout_margin="4dp"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    card_view:cardCornerRadius="4dp"
-                    card_view:cardElevation="8dp"
-                    card_view:cardBackgroundColor="#EEEEEE"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    >
+                    android:layout_height="wrap_content">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-
-                        <RatingBar
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:layout_marginRight="48dp"
-                            android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_toLeftOf="@id/profile_separator_view"
-
-                            style="@style/Widget.AppCompat.RatingBar.Small"
-                            android:rating="5.0"
-                            android:progressTint="@color/colorAccent"
-                            android:stepSize="1.0" />
-
-
-                        <View
-                            android:id="@+id/profile_separator_view"
-                            android:layout_marginTop="6dp"
-                            android:layout_marginBottom="6dp"
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/light_gray"
-                            android:layout_centerHorizontal="true"/>
+                        android:layout_height="wrap_content">
 
                         <TextView
-                            android:text="Prova"
-                            android:layout_centerVertical="true"
-                            android:gravity="center"
-                            android:layout_toRightOf="@id/profile_separator_view"
+                            android:layout_alignParentLeft="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/persInfo"
+                            android:layout_margin= "6dp"
+                            android:textSize="16sp"
+                            android:textAllCaps="true"/>
+
+                    </RelativeLayout>
+
+
+                    <LinearLayout
+                        android:layout_margin="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_date_range_24dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp" />
+
+                        <TextView
+                            android:id="@+id/showTextBirthDate"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="16dp"
+                            android:textSize="12sp"
+                            android:hint="@string/DoBHint"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                    </RelativeLayout>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/general_info_card"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    card_view:cardCornerRadius="4dp"
-                    card_view:cardElevation="8dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    card_view:cardBackgroundColor="#EEEEEE"
-                    >
-
+                    </LinearLayout>
 
                     <LinearLayout
-                        android:layout_margin="4dp"
-                        android:orientation="vertical"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_phone_android_24dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp" />
+
+                        <TextView
+                            android:id="@+id/showTextTelephone"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="16dp"
+                            android:hint="@string/phoneHint"
+                            android:textSize="12sp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_gravity="bottom"
+                        android:layout_margin="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_marginLeft="16dp"
+                            android:src="@drawable/ic_email_black_24dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp" />
+
+                        <TextView
+                            android:id="@+id/showTextMail"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="16dp"
+                            android:textSize="12sp"
+                            android:hint="@string/mailHint"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/bio_card"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp"
+                card_view:cardBackgroundColor="#EEEEEE"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp">
+
+                <LinearLayout
+                    android:layout_margin="4dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:layout_alignParentLeft="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/persInfo"
-                                android:layout_margin= "6dp"
-                                android:textSize="16sp"
-                                android:textAllCaps="true"/>
-
-                        </RelativeLayout>
-
-
-                        <LinearLayout
-                            android:layout_margin="8dp"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_alignParentLeft="true"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:text="@string/bio"
+                            android:textSize="16sp"
+                            android:layout_margin= "6dp"
+                            android:textAllCaps="true"/>
 
-                            <ImageView
-                                android:layout_marginLeft="16dp"
-                                android:src="@drawable/ic_date_range_24dp"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp" />
-
-                            <TextView
-                                android:id="@+id/showTextBirthDate"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="16dp"
-                                android:textSize="12sp"
-                                android:hint="@string/DoBHint"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_gravity="center_vertical"
-                            android:layout_margin="8dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_marginLeft="16dp"
-                                android:src="@drawable/ic_phone_android_24dp"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp" />
-
-                            <TextView
-                                android:id="@+id/showTextTelephone"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="16dp"
-                                android:hint="@string/phoneHint"
-                                android:textSize="12sp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_gravity="bottom"
-                            android:layout_margin="8dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <ImageView
-                                android:layout_marginLeft="16dp"
-                                android:src="@drawable/ic_email_black_24dp"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp" />
-
-                            <TextView
-                                android:id="@+id/showTextMail"
-                                android:layout_gravity="center_vertical"
-                                android:layout_marginLeft="16dp"
-                                android:textSize="12sp"
-                                android:hint="@string/mailHint"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                        </LinearLayout>
-                    </LinearLayout>
-
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/bio_card"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    card_view:cardCornerRadius="4dp"
-                    card_view:cardElevation="8dp"
-                    card_view:cardBackgroundColor="#EEEEEE"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
+                    </RelativeLayout>
 
                     <LinearLayout
-                        android:layout_margin="4dp"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <RelativeLayout
+
+
+                        <TextView
+                            android:id="@+id/showTextBio"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:layout_alignParentLeft="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/bio"
-                                android:textSize="16sp"
-                                android:layout_margin= "6dp"
-                                android:textAllCaps="true"/>
-
-                        </RelativeLayout>
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-
-
-                            <TextView
-                                android:id="@+id/showTextBio"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:hint="@string/bioHint"/>
-                        </LinearLayout>
-
-
-
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:hint="@string/bioHint"/>
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
 
 
-                <android.support.v7.widget.CardView
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/favorite_books_card"
-                    android:layout_gravity="center"
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/favorite_books_card"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="8dp"
+                card_view:cardBackgroundColor="#EEEEEE"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp">
+
+
+                <LinearLayout
+                    android:layout_margin="4dp"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    card_view:cardCornerRadius="4dp"
-                    card_view:cardElevation="8dp"
-                    card_view:cardBackgroundColor="#EEEEEE"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="32dp">
+                    android:layout_height="match_parent">
 
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_alignParentLeft="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:text="@string/books"
+                            android:layout_margin= "6dp"
+                            android:textAllCaps="true"/>
+
+                    </RelativeLayout>
 
                     <LinearLayout
-                        android:layout_margin="4dp"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <RelativeLayout
+
+
+                        <TextView
+                            android:id="@+id/showTextFavoriteBooks"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:layout_alignParentLeft="true"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="16sp"
-                                android:text="@string/books"
-                                android:layout_margin= "6dp"
-                                android:textAllCaps="true"/>
-
-                        </RelativeLayout>
-
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-
-
-                            <TextView
-                                android:id="@+id/showTextFavoriteBooks"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:hint="@string/booksHint"/>
-
-                        </LinearLayout>
-
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:hint="@string/booksHint"/>
 
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
 
-            </LinearLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
 
 
 

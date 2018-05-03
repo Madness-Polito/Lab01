@@ -49,6 +49,7 @@ public class EditProfile extends AppCompatActivity{
         ImageButton but_bookLocation = findViewById(R.id.editBookToShareLocation);
         ImageButton but_persInfo = findViewById(R.id.editPersonalInfo);
         ImageButton but_bio = findViewById(R.id.editBio);
+        ImageButton backButton = findViewById(R.id.editProfileBackButton);
         bio = findViewById(R.id.showTextBio);
         name = findViewById(R.id.showTextName);
         city = findViewById(R.id.showTextCityStateName);
@@ -297,6 +298,13 @@ public class EditProfile extends AppCompatActivity{
                 intent.putExtra("userInfo", userInfo);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }
