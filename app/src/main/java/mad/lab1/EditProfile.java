@@ -21,9 +21,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 public class EditProfile extends AppCompatActivity{
@@ -41,6 +47,8 @@ public class EditProfile extends AppCompatActivity{
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_edit_profile);
+
+        getLatLong();
 
         // get object references
         pic = findViewById(R.id.showImageProfile);
@@ -257,14 +265,15 @@ public class EditProfile extends AppCompatActivity{
                 // save user data to firebase & locally
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 UserInfo userInfo = new UserInfo(user.getUid(),
-                        name.getText().toString(),
-                        mail.getText().toString(),
-                        phone.getText().toString(),
-                        city.getText().toString(),
-                        DoB.getText().toString(),
-                        bio.getText().toString(),
-                        latitude,
-                        longitude);
+                            name.getText().toString(),
+                            mail.getText().toString(),
+                            phone.getText().toString(),
+                            city.getText().toString(),
+                            DoB.getText().toString(),
+                            bio.getText().toString(),
+                            latitude,
+                            longitude);
+
                 UsersDB.setUser(userInfo);
                 LocalDB.putUserInfo(this, userInfo);
 
@@ -414,4 +423,25 @@ public class EditProfile extends AppCompatActivity{
         if (picUri != null)
             pic.setImageURI(Uri.parse(picUri));
     }
+
+    private void getLatLong(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                latitude = user.getLatitude();
+                longitude = user.getLongitude();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                latitude = null;
+                longitude = null;
+            }
+        });
+    }
+
 }

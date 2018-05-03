@@ -88,6 +88,7 @@ import mad.lab1.MainPageMenu;
 import mad.lab1.MapsActivity;
 import mad.lab1.R;
 import mad.lab1.StorageDB;
+import mad.lab1.UserInfo;
 
 public class AllBooksFragment extends Fragment {
 
