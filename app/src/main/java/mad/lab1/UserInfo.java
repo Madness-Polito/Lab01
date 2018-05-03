@@ -128,6 +128,8 @@ public class UserInfo implements Parcelable{
         city  = in.readString();
         dob   = in.readString();
         bio   = in.readString();
+        latitude  = in.readString();
+        longitude = in.readString();
     }
 
     @Override
@@ -139,6 +141,8 @@ public class UserInfo implements Parcelable{
         dest.writeString(city);
         dest.writeString(dob);
         dest.writeString(bio);
+        dest.writeString(latitude);
+        dest.writeString(longitude);
     }
 
     // This is to de-serialize the object

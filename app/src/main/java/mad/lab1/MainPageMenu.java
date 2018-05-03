@@ -3,6 +3,7 @@ package mad.lab1;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -57,7 +58,6 @@ public class MainPageMenu extends AppCompatActivity {
         loginCheck();                                               //Checking if user logged in or not
         userCreatedCheck();                                         //check if user has filled in all necessary data
 
-
     }
 
     private void userCreatedCheck() {
@@ -91,6 +91,11 @@ public class MainPageMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // download books and store them locally only if did not rotate screen
+        if (savedInstanceState == null)
+            IsbnDB.getIsbnList(this);
+
         setContentView(R.layout.activity_main_page_menu);
 
         searchView = findViewById(R.id.search_view);
@@ -343,11 +348,11 @@ public class MainPageMenu extends AppCompatActivity {
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                Book searchedBook = snapshot.getValue(Book.class);
+                IsbnInfo searchedBook = snapshot.getValue(IsbnInfo.class);
                 Bundle arg = new Bundle();
                 arg.putParcelable("book", searchedBook);
                 Intent i = new Intent(getApplicationContext(), ShowSelectedBookInfo.class);
-                i.putExtra("argument", searchedBook);
+                i.putExtra("argument", (Parcelable) searchedBook);
                 startActivity(i);
 
             }

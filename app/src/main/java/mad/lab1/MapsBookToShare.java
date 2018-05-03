@@ -174,6 +174,7 @@ public class MapsBookToShare extends AppCompatActivity {
         // set listeners for buttons
 
 
+
         /*
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener()
         {
@@ -227,6 +228,7 @@ public class MapsBookToShare extends AppCompatActivity {
             //    m1.showInfoWindow();
          */
     }
+
 
 
     public boolean checkLocationPermission() {

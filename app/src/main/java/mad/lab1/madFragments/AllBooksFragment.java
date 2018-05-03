@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -81,9 +82,11 @@ import mad.lab1.Book;
 import mad.lab1.BookIdInfo;
 import mad.lab1.BookTitleDB;
 import mad.lab1.BookTitleInfo;
+import mad.lab1.EditProfile;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
 import mad.lab1.LocalDB;
+import mad.lab1.MainPageMenu;
 import mad.lab1.MapsActivity;
 import mad.lab1.R;
 import mad.lab1.StorageDB;
@@ -100,8 +103,11 @@ public class AllBooksFragment extends Fragment {
     private String pubYear;
     private String description;
     private String imageLinks;
+    private String thumbURL;
 
-    private ArrayList<Book> allBookList;
+    private List<IsbnInfo> isbnList;
+
+    private Boolean isNewBook = true;
 
 
     private DatabaseReference dbRef;
@@ -121,10 +127,10 @@ public class AllBooksFragment extends Fragment {
         dbRef = FirebaseDatabase.getInstance().getReference().child("isbn");
 
 
-        allBookList = new ArrayList<>();
-        adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
+        isbnList = LocalDB.getIsbnList(getContext());//new ArrayList<>();
+        adapter = new AllBooksListAdapter(isbnList, new AllBooksListAdapter.OnBookClicked() {
             @Override
-            public void onBookClicked(Book b) {
+            public void onBookClicked(IsbnInfo isbn) {
                 //create a dialog fragment that shows all the informatio related to the book selected
                 //Toast.makeText(getContext(), b.getTitle(), Toast.LENGTH_SHORT).show();
                 /*
@@ -141,26 +147,29 @@ public class AllBooksFragment extends Fragment {
                 newFragment.show(ft, "dialog");
                 */
                 Bundle arg = new Bundle();
-                arg.putParcelable("book", b);
+                arg.putParcelable("isbn", isbn);
                 Intent i = new Intent(getContext(), ShowSelectedBookInfo.class);
-                i.putExtra("argument", b);
+                i.putExtra("argument", (Parcelable) isbn);
                 startActivity(i);
             }
         });
 
-        bookIDListener = new ChildEventListener() {
+        //TODO: FIX THIS
+
+       /* bookIDListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Book b = dataSnapshot.getValue(Book.class);
                 allBookList.add(b);
                 adapter.notifyItemInserted(allBookList.indexOf(b));
+                System.out.println("-------->onChildAdded book: " + b.getTitle());
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 int i = 0;
                 Book b = dataSnapshot.getValue(Book.class);
-                while (allBookList.get(i).getBookId() != b.getBookId()){
+                while (allBookList.get(i).getBookId() != b.getBookId()) {
                     i++;
                 }
                 allBookList.set(i, b);
@@ -222,7 +231,7 @@ public class AllBooksFragment extends Fragment {
                 //Toast.makeText(getActivity(), "Failed to load book list.",
                 //      Toast.LENGTH_SHORT).show();
             }
-        };
+        };*/
 
 
 
@@ -384,9 +393,21 @@ public class AllBooksFragment extends Fragment {
                     .setValue(bookIdInfo);
 
             //get the thumbnail
+            if(isNewBook) {
+                GetBookThumb getBookThumb = new GetBookThumb();
+                getBookThumb.execute(imageLinks);
+            }else {
+                isNewBook = true;
 
-            GetBookThumb getBookThumb = new GetBookThumb();
-            getBookThumb.execute(imageLinks);
+                DatabaseReference refThumb = FirebaseDatabase.getInstance().getReference("isbn");
+                ref.child(isbn).child("thumbURL").setValue(thumbURL);
+
+                ref = FirebaseDatabase.getInstance().getReference("bookID");
+                ref.child(bookID).child("thumbURL").setValue(thumbURL);
+
+                ref = FirebaseDatabase.getInstance().getReference("bookList");
+                ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(thumbURL);
+            }
 
         }
     }
@@ -412,6 +433,7 @@ public class AllBooksFragment extends Fragment {
                 return null;
             }
 
+            isbn = isbns[0];
             String apiUrlString = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbns[0];
             try{
                 HttpURLConnection connection = null;
@@ -495,7 +517,46 @@ public class AllBooksFragment extends Fragment {
 
 
             } catch (JSONException e) {
-                e.printStackTrace();
+                //book isn't contained in google books api, check if it it present in the firebase database
+                dbRef = FirebaseDatabase.getInstance().getReference().child("isbn").child(isbn);
+
+                dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (!snapshot.exists()) {
+                            //TODO: book isn't contained in firebase db, has to be added!
+                            System.out.println("1");
+
+                        }else{
+                            //book is contained in firebase db, use this data
+                            Book newBook = snapshot.getValue(Book.class);
+                            isbn = newBook.getIsbn();
+                            author = newBook.getAuthor();
+                            title = newBook.getTitle();
+                            description = newBook.getDescription();
+                            publisher = newBook.getPublisher();
+                            pubYear = newBook.getPubYear();
+                            thumbURL = newBook.getThumbURL();
+
+                            isNewBook = false;
+
+                            Intent i = new Intent(getActivity(), AddingBookActivity.class);
+                            i.putExtra("author",author);
+                            i.putExtra("description",description);
+                            i.putExtra("title",title);
+                            startActivityForResult(i, 1);
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+
+                });
+
             }
         }
     }
@@ -585,17 +646,17 @@ public class AllBooksFragment extends Fragment {
     public void onPause() {
         super.onPause();
         //Remove childEventListener
-        dbRef.removeEventListener(bookIDListener);
+        /*dbRef.removeEventListener(bookIDListener);
         int size = allBookList.size();
         allBookList.clear();
-        adapter.notifyItemRangeRemoved(0, size);
+        adapter.notifyItemRangeRemoved(0, size);*/
     }
 
     @Override
     public void onResume() {
         super.onResume();
         //add childEventListener
-        dbRef.addChildEventListener(bookIDListener);
+        //dbRef.addChildEventListener(bookIDListener);
     }
 
     @Override
@@ -610,6 +671,8 @@ public class AllBooksFragment extends Fragment {
         savedInstanceState.putString("pubYear", pubYear);
         savedInstanceState.putString("description", description);
         savedInstanceState.putString("imageLinks", imageLinks);
+        savedInstanceState.putBoolean("isNewBook", isNewBook);
+        savedInstanceState.putString("thumbURL", thumbURL);
 
 
 
@@ -630,6 +693,8 @@ public class AllBooksFragment extends Fragment {
             pubYear = savedInstanceState.getString("pubYear");
             description = savedInstanceState.getString("description");
             imageLinks = savedInstanceState.getString("imageLinks");
+            isNewBook = savedInstanceState.getBoolean("isNewBook");
+            thumbURL = savedInstanceState.getString("thumbURL");
         }
     }
 }
