@@ -15,6 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -79,7 +80,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // get permissions
         checkLocationPermission();
 
-        getLastKnownLocation();
+        Location currentLocation = getLastKnownLocation();
+        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        float zoomLevel = 10.0f; //This goes up to 21
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
 
         addMarkers();
 
@@ -88,7 +92,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMarkerClick(Marker marker) {
                 //todo create a view to specify profile name, distance, ecc
                 // todo or open the bookInfoPage
-                //Toast.makeText(getApplicationContext(), "BAUUU", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "prenotato!", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -100,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location location = getLastKnownLocation();
         users = new LinkedList<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");//FirebaseDatabase.getInstance().getReference("users");
-
+        UserInfo userInfo = LocalDB.getUserInfo(this);
         //markerList = new LinkedList<>();
         if(location != null) {
             ref.addValueEventListener(new ValueEventListener() {
@@ -110,36 +114,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //Iterable<DataSnapshot> usersChildren = userSnapshot.getChildren();
 
                     //Toast.makeText(MapsActivity.this, "bauuuuuu", Toast.LENGTH_SHORT).show();
-                    for(DataSnapshot user : dataSnapshot.getChildren()){
+                    for(DataSnapshot user : dataSnapshot.getChildren()) {
 
                         UserInfo u = user.getValue(UserInfo.class);
-                        users.add(u);
-                        //Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
-                        Log.d("ADD", u.getName()+" "+u.getLatitude()+" "+users.size());
-                        if(u.getLatitude() != null && u.getLongitude() != null) {
-                            Double lat = new Double(u.getLatitude());
-                            Double lng = new Double(u.getLongitude());
-                            LatLng myLatLng = new LatLng(lat, lng);
+                        if (!u.getName().equals(userInfo.getName())){
+                            users.add(u);
+                            //Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
+                            Log.d("ADD", u.getName() + " " + u.getLatitude() + " " + users.size());
+                            if (u.getLatitude() != null && u.getLongitude() != null) {
+                                Double lat = new Double(u.getLatitude());
+                                Double lng = new Double(u.getLongitude());
+                                LatLng myLatLng = new LatLng(lat, lng);
 
-                            Location l = new Location("");
-                            l.setLatitude(lat);
-                            l.setLongitude(lng);
+                                Location l = new Location("");
+                                l.setLatitude(lat);
+                                l.setLongitude(lng);
 
-                            Float distanceInMt = location.distanceTo(l);
-                            Float distanceInKm = location.distanceTo(l) / 1000;
-                            String distKm = String.format("%.2f", distanceInKm);
-                            Integer distanceInKmInt = new Integer(distanceInKm.intValue());
+                                Float distanceInMt = location.distanceTo(l);
+                                Float distanceInKm = location.distanceTo(l) / 1000;
+                                String distKm = String.format("%.2f", distanceInKm);
+                                Integer distanceInKmInt = new Integer(distanceInKm.intValue());
 
-                            Marker m;
-                            if (distanceInKm < 0.1)
-                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt + " m"));
-                            if (distanceInKm < 1)
-                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm + " km"));
-                            if (distanceInKm < 5)
-                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString() + " km"));
-                            else
-                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString() + " km"));
+                                Marker m;
+                                if (distanceInKm < 0.1)
+                                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt + " m"));
+                                if (distanceInKm < 1)
+                                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm + " km"));
+                                if (distanceInKm < 5)
+                                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString() + " km"));
+                                else
+                                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString() + " km"));
                         }
+                    }
                     }
 
 

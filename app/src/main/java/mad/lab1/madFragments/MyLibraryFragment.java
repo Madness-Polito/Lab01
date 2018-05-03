@@ -555,10 +555,12 @@ public class MyLibraryFragment extends Fragment {
     public void onPause() {
         super.onPause();
         //Remove childEventListener
-        dbRef.removeEventListener(bookIDListener);
-        int size = allBookList.size();
-        allBookList.clear();
-        adapter.notifyItemRangeRemoved(0, size);
+        if(dbRef != null) {
+            dbRef.removeEventListener(bookIDListener);
+            int size = allBookList.size();
+            allBookList.clear();
+            adapter.notifyItemRangeRemoved(0, size);
+        }
     }
 
     @Override

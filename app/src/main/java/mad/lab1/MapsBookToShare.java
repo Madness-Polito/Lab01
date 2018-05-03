@@ -46,6 +46,7 @@ public class MapsBookToShare extends AppCompatActivity {
     private Marker m; // only one that must be returned to the editProfile activity
     private GPSTracker gps;
     private LatLng finalPosition = null;
+    Double curlat = null, curlon = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,20 @@ public class MapsBookToShare extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.containerFlag, new PlaceholderFragment()).commit();
 
+        }
+        else{
+            curlat = new Double(savedInstanceState.get("lat").toString()); // l is null
+            curlon = new Double(savedInstanceState.get("lng").toString());
+            //LatLng currentpos = new LatLng(curlat, curlon);
+
+            /*
+                m = mMap.addMarker(new MarkerOptions().position(currentpos)
+
+                    .title("Draggable Marker")
+                    .snippet("Long press and move the marker if needed.")
+                    .draggable(true)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+            */
         }
 
         // todo retrieve lat and lng and put in Boundle and get the last location
@@ -110,11 +125,18 @@ public class MapsBookToShare extends AppCompatActivity {
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        Location l;
         // get permissions
         checkLocationPermission();
 
-        Location l = getLastKnownLocation();
+        if(curlat != null && curlon != null) {
+            l = new Location("");
+            l.setLatitude(curlat);
+            l.setLongitude(curlon);
+        }
+
+        else
+            l = getLastKnownLocation();
 
         if(l == null) {
             Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show();
@@ -135,7 +157,9 @@ public class MapsBookToShare extends AppCompatActivity {
             double curlon = l.getLongitude();
             LatLng currentpos = new LatLng(curlat, curlon);
 
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), 10));
+            float zoomLevel = 10.0f; //This goes up to 21
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));
             //getLastKnownLocation();
             m = mMap.addMarker(new MarkerOptions().position(currentpos)
                     .title("Draggable Marker")
@@ -288,5 +312,16 @@ public class MapsBookToShare extends AppCompatActivity {
             return null;
         }
         return bestLocation;
+    }
+
+    protected void onSaveInstanceState(Bundle b) {
+        super.onSaveInstanceState(b);
+        b.putString("lat", new Double(m.getPosition().latitude).toString());
+        b.putString("lng", new Double(m.getPosition().longitude).toString());
+    }
+
+    protected void onRestoreInstanceState(Bundle b) {
+        super.onRestoreInstanceState(b);
+
     }
 }
