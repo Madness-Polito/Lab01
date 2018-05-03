@@ -154,6 +154,8 @@ public class AllBooksFragment extends Fragment {
             }
         });
 
+        //TODO: FIX THIS
+
        /* bookIDListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {

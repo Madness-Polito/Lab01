@@ -33,6 +33,7 @@ public class EditProfile extends AppCompatActivity{
     private ImageView pic;
     private Uri mCropImageUri;
     private TextView name, mail, bio, phone, DoB, city;
+    private String latitude, longitude;
     private final String[] KEYS = Globals.KEYS;
     private TextView[] TEXTVIEWS;
     private String picUri;
@@ -262,9 +263,15 @@ public class EditProfile extends AppCompatActivity{
                         phone.getText().toString(),
                         city.getText().toString(),
                         DoB.getText().toString(),
-                        bio.getText().toString());
+                        bio.getText().toString(),
+                        latitude,
+                        longitude);
                 UsersDB.setUser(userInfo);
                 LocalDB.putUserInfo(this, userInfo);
+
+                //save latitude and longitude
+                //upload in firebase
+
 
                 // save pic to firebase & locally
                 if (picUri != null) {
@@ -345,17 +352,9 @@ public class EditProfile extends AppCompatActivity{
                 Bundle coordinates =  data.getExtras();
                 if(coordinates != null){
                     LatLng coo = (LatLng) coordinates.get("LatLng");
-                    String lat = new Double(coo.latitude).toString();
-                    String lng = new Double(coo.longitude).toString();
-                    //upload in firebase
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users");
-                    ref.child(user.getUid())
-                            .child("Lat")
-                            .setValue(coo.latitude);
-                    ref.child(user.getUid())
-                            .child("Long")
-                            .setValue(coo.longitude);
+                    latitude = new Double(coo.latitude).toString();
+                    longitude = new Double(coo.longitude).toString();
+
 
                     //Toast.makeText(this, "lat "+lat+" , lng "+lng, Toast.LENGTH_SHORT).show();
                 }
