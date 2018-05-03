@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -22,67 +22,90 @@
             android:layout_margin="8dp"
             android:layout_alignParentRight="true"
             android:background="@android:color/transparent"/>
+        <ImageButton
+            android:id="@+id/editProfileBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_white_32dp"
+            android:layout_margin="8dp"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"/>
 
         <ImageButton
             android:id="@+id/selectImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/showTextName"
-            android:layout_alignLeft="@+id/showImageProfile"
+            android:layout_alignBottom="@+id/showImageProfile"
             android:layout_alignStart="@+id/showImageProfile"
-            android:layout_marginBottom="11dp"
-            android:layout_marginLeft="11dp"
-            android:layout_marginStart="11dp"
             android:background="@android:color/transparent"
             android:elevation="8dp"
             android:src="@drawable/ic_photo_camera_24dp" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/showImageProfile"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:layout_width="144dp"
             android:layout_height="144dp"
-            android:src="@drawable/ic_account_circle_144dp"
-            android:elevation="0dp"/>
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="88dp"
+            android:elevation="0dp"
+            android:src="@drawable/ic_account_circle_144dp" />
+
+        <ImageButton
+            android:id="@+id/editBookToShareLocation"
+            android:layout_width="27dp"
+            android:layout_height="24dp"
+
+            android:layout_alignStart="@+id/saveButton"
+            android:layout_alignTop="@+id/showTextCityStateName"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_my_location_white_24dp"
+            android:tint="@color/text_white" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/showTextName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/showImageProfile"
-            android:gravity="center_horizontal"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:elevation="10dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:hint="@string/nameHint"
+            android:maxEms="6"
+            android:maxLines="1"
+
             android:textColor="@color/text_white"
             android:textColorHint="@color/text_white"
-            android:id="@+id/showTextName"
-            android:textSize="18sp"
-            android:layout_marginTop="8dp"
-            android:hint="@string/nameHint"/>
+            android:textSize="20sp" />
 
         <ImageButton
             android:id="@+id/editTextNameCity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/showTextCityStateName"
-            android:layout_toEndOf="@+id/showImageProfile"
-            android:layout_toRightOf="@+id/showImageProfile"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@+id/showTextName"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_mode_edit_24dp_white" />
 
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/showTextCityStateName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:gravity="center_horizontal"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/showTextName"
+            android:layout_centerHorizontal="true"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:hint="@string/cityHint"
+            android:maxEms="6"
+            android:maxLines="1"
+            android:layout_marginTop="8dp"
             android:textColor="@color/text_white"
             android:textColorHint="@color/text_white"
-            android:id="@+id/showTextCityStateName"
-            android:textSize="14sp"
-            android:hint="@string/cityHint"/>
+            android:textSize="16sp" />
 
 
     </RelativeLayout>

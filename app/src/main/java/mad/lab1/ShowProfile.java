@@ -14,6 +14,7 @@ public class ShowProfile extends AppCompatActivity {
     private ImageView pic;
     private TextView[] TEXTVIEWS;
     private final String[] KEYS = Globals.KEYS;
+    private ImageButton editButton, backArrowButton;
     TextView name, mail, bio, date, city, phone;
 
     @Override
@@ -30,7 +31,9 @@ public class ShowProfile extends AppCompatActivity {
         phone = findViewById(R.id.showTextTelephone);
         pic = findViewById(R.id.showImageProfile);
         TEXTVIEWS = new TextView[]{name, mail, bio, date, city, phone};
-        ImageButton editButton = findViewById(R.id.editProfileButton);
+        editButton = findViewById(R.id.editProfileButton);
+        backArrowButton = findViewById(R.id.showProfileBackButton);
+
 
         // load user info & update view
         UserInfo userInfo = LocalDB.getUserInfo(this);
@@ -48,6 +51,13 @@ public class ShowProfile extends AppCompatActivity {
                 for (int j = 0; j < KEYS.length; j++)
                     i.putExtra(KEYS[j], TEXTVIEWS[j].getText().toString());
                 startActivityForResult(i, Globals.EDIT_CODE);
+        });
+
+        backArrowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
         });
     }
 

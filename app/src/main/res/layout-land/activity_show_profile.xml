@@ -23,6 +23,15 @@
 
             android:background="@android:color/transparent"/>
 
+        <ImageButton
+            android:id="@+id/showProfileBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_white_32dp"
+            android:layout_margin="8dp"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"/>
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/showImageProfile"
             android:layout_centerHorizontal="true"
@@ -33,7 +42,11 @@
             android:elevation="0dp"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            android:maxLines="1"
+            android:maxEms="8"
+            android:ellipsize="end"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/showImageProfile"
             android:gravity="center_horizontal"
@@ -46,7 +59,11 @@
             android:hint="@string/nameHint"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
+            android:maxLines="1"
+            android:maxEms="10"
+            android:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            android:ellipsize="end"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:gravity="center_horizontal"
