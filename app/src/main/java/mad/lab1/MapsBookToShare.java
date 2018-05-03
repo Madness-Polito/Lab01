@@ -50,9 +50,6 @@ public class MapsBookToShare extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        checkLocationPermission();
-
-        //getLastKnownLocation();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
@@ -60,6 +57,7 @@ public class MapsBookToShare extends AppCompatActivity {
 
         }
 
+        // todo retrieve lat and lng and put in Boundle and get the last location
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         if(mLocationManager == null){
@@ -75,15 +73,15 @@ public class MapsBookToShare extends AppCompatActivity {
         mapFragment.getMapAsync(this::onMapReady);
         //mapFragment.getMapAsync(this);
 
-        // set location done and cancel button -> return null or Location chosen
 
+        // set location done and cancel button -> return null or Location chosen
         btn_done = findViewById(R.id.doneButton);
         btn_cancel = findViewById(R.id.cancelLocationButton);
 
         btn_done.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LatLng markerLocation = m.getPosition();
+                LatLng markerLocation = m.getPosition(); // todo m is null
                 if(markerLocation != null){
                     finalPosition = markerLocation;
                     Intent intent = new Intent();
@@ -105,25 +103,7 @@ public class MapsBookToShare extends AppCompatActivity {
                 finish();
             }
         });
-        /*
-        currLocationBtn = findViewById(R.id.currentLocationFloatingActionButton);
 
-        currLocationBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Location location = getLastKnownLocation();
-                if(location != null){
-                    //location = mMap.getMyLocation();
-                    LatLng myLatLng = new LatLng(location.getLatitude(),
-                            location.getLongitude());
-                    Marker me = mMap.addMarker(new MarkerOptions().position(myLatLng).title("Me"));
-                    me.showInfoWindow();
-                }
-                else
-                    Toast.makeText(getApplicationContext(), "no location found", Toast.LENGTH_SHORT).show();
-            }
-        });
-        */
         Toast.makeText(getApplicationContext(), "choose a location", Toast.LENGTH_LONG).show();
     }
 
@@ -132,83 +112,64 @@ public class MapsBookToShare extends AppCompatActivity {
         mMap = googleMap;
 
         // get permissions
-        //checkLocationPermission();
+        checkLocationPermission();
 
-        gps=new GPSTracker(getApplicationContext(), this);
         Location l = getLastKnownLocation();
-        double curlat= l.getLatitude();//gps.getLatitude();
-        double curlon= l.getLongitude();//gps.getLongitude();
-        LatLng currentpos=new LatLng(curlat, curlon);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat,curlon), 10));
-        //getLastKnownLocation();
-        m = mMap.addMarker(new MarkerOptions().position(currentpos)
-                .title("Draggable Marker")
-                .snippet("Long press and move the marker if needed.")
-                .draggable(true)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-
-            @Override
-            public void onMarkerDrag(Marker arg0) {
-                // TODO Auto-generated method stub
-                Log.d("Marker", "Dragging");
-            }
-
-            @Override
-            public void onMarkerDragEnd(Marker arg0) {
-                // TODO Auto-generated method stub
-                LatLng markerLocation = m.getPosition();
-                Toast.makeText(MapsBookToShare.this, markerLocation.toString(), Toast.LENGTH_LONG).show();
-                Log.d("Marker", "finished");
-            }
-
-            @Override
-            public void onMarkerDragStart(Marker arg0) {
-                // TODO Auto-generated method stub
-                Log.d("Marker", "Started");
-
-            }
-        });
-       // set listeners for buttons
-
-
-        /*
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener()
-        {
-            @Override
-            public void onMapClick(LatLng arg0)
-            {
-                Location location = getLastKnownLocation();
-                LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-            }
-        });
-        */
-    }
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    */
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        if(l == null) {
+            Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show();
+            checkLocationPermission();
+            l = getLastKnownLocation();
         }
-        return super.onOptionsItemSelected(item);
+
+        else {
+
+            if(l == null){
+                //checkLocationPermission();
+                l = getLastKnownLocation();
+            }
+
+            gps = new GPSTracker(getApplicationContext(), this);
+
+            double curlat = l.getLatitude(); // l is null
+            double curlon = l.getLongitude();
+            LatLng currentpos = new LatLng(curlat, curlon);
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), 10));
+            //getLastKnownLocation();
+            m = mMap.addMarker(new MarkerOptions().position(currentpos)
+                    .title("Draggable Marker")
+                    .snippet("Long press and move the marker if needed.")
+                    .draggable(true)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+
+            mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+
+                @Override
+                public void onMarkerDrag(Marker arg0) {
+                    // TODO Auto-generated method stub
+                    Log.d("Marker", "Dragging");
+                }
+
+                @Override
+                public void onMarkerDragEnd(Marker arg0) {
+                    // TODO Auto-generated method stub
+                    LatLng markerLocation = m.getPosition();
+                    Toast.makeText(MapsBookToShare.this, markerLocation.toString(), Toast.LENGTH_LONG).show();
+                    Log.d("Marker", "finished");
+                }
+
+                @Override
+                public void onMarkerDragStart(Marker arg0) {
+                    // TODO Auto-generated method stub
+                    Log.d("Marker", "Started");
+
+                }
+            });
+        }
+
     }
-    */
+
     public void addMarkers(){
         /*
         Location location = getLastKnownLocation();
@@ -231,12 +192,12 @@ public class MapsBookToShare extends AppCompatActivity {
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -249,7 +210,7 @@ public class MapsBookToShare extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(MapsBookToShare.this,
-                                        new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION);
                             }
                         })
@@ -265,7 +226,7 @@ public class MapsBookToShare extends AppCompatActivity {
             }
             return false;
         } else {
-            //mMap.setMyLocationEnabled(true);
+            mMap.setMyLocationEnabled(true);
             return true;
         }
     }
@@ -302,7 +263,7 @@ public class MapsBookToShare extends AppCompatActivity {
     }
 
     private Location getLastKnownLocation() {
-
+        //checkLocationPermission();
         List<String> providers = mLocationManager.getProviders(true);
         Location bestLocation = null;
         Location l = null;
