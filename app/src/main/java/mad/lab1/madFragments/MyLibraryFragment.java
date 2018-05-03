@@ -322,7 +322,6 @@ public class MyLibraryFragment extends Fragment {
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-
             BookIdInfo bookIdInfo = new BookIdInfo(
                     user.getUid(),
                     isbn,
@@ -347,6 +346,12 @@ public class MyLibraryFragment extends Fragment {
             ref2.child(user.getUid())
                     .child(bookID)
                     .setValue(bookIdInfo);
+
+            ref2 = FirebaseDatabase.getInstance().getReference("isbnOwners");
+
+            ref2.child(isbn)
+                    .child(user.getUid())
+                    .setValue(user.getUid());
 
             //get the thumbnail
 
@@ -560,7 +565,9 @@ public class MyLibraryFragment extends Fragment {
     public void onResume() {
         super.onResume();
         //add childEventListener
-        dbRef.addChildEventListener(bookIDListener);
+        if(bookIDListener != null) {
+            dbRef.addChildEventListener(bookIDListener);
+        }
 
     }
 

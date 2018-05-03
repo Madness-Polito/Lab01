@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import mad.lab1.Book;
+import mad.lab1.MapsActivity;
+import mad.lab1.MapsActivityFiltered;
 import mad.lab1.R;
 
 public class ShowSelectedBookInfo extends AppCompatActivity {
@@ -84,12 +86,10 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
             }
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(ShowSelectedBookInfo.this, "Book borrowed", Toast.LENGTH_SHORT).show();
-                onBackPressed();
-            }
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(fab.getContext(), MapsActivityFiltered.class);
+            intent.putExtra("isbn",book.getIsbn());
+            startActivity(intent);
         });
         
         
