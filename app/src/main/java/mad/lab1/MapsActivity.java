@@ -80,12 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // get permissions
         checkLocationPermission();
 
-        Location currentLocation = getLastKnownLocation();
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        float zoomLevel = 10.0f; //This goes up to 21
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
 
-        addMarkers();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -158,65 +153,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 }
             });
-            /*
-            Log.d("ADD", " --> "+users.size());
-            // the asynchronous listener is called after this -> problem
-            if(users.size() == 0)
-                Toast.makeText(this, "no users", Toast.LENGTH_SHORT).show();
-            for(UserInfo u : users){
-                Double lat = new Double(u.getLatitude());
-                Double lng = new Double(u.getLongitude());
-                LatLng myLatLng = new LatLng(lat, lng);
 
-                Location l = new Location("");
-                l.setLatitude(lat);
-                l.setLongitude(lng);
-
-                Float distanceInMt = location.distanceTo(l);
-                Float distanceInKm = location.distanceTo(l) / 1000;
-                String distKm = String.format("%.2f", distanceInKm);
-                Integer distanceInKmInt = new Integer(distanceInKm.intValue());
-
-                Marker m;
-                if (distanceInKm < 0.1)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt+" m"));
-                if (distanceInKm < 1)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm+" km"));
-                if (distanceInKm < 5)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString()+" km"));
-                else
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString()+" km"));
-            }
-            */
-            /*
-            for(int i = 1; i< 11; i++) {
-                LatLng myLatLng = new LatLng(location.getLatitude() + i,
-                        location.getLongitude() + i);
-                //mMap.addMarker(new MarkerOptions().position(myLatLng));
-
-                Location l = new Location("");
-                l.setLatitude(myLatLng.latitude);
-                l.setLongitude(myLatLng.longitude);
-                //markerList.add(m);
-                Float distanceInMt = location.distanceTo(l);
-                Float distanceInKm = location.distanceTo(l) / 1000;
-                String distKm = String.format("%.2f", distanceInKm);
-                Integer distanceInKmInt = new Integer(distanceInKm.intValue());
-                Marker m;
-                if (distanceInKm < 0.1)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt+" m"));
-                if (distanceInKm < 1)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm+" km"));
-                if (distanceInKm < 5)
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString()+" km"));
-                else
-                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString()+" km"));
-            }
-            */
-            //for(Marker m1 : markerList)
-            //    m1.showInfoWindow();
         }
-
+        else
+            Toast.makeText(this, "Location is null", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -256,9 +196,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
+            Log.d("POS", "false");
             return false;
         } else {
             mMap.setMyLocationEnabled(true);
+            Log.d("POS", "true");
+            // once you have the permission, here you have to call initialization() and zoomLevel()
+            setZoomLevel();
+            addMarkers();
             return true;
         }
     }
@@ -278,7 +223,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
-                        getLastKnownLocation();
+                        // get current location enabled -> blue pointer on the map
+                        mMap.setMyLocationEnabled(true);
+
+                        setZoomLevel();
+
+                        addMarkers();
                     }
 
                 } else {
@@ -292,6 +242,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         }
+    }
+
+    private void setZoomLevel(){
+        Location l = getLastKnownLocation();
+        double curlat = l.getLatitude(); // l is null
+        double curlon = l.getLongitude();
+        LatLng currentpos = new LatLng(curlat, curlon);
+
+        float zoomLevel = 10.0f; //This goes up to 21
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));
     }
 
     private Location getLastKnownLocation() {

@@ -22,9 +22,11 @@
         android:clickable="true"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@android:drawable/stat_sys_upload_done" />
+        app:srcCompat="@drawable/com_facebook_button_like_icon_selected"
+         />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/cancelLocationButton"
@@ -37,7 +39,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toTopOf="@id/doneButton"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@android:drawable/stat_sys_upload_done" />
+        app:srcCompat="@drawable/com_facebook_tooltip_black_xout" />
 
     <view
         class="android.support.v4.view.ViewPager"
@@ -47,6 +49,8 @@
 
 
         />
+
+
 
 
 </android.support.constraint.ConstraintLayout>

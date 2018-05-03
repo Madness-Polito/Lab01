@@ -60,19 +60,7 @@ public class MapsBookToShare extends AppCompatActivity {
         else{
             curlat = new Double(savedInstanceState.get("lat").toString()); // l is null
             curlon = new Double(savedInstanceState.get("lng").toString());
-            //LatLng currentpos = new LatLng(curlat, curlon);
-
-            /*
-                m = mMap.addMarker(new MarkerOptions().position(currentpos)
-
-                    .title("Draggable Marker")
-                    .snippet("Long press and move the marker if needed.")
-                    .draggable(true)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-            */
         }
-
-        // todo retrieve lat and lng and put in Boundle and get the last location
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         if(mLocationManager == null){
@@ -105,7 +93,7 @@ public class MapsBookToShare extends AppCompatActivity {
                     finish();
                 }
                 else
-                    Toast.makeText(getApplicationContext(), "ERROR, FINAL POSITION NULL", Toast.LENGTH_LONG).show();
+                    Log.d("ERROR", "ERROR, FINAL POSITION NULL");//Toast.makeText(getApplicationContext(), "ERROR, FINAL POSITION NULL", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -125,9 +113,17 @@ public class MapsBookToShare extends AppCompatActivity {
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        Location l;
+
         // get permissions
         checkLocationPermission();
+
+
+
+    }
+
+    public void initialize(){
+
+        Location l;
 
         if(curlat != null && curlon != null) {
             l = new Location("");
@@ -140,30 +136,27 @@ public class MapsBookToShare extends AppCompatActivity {
 
         if(l == null) {
             Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show();
-            checkLocationPermission();
-            l = getLastKnownLocation();
+            //checkLocationPermission();
+            //l = getLastKnownLocation();
         }
 
         else {
 
+            /*
             if(l == null){
                 //checkLocationPermission();
                 l = getLastKnownLocation();
             }
-
+            */
             gps = new GPSTracker(getApplicationContext(), this);
 
-            double curlat = l.getLatitude(); // l is null
-            double curlon = l.getLongitude();
-            LatLng currentpos = new LatLng(curlat, curlon);
+            LatLng currentpos = setZoomLevel();
 
-            float zoomLevel = 10.0f; //This goes up to 21
-
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));
             //getLastKnownLocation();
+            Log.d("MARKER", "--> added");
             m = mMap.addMarker(new MarkerOptions().position(currentpos)
-                    .title("Draggable Marker")
-                    .snippet("Long press and move the marker if needed.")
+                    //.title("Draggable Marker")
+                    //.snippet("Long press and move the marker if needed.")
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
@@ -179,7 +172,7 @@ public class MapsBookToShare extends AppCompatActivity {
                 public void onMarkerDragEnd(Marker arg0) {
                     // TODO Auto-generated method stub
                     LatLng markerLocation = m.getPosition();
-                    Toast.makeText(MapsBookToShare.this, markerLocation.toString(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(MapsBookToShare.this, markerLocation.toString(), Toast.LENGTH_LONG).show();
                     Log.d("Marker", "finished");
                 }
 
@@ -191,28 +184,19 @@ public class MapsBookToShare extends AppCompatActivity {
                 }
             });
         }
-
     }
 
-    public void addMarkers(){
-        /*
-        Location location = getLastKnownLocation();
-        //markerList = new LinkedList<>();
-        if(location != null) {
-                //Marker m;
-                LatLng myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                //m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-                // todo add title with some info on the marker if necessary
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(myLatLng) // set to Center
-                    .build();                   // Creates a CameraPosition
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        }
-            //for(Marker m1 : markerList)
-            //    m1.showInfoWindow();
-         */
-    }
+    private LatLng setZoomLevel(){
+        Location l = getLastKnownLocation();
+        double curlat = l.getLatitude(); // l is null
+        double curlon = l.getLongitude();
+        LatLng currentpos = new LatLng(curlat, curlon);
 
+        float zoomLevel = 10.0f; //This goes up to 21
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));
+        return currentpos;
+    }
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
@@ -248,9 +232,15 @@ public class MapsBookToShare extends AppCompatActivity {
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
+
             return false;
+            // then it calls callback down
         } else {
+            // get current location enabled -> blue pointer on the map
             mMap.setMyLocationEnabled(true);
+            Log.d("MARKER", "no request permission ret true");
+            // when you have the location permissions, this method returns true and initialize() is called from here
+            initialize();
             return true;
         }
     }
@@ -260,6 +250,7 @@ public class MapsBookToShare extends AppCompatActivity {
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
+                Log.d("MARKER", "permission requesting");
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -269,8 +260,10 @@ public class MapsBookToShare extends AppCompatActivity {
                     if (ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
-
-                        getLastKnownLocation();
+                        // first time is asked for permission so initialize() must be called here, the other times in checkLocationPermission where true is returned
+                        // get current location enabled -> blue pointer on the map
+                        mMap.setMyLocationEnabled(true);
+                        initialize();
                     }
 
                 } else {
@@ -282,7 +275,6 @@ public class MapsBookToShare extends AppCompatActivity {
                 }
                 return;
             }
-
         }
     }
 

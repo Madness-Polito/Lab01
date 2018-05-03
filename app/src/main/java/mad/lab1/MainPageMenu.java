@@ -354,6 +354,8 @@ public class MainPageMenu extends AppCompatActivity {
             Authentication.signIn(this);
     }
 
+
+
     private void showBookInfo(String isbn) {
 
         dbRef = FirebaseDatabase.getInstance().getReference().child("isbn").child(isbn);
