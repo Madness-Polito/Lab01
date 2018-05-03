@@ -182,7 +182,45 @@ public class AllBooksFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
                 //Toast.makeText(getActivity(), "Failed to load book list.",
-                  //      Toast.LENGTH_SHORT).show();
+                //      Toast.LENGTH_SHORT).show();
+            }
+        };
+
+        bookIDListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Book b = dataSnapshot.getValue(Book.class);
+                allBookList.add(b);
+                adapter.notifyItemInserted(allBookList.indexOf(b));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                int i = 0;
+                Book b = dataSnapshot.getValue(Book.class);
+                while (allBookList.get(i).getBookId() != b.getBookId()){
+                    i++;
+                }
+                allBookList.set(i, b);
+                adapter.notifyItemChanged(i);
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                //Toast.makeText(getActivity(), "Failed to load book list.",
+                //      Toast.LENGTH_SHORT).show();
             }
         };
 

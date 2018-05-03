@@ -50,7 +50,8 @@
             android:name=".madFragments.ShowSelectedBookInfo"
             android:theme="@style/AppTheme" />
         <activity android:name=".MapsActivity" />
-        <activity android:name=".BookMapDetail"></activity>
+        <activity android:name=".BookMapDetail" />
+        <activity android:name=".MapsBookToShare"></activity>
     </application>
 
 </manifest>

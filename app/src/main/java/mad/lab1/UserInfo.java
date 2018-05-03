@@ -13,6 +13,8 @@ public class UserInfo implements Parcelable{
     private String city;
     private String dob;
     private String bio;
+    private String latitude;
+    private String longitude;
 
     UserInfo(){}
 
@@ -31,6 +33,34 @@ public class UserInfo implements Parcelable{
         this.city  = city;
         this.dob   = dob;
         this.bio   = bio;
+    }
+
+    public UserInfo(String uid, String name, String mail, String phone, String city, String dob, String bio, String latitude, String longitude) {
+        this.uid = uid;
+        this.name = name;
+        this.mail = mail;
+        this.phone = phone;
+        this.city = city;
+        this.dob = dob;
+        this.bio = bio;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
     public String getUid() {

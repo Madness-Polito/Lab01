@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -30,9 +31,11 @@ public class EditProfile extends AppCompatActivity{
     private ImageView pic;
     private Uri mCropImageUri;
     private TextView name, mail, bio, phone, DoB, city;
+    private String latitude, longitude;
     private final String[] KEYS = Globals.KEYS;
     private TextView[] TEXTVIEWS;
     private String picUri;
+    private int BOOK_LOCATION_CODE = 1234;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -43,6 +46,7 @@ public class EditProfile extends AppCompatActivity{
         pic = findViewById(R.id.showImageProfile);
         ImageButton imgBtn = findViewById(R.id.selectImage);
         ImageButton but_nameCity = findViewById(R.id.editTextNameCity);
+        ImageButton but_bookLocation = findViewById(R.id.editBookToShareLocation);
         ImageButton but_persInfo = findViewById(R.id.editPersonalInfo);
         ImageButton but_bio = findViewById(R.id.editBio);
         bio = findViewById(R.id.showTextBio);
@@ -71,8 +75,16 @@ public class EditProfile extends AppCompatActivity{
         //set listeners
         imgBtn.setOnClickListener(v -> {
             if (v.getId() == R.id.selectImage)
-            CropImage.startPickImageActivity(this);}
+                CropImage.startPickImageActivity(this);}
         );
+
+        but_bookLocation.setOnClickListener((View v) ->{
+            // start an activity that returns long and lat
+            Intent intent = new Intent(getApplicationContext(), MapsBookToShare.class);
+            startActivityForResult(intent, BOOK_LOCATION_CODE);
+            //then manage activity result, take long and lat and load them on firebase
+        });
+
         but_nameCity.setOnClickListener((View v) -> {
             // get prompts.xml view
             LayoutInflater li = LayoutInflater.from(this);
@@ -181,24 +193,24 @@ public class EditProfile extends AppCompatActivity{
             // override positive buttton to check data
             alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view ->{
 
-                    if (!TextValidation.isValidPhone(txt_editPhone.getText().toString())){
-                        txt_editPhone.requestFocus();
-                        String errMsg = getString(R.string.invalidPhone);
-                        txt_editPhone.setError(errMsg);
-                    }
-                    // check mail
-                    else if (!TextValidation.isValidMail(txt_editEmail.getText().toString())){
-                        txt_editEmail.requestFocus();
-                        String errMsg = getString(R.string.invalidMail);
-                        txt_editEmail.setError(errMsg);
-                    }
-                    else {
-                        phone.setText(txt_editPhone.getText().toString());
-                        mail.setText(txt_editEmail.getText().toString());
-                        String dob = datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + (datePicker.getYear());
-                        DoB.setText(dob);
-                        alertDialog.dismiss();
-                    }
+                if (!TextValidation.isValidPhone(txt_editPhone.getText().toString())){
+                    txt_editPhone.requestFocus();
+                    String errMsg = getString(R.string.invalidPhone);
+                    txt_editPhone.setError(errMsg);
+                }
+                // check mail
+                else if (!TextValidation.isValidMail(txt_editEmail.getText().toString())){
+                    txt_editEmail.requestFocus();
+                    String errMsg = getString(R.string.invalidMail);
+                    txt_editEmail.setError(errMsg);
+                }
+                else {
+                    phone.setText(txt_editPhone.getText().toString());
+                    mail.setText(txt_editEmail.getText().toString());
+                    String dob = datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + (datePicker.getYear());
+                    DoB.setText(dob);
+                    alertDialog.dismiss();
+                }
             });
         });
 
@@ -249,7 +261,9 @@ public class EditProfile extends AppCompatActivity{
                         phone.getText().toString(),
                         city.getText().toString(),
                         DoB.getText().toString(),
-                        bio.getText().toString());
+                        bio.getText().toString(),
+                        latitude,
+                        longitude);
                 UsersDB.setUser(userInfo);
                 LocalDB.putUserInfo(this, userInfo);
 
@@ -299,6 +313,7 @@ public class EditProfile extends AppCompatActivity{
     @Override
     @SuppressLint("NewApi")
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         // handle result of pick image chooser
         if (requestCode == CropImage.PICK_IMAGE_CHOOSER_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = CropImage.getPickImageResultUri(this, data);
@@ -324,7 +339,32 @@ public class EditProfile extends AppCompatActivity{
                 Exception error = result.getError();
                 error.printStackTrace();
             }
+
+        } else if (requestCode == BOOK_LOCATION_CODE){
+
+            if (resultCode == RESULT_OK){
+                Bundle coordinates =  data.getExtras();
+                if(coordinates != null){
+                    LatLng coo = (LatLng) coordinates.get("LatLng");
+                    latitude = new Double(coo.latitude).toString();
+                    longitude = new Double(coo.longitude).toString();
+                    //todo upload in firebase
+                    //Toast.makeText(this, "lat "+lat+" , lng "+lng, Toast.LENGTH_SHORT).show();
+                }
+                else
+                    Toast.makeText(this, "ERROR, coo is null", Toast.LENGTH_SHORT).show();
+
+            }
+            else if (resultCode == RESULT_CANCELED){
+                //nothing
+                //Toast.makeText(this, "nothing to be returned", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "unknown error", Toast.LENGTH_SHORT).show();
+            }
         }
+
+
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {

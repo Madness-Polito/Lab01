@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +13,7 @@
 
 
 
-        <RelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -144,6 +144,17 @@
                     android:background="@android:color/transparent"
                     android:src="@drawable/ic_mode_edit_24dp_white" />
 
+
+                <ImageButton
+                    android:id="@+id/editBookToShareLocation"
+                    android:layout_width="27dp"
+                    android:layout_height="24dp"
+                    android:layout_above="@+id/showTextCityStateName"
+                    android:layout_marginLeft="16dp"
+                    android:layout_toRightOf="@+id/editTextNameCity"
+                    android:background="@android:color/transparent"
+                    android:tint="@color/text_white"
+                    app:srcCompat="@android:drawable/ic_menu_mylocation" />
 
                 <TextView
                     android:id="@+id/showTextCityStateName"
@@ -277,7 +288,7 @@
                             android:layout_marginLeft="16dp"
                             android:textSize="12sp"
                             android:hint="@string/mailHint"
-                          />
+                            />
 
                     </LinearLayout>
                 </LinearLayout>

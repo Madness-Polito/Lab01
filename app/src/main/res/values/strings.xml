@@ -44,4 +44,6 @@
     <string name="google_maps_key">AIzaSyDpOyrC-3yyGgOqGNMXwL2k8FOba2LKMh8</string>
     <string name="title_location_permission">Device location request</string>
     <string name="text_location_permission">Pazzia Libro Condivisione would like to access your device position</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
