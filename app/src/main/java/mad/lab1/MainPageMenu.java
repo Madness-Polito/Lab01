@@ -107,10 +107,6 @@ public class MainPageMenu extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 //query contains the title of the book searched
-                String isbn = titleToISBN.get(query);
-                showBookInfo(isbn);
-
-
                 return false;
             }
 

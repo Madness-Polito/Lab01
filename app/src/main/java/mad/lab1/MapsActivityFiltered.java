@@ -94,7 +94,12 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
         checkLocationPermission();
 
         Location currentLocation =  getLastKnownLocation();
-        LatLng latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        LatLng latLng;
+        if(currentLocation != null) {
+            latLng = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        }else{
+            latLng = new LatLng(0, 0);
+        }
         float zoomLevel = 10.0f; //This goes up to 21
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoomLevel));
 
@@ -244,9 +249,14 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
+            Log.d("POS", "false");
             return false;
         } else {
             mMap.setMyLocationEnabled(true);
+            Log.d("POS", "true");
+            // once you have the permission, here you have to call initialization() and zoomLevel()
+            setZoomLevel();
+            addMarkers();
             return true;
         }
     }
@@ -266,7 +276,12 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                             Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
 
-                        getLastKnownLocation();
+                        // get current location enabled -> blue pointer on the map
+                        mMap.setMyLocationEnabled(true);
+
+                        setZoomLevel();
+
+                        addMarkers();
                     }
 
                 } else {
@@ -280,6 +295,17 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
             }
 
         }
+    }
+
+    private void setZoomLevel(){
+        Location l = getLastKnownLocation();
+        double curlat = l.getLatitude(); // l is null
+        double curlon = l.getLongitude();
+        LatLng currentpos = new LatLng(curlat, curlon);
+
+        float zoomLevel = 10.0f; //This goes up to 21
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));
     }
 
     private Location getLastKnownLocation() {
