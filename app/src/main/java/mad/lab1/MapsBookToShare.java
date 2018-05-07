@@ -142,12 +142,6 @@ public class MapsBookToShare extends AppCompatActivity {
 
         else {
 
-            /*
-            if(l == null){
-                //checkLocationPermission();
-                l = getLastKnownLocation();
-            }
-            */
             gps = new GPSTracker(getApplicationContext(), this);
 
             LatLng currentpos = setZoomLevel();
@@ -191,7 +185,7 @@ public class MapsBookToShare extends AppCompatActivity {
         double curlat = l.getLatitude(); // l is null
         double curlon = l.getLongitude();
         LatLng currentpos = new LatLng(curlat, curlon);
-
+        // must be set according to markers location
         float zoomLevel = 10.0f; //This goes up to 21
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));

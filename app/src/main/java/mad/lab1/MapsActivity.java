@@ -15,12 +15,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
@@ -105,10 +107,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    //DataSnapshot userSnapshot = dataSnapshot.child("users");
-                    //Iterable<DataSnapshot> usersChildren = userSnapshot.getChildren();
 
-                    //Toast.makeText(MapsActivity.this, "bauuuuuu", Toast.LENGTH_SHORT).show();
+                    Integer minDistanceFound = new Integer(1000);
+                    Marker  minDistanceMarker = null;
+                    List<Marker> markerList = new LinkedList<>();
+
                     for(DataSnapshot user : dataSnapshot.getChildren()) {
 
                         UserInfo u = user.getValue(UserInfo.class);
@@ -139,12 +142,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString() + " km"));
                                 else
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString() + " km"));
+
+                                if(minDistanceFound > distanceInKmInt){
+                                    minDistanceFound = distanceInKmInt;
+                                    minDistanceMarker = m;
+                                }
+                                markerList.add(m);
+                            }
                         }
                     }
+
+                    // now I have the minimum distance of a marker. I can set an appropriate zoom
+                    if(minDistanceMarker != null) {
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+                        for(Marker m : markerList)
+                            boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
+                        //boundsBuilder.include(new LatLng(minDistanceMarker.getPosition().latitude, minDistanceMarker.getPosition().longitude));
+                        final LatLngBounds bounds = boundsBuilder.build();
+                        int padding = 300; // offset from edges of the map in pixels
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,padding);
+                        mMap.animateCamera(cameraUpdate);
                     }
-
-
-
 
                 }
 
@@ -202,7 +221,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.setMyLocationEnabled(true);
             Log.d("POS", "true");
             // once you have the permission, here you have to call initialization() and zoomLevel()
-            setZoomLevel();
+            //setZoomLevel();
             addMarkers();
             return true;
         }
@@ -226,7 +245,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // get current location enabled -> blue pointer on the map
                         mMap.setMyLocationEnabled(true);
 
-                        setZoomLevel();
+                        //setZoomLevel();
 
                         addMarkers();
                     }

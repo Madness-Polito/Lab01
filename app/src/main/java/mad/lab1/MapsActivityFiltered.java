@@ -15,12 +15,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -164,6 +166,7 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                     //Iterable<DataSnapshot> usersChildren = userSnapshot.getChildren();
 
                     //Toast.makeText(MapsActivity.this, "bauuuuuu", Toast.LENGTH_SHORT).show();
+                    List<Marker> markerList = new LinkedList<>();
                     for(DataSnapshot user : dataSnapshot.getChildren()) {
 
                         UserInfo u = user.getValue(UserInfo.class);
@@ -194,9 +197,22 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString() + " km"));
                                 else
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString() + " km"));
+
+                                markerList.add(m);
                             }
                         }
                     }
+
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+                    for(Marker m : markerList)
+                        boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
+                    boundsBuilder.include(new LatLng(location.getLatitude(), location.getLongitude()));
+                    final LatLngBounds bounds = boundsBuilder.build();
+                    //todo change values according to number and distance of markers, find a right algorithm to compute height, width, padding
+                    int padding = 100; // offset from edges of the map in pixels
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,padding);
+                    mMap.animateCamera(cameraUpdate);
 
 
 
