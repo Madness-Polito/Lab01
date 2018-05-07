@@ -302,8 +302,10 @@ public class MapsBookToShare extends AppCompatActivity {
 
     protected void onSaveInstanceState(Bundle b) {
         super.onSaveInstanceState(b);
-        b.putString("lat", new Double(m.getPosition().latitude).toString());
-        b.putString("lng", new Double(m.getPosition().longitude).toString());
+        if(m != null) {
+            b.putString("lat", new Double(m.getPosition().latitude).toString());
+            b.putString("lng", new Double(m.getPosition().longitude).toString());
+        }
     }
 
     protected void onRestoreInstanceState(Bundle b) {
