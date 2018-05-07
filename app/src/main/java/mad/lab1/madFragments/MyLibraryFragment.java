@@ -81,6 +81,7 @@ import mad.lab1.Book;
 import mad.lab1.BookIdInfo;
 import mad.lab1.BookTitleDB;
 import mad.lab1.BookTitleInfo;
+import mad.lab1.CreateBookActivity;
 import mad.lab1.IsbnDB;
 import mad.lab1.IsbnInfo;
 import mad.lab1.LocalDB;
@@ -90,6 +91,8 @@ import mad.lab1.R;
 import mad.lab1.StorageDB;
 
 public class MyLibraryFragment extends Fragment {
+
+    private final static Integer CREATE_NEW_BOOK = 30;
 
     private FloatingActionButton map;
     private FloatingActionButton fab;
@@ -101,6 +104,8 @@ public class MyLibraryFragment extends Fragment {
     private String pubYear;
     private String description;
     private String imageLinks;
+
+    private Boolean creatingNewBook = false;
 
     private ArrayList<Book> allBookList;
 
@@ -358,7 +363,119 @@ public class MyLibraryFragment extends Fragment {
             GetBookThumb getBookThumb = new GetBookThumb();
             getBookThumb.execute(imageLinks);
 
+            creatingNewBook = false;
+
+        }else if(requestCode == CREATE_NEW_BOOK &&resultCode == Activity.RESULT_OK){
+
+            String condition = data.getStringExtra("condition");
+            title = data.getStringExtra("title");
+            author = data.getStringExtra("author");
+            publisher = data.getStringExtra("publisher");
+            pubYear = data.getStringExtra("pubDate");
+            description = data.getStringExtra("description");
+            Bitmap thumbnail = data.getParcelableExtra("thumbnail");
+
+
+            // upload book to firebase
+            IsbnInfo isbnInfo = new IsbnInfo(
+                    isbn,
+                    title,
+                    author,
+                    publisher,
+                    pubYear,
+                    description,
+                    null);
+            IsbnDB.setBook(isbnInfo);
+
+            BookTitleInfo bookTitleInfo = new BookTitleInfo(
+                    title,
+                    isbn);
+            BookTitleDB.setBook(bookTitleInfo);
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            BookIdInfo bookIdInfo = new BookIdInfo(
+                    user.getUid(),
+                    isbn,
+                    title,
+                    author,
+                    "free",
+                    condition,
+                    publisher,
+                    pubYear,
+                    description
+            );
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookID");
+
+            // read the bookId key and save bookId Info
+            bookID = ref.push().getKey();
+            ref.child(bookID).setValue(bookIdInfo);
+
+
+            //generate bookList
+            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference("bookList");
+
+            ref2.child(user.getUid())
+                    .child(bookID)
+                    .setValue(bookIdInfo);
+
+            ref2 = FirebaseDatabase.getInstance().getReference("isbnOwners");
+
+            ref2.child(isbn)
+                    .child(user.getUid())
+                    .setValue(user.getUid());
+
+            saveThumbnailToFirebase(thumbnail);
+
+            creatingNewBook = false;
         }
+    }
+
+    private void saveThumbnailToFirebase(Bitmap thumbnail){
+        ByteArrayOutputStream bYtE = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.PNG, 100, bYtE);
+        thumbnail.recycle();
+        byte[] byteArray = bYtE.toByteArray();
+            /*String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
+            ref.child(isbn).child("encodedThumbnail").setValue(encodedImage);
+
+            ref = FirebaseDatabase.getInstance().getReference("bookID");
+            ref.child(bookID).child("encodedThumbnail").setValue(encodedImage);
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            ref = FirebaseDatabase.getInstance().getReference("bookList");
+            ref.child(user.getUid()).child(bookID).child("encodedThumbnail").setValue(encodedImage);*/
+
+        //save the thumbnail in FirebaseStorage
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        StorageReference imageRef = storageRef.child("thumbnails/"+ isbn +".png");
+        UploadTask uploadTask = imageRef.putBytes(byteArray);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                //save the URL for the thumbnail on the database
+                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
+                ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
+
+                ref = FirebaseDatabase.getInstance().getReference("bookID");
+                ref.child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                ref = FirebaseDatabase.getInstance().getReference("bookList");
+                ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+            }
+        });
+
     }
 
 
@@ -381,7 +498,7 @@ public class MyLibraryFragment extends Fragment {
             if(isCancelled()){
                 return null;
             }
-
+            isbn = isbns[0];
             String apiUrlString = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbns[0];
             try{
                 HttpURLConnection connection = null;
@@ -465,9 +582,16 @@ public class MyLibraryFragment extends Fragment {
 
 
             } catch (JSONException e) {
-                e.printStackTrace();
+                noGoogleAPI();
             }
         }
+    }
+
+    private void noGoogleAPI(){
+        creatingNewBook = true;
+        Intent i = new Intent(getActivity(), CreateBookActivity.class);
+        startActivityForResult(i, CREATE_NEW_BOOK);
+
     }
 
     private class GetBookThumb extends AsyncTask<String, Void, String> {
@@ -607,5 +731,7 @@ public class MyLibraryFragment extends Fragment {
             imageLinks = savedInstanceState.getString("imageLinks");
         }
     }
+
+
 }
 

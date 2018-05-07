@@ -35,6 +35,13 @@
     <string name="cond_used">Used</string>
     <string name="cond_new">New</string>
     <string name="missingCondition">You haven\'t selected a condition!</string>
+    <string name="title">Title</string>
+    <string name="author">Author</string>
+    <string name="publisher">Publisher</string>
+    <string name="pubDate">Publication Year</string>
+    <string name="description">Description</string>
+    <string name="missingData">Please fill in all the missing information</string>
+    <string name="wrongYear">The year is wrong, please use a valid year</string>
 
     <string name="facebook_application_id" translatable="false">210891089496907</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb210891089496907</string>

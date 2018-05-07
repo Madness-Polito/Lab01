@@ -36,6 +36,13 @@
     <string name="showInfoBookDescriptionConditionHeader">Condizione:</string>
     <string name="title_location_permission">Richiesta posizione dispositivo</string>
     <string name="text_location_permission">Pazzia Libro Condivisione vorrebbe accedere alla posizione del tuo dispositivo</string>
+    <string name="title">Titolo</string>
+    <string name="author">Autore</string>
+    <string name="publisher">Casa Editrice</string>
+    <string name="pubDate">Anno di pubblicazione</string>
+    <string name="description">Descrizione</string>
+    <string name="missingData">Per favore, riempire tutti i campi mancanti</string>
+    <string name="wrongYear">L\'anno di pubblicazione e\' sbagliato, per favore usare un anno valido.</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="AllBooks">Tutti i libri</string>
