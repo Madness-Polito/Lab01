@@ -179,7 +179,8 @@ public class MainPageMenu extends AppCompatActivity {
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             String[] titles = {getApplicationContext().getString(R.string.AllBooks),
                     getApplicationContext().getString(R.string.Library),
-                    getApplicationContext().getString(R.string.BorrowedBooks)};
+                    getApplicationContext().getString(R.string.BorrowedBooks),
+                    "Chat List"};
 
 
             @Override
@@ -190,17 +191,6 @@ public class MainPageMenu extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
 
-                if (position == 3) {
-                    tabLayout.setVisibility(View.GONE);
-                    getSupportActionBar().hide();
-                } else {
-                    if (!getSupportActionBar().isShowing()) {
-                        getSupportActionBar().show();
-                    }
-                    if (tabLayout.getVisibility() == View.GONE) {
-                        tabLayout.setVisibility(View.VISIBLE);
-                    }
-                }
 
                 toolbar.setTitle(titles[position]);
 
@@ -306,6 +296,9 @@ public class MainPageMenu extends AppCompatActivity {
 
         tabCall = tabLayout.getTabAt(2);
         tabCall.setIcon(R.drawable.borrowed_books_tab_icon);
+
+        tabCall = tabLayout.getTabAt(3);
+        tabCall.setIcon(R.drawable.chat_list_tab_icon);
 
     }
 

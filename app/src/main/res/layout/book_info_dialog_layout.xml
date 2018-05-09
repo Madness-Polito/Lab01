@@ -278,7 +278,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:background="@color/colorAccent"
-        android:src="@drawable/borrowed_books_selected_24dp"
+        android:src="@drawable/ic_notebook"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

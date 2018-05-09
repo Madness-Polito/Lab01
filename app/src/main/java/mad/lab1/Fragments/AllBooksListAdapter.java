@@ -21,7 +21,7 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
 
 
     public interface OnBookClicked {
-        void onBookClicked(Book b);       //TODO: SET BOOKS INSTEAD OF STRING
+        void onBookClicked(Book b);
     }
 
     class CardViewHolder extends  RecyclerView.ViewHolder{

@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import mad.lab1.Fragments.AllBooksFragment;
 import mad.lab1.Fragments.BorrowedBooksFragment;
+import mad.lab1.Fragments.ChatListFragment;
 import mad.lab1.Fragments.MyLibraryFragment;
 
 public class PagerAdapterFragmentMainMenu extends FragmentPagerAdapter {
@@ -17,7 +18,7 @@ public class PagerAdapterFragmentMainMenu extends FragmentPagerAdapter {
     }
 
     //TODO: to be modified if more fragments are needed
-    public static final int PAGE_NUM = 3;
+    public static final int PAGE_NUM = 4;
 
     //This method will return a fragment. It is call by the ViewPager when it needs to change page
     @Override
@@ -29,6 +30,8 @@ public class PagerAdapterFragmentMainMenu extends FragmentPagerAdapter {
                 return MyLibraryFragment.newInstance(1, "My Library");
             case 2:
                 return BorrowedBooksFragment.newInstance(2, "Borrowed Books");
+            case 3:
+                return ChatListFragment.newInstance(2, "Chat List");
 
         }
 
