@@ -1,4 +1,4 @@
-package mad.lab1.madFragments;
+package mad.lab1.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import mad.lab1.Book;
+import mad.lab1.Database.Book;
 import mad.lab1.R;
 
 public class ShowSelelctedBookInfoDialogFragment extends DialogFragment {

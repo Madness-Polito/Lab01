@@ -1,9 +1,8 @@
-package mad.lab1;
+package mad.lab1.Database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.widget.ImageView;
+
 import com.google.gson.Gson;
 
 import java.io.File;

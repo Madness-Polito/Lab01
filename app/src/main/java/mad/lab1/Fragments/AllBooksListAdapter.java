@@ -1,4 +1,4 @@
-package mad.lab1.madFragments;
+package mad.lab1.Fragments;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -8,14 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
-import mad.lab1.Book;
+import mad.lab1.Database.Book;
 import mad.lab1.R;
 
 public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapter.CardViewHolder> {

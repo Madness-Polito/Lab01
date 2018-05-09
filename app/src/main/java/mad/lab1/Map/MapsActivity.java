@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.Map;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -33,6 +33,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import mad.lab1.Database.LocalDB;
+import mad.lab1.R;
+import mad.lab1.Database.UserInfo;
 
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {

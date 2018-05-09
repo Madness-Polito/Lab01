@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import mad.lab1.madFragments.AllBooksFragment;
-import mad.lab1.madFragments.BorrowedBooksFragment;
-import mad.lab1.madFragments.MyLibraryFragment;
+import mad.lab1.Fragments.AllBooksFragment;
+import mad.lab1.Fragments.BorrowedBooksFragment;
+import mad.lab1.Fragments.MyLibraryFragment;
 
 public class PagerAdapterFragmentMainMenu extends FragmentPagerAdapter {
 

@@ -1,10 +1,7 @@
-package mad.lab1;
+package mad.lab1.Database;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Base64;
 
 /**
  * Created by Matteo on 17/04/2018.

@@ -1,44 +1,29 @@
-package mad.lab1;
+package mad.lab1.Database;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-// represents the book info stored in firebase
-public class BookIdInfo implements Parcelable{
+// represents the book isbn info stored in firebase
+public class IsbnInfo implements Parcelable{
 
-
-    private String uid;
     private String isbn;
     private String title;
     private String author;
-    private String status;
-    private String condition;
     private String publisher;
     private String pubYear;
     private String description;
+    private String thumbURL;
 
+    IsbnInfo(){}
 
-    BookIdInfo(){}
-
-    public BookIdInfo(String uid, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String description) {
-        this.uid = uid;
+    public IsbnInfo(String isbn, String title, String author, String publisher, String pubYear, String description, String encodedThumbnail) {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
-        this.status = status;
-        this.condition = condition;
         this.publisher = publisher;
         this.pubYear = pubYear;
         this.description = description;
-    }
-
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
+        this.thumbURL = encodedThumbnail;
     }
 
     public String getIsbn() {
@@ -65,22 +50,6 @@ public class BookIdInfo implements Parcelable{
         this.author = author;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getCondition() {
-        return condition;
-    }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
     public String getPublisher() {
         return publisher;
     }
@@ -105,41 +74,45 @@ public class BookIdInfo implements Parcelable{
         this.description = description;
     }
 
-    // In constructor you will read the variables from Parcel. Make sure to read them in the same sequence in which you have written them in Parcel.
-    private BookIdInfo(Parcel in) {
+    public String getThumbURL() {
+        return thumbURL;
+    }
 
-        uid  = in.readString();
-        isbn = in.readString();
-        title  = in.readString();
-        author = in.readString();
-        status  = in.readString();
-        condition   = in.readString();
-        publisher   = in.readString();
+    public void setThumbURL(String thumbURL) {
+        this.thumbURL = thumbURL;
+    }
+
+    // In constructor you will read the variables from Parcel. Make sure to read them in the same sequence in which you have written them in Parcel.
+    private IsbnInfo(Parcel in) {
+        isbn   = in.readString();
+        title = in.readString();
+        author  = in.readString();
+        publisher = in.readString();
         pubYear = in.readString();
-        description = in.readString();
+        description  = in.readString();
+        thumbURL = in.readString();
+
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(uid);
         dest.writeString(isbn);
         dest.writeString(title);
         dest.writeString(author);
-        dest.writeString(status);
-        dest.writeString(condition);
         dest.writeString(publisher);
         dest.writeString(pubYear);
         dest.writeString(description);
+        dest.writeString(thumbURL);
     }
 
     // This is to de-serialize the object
-    public static final Parcelable.Creator<BookIdInfo> CREATOR = new Parcelable.Creator<BookIdInfo>(){
-        public BookIdInfo createFromParcel(Parcel in) {
-            return new BookIdInfo(in);
+    public static final Parcelable.Creator<IsbnInfo> CREATOR = new Parcelable.Creator<IsbnInfo>(){
+        public IsbnInfo createFromParcel(Parcel in) {
+            return new IsbnInfo(in);
         }
 
-        public BookIdInfo[] newArray(int size) {
-            return new BookIdInfo[size];
+        public IsbnInfo[] newArray(int size) {
+            return new IsbnInfo[size];
         }
     };
 

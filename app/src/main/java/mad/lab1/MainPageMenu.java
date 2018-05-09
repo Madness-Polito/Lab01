@@ -2,21 +2,17 @@ package mad.lab1;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.ErrorCodes;
-import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +25,16 @@ import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mad.lab1.madFragments.ShowSelectedBookInfo;
+import mad.lab1.Database.Book;
+import mad.lab1.Database.BookTitleInfo;
+import mad.lab1.Database.LocalDB;
+import mad.lab1.Database.StorageDB;
+import mad.lab1.Database.UserInfo;
+import mad.lab1.Database.UsersDB;
+import mad.lab1.Fragments.ShowSelectedBookInfo;
+import mad.lab1.User.Authentication;
+import mad.lab1.User.EditProfile;
+import mad.lab1.User.ShowProfile;
 
 
 public class MainPageMenu extends AppCompatActivity {

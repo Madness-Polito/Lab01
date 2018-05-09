@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.User;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +8,11 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import mad.lab1.Database.Globals;
+import mad.lab1.Database.LocalDB;
+import mad.lab1.Database.UserInfo;
+import mad.lab1.R;
 
 public class ShowProfile extends AppCompatActivity {
 

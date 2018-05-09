@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.User;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,6 +30,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.theartofdev.edmodo.cropper.CropImage;
+
+import mad.lab1.CustomTextWatcher;
+import mad.lab1.Database.Globals;
+import mad.lab1.Database.LocalDB;
+import mad.lab1.Database.StorageDB;
+import mad.lab1.Database.UserInfo;
+import mad.lab1.Database.UsersDB;
+import mad.lab1.Map.MapsBookToShare;
+import mad.lab1.R;
+import mad.lab1.TextValidation;
 
 public class EditProfile extends AppCompatActivity{
 

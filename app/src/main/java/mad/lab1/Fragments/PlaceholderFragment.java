@@ -1,4 +1,4 @@
-package mad.lab1.madFragments;
+package mad.lab1.Fragments;
 
 
 import android.os.Bundle;

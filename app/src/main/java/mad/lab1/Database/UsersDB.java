@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.Database;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

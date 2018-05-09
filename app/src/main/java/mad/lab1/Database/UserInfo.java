@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.Database;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,16 +16,16 @@ public class UserInfo implements Parcelable{
     private String latitude;
     private String longitude;
 
-    UserInfo(){}
+    public UserInfo(){}
 
-    UserInfo(String uid, String name, String mail, String phone){
+    public UserInfo(String uid, String name, String mail, String phone){
         this.uid   = uid;
         this.name  = name;
         this.mail  = mail;
         this.phone = phone;
     }
 
-    UserInfo(String uid, String name, String mail, String phone, String city, String dob, String bio){
+    public UserInfo(String uid, String name, String mail, String phone, String city, String dob, String bio){
         this.uid   = uid;
         this.name  = name;
         this.mail  = mail;

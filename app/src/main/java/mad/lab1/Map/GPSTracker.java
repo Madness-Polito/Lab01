@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.Map;
 
 import android.Manifest;
 import android.app.Activity;
@@ -17,6 +17,8 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
+import mad.lab1.R;
 
 public class GPSTracker extends Service implements LocationListener {
 

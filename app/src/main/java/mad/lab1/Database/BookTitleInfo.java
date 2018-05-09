@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.Database;
 
 import android.os.Parcel;
 import android.os.Parcelable;

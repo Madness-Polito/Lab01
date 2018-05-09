@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.Database;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,6 +10,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.File;
+
+import mad.lab1.User.Authentication;
 
 public class StorageDB {
 

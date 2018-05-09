@@ -1,10 +1,9 @@
-package mad.lab1;
+package mad.lab1.User;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.facebook.FacebookSdk;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -13,6 +12,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
+
+import mad.lab1.Database.LocalDB;
+import mad.lab1.MainPageMenu;
 
 // manages user authentication with firebase
 public class Authentication {

@@ -1,4 +1,4 @@
-package mad.lab1;
+package mad.lab1.Database;
 
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
