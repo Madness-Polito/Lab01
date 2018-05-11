@@ -54,7 +54,8 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".Map.MapsActivity" />
         <activity android:name=".Map.MapsActivityFiltered" />
-        <activity android:name=".Map.MapsBookToShare"></activity>
+        <activity android:name=".Map.MapsBookToShare" />
+        <activity android:name=".ChatActivity"></activity>
     </application>
 
 </manifest>

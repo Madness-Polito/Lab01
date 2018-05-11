@@ -43,7 +43,7 @@ public class ChatListFragment extends Fragment {
 
 
         //Populating the adapter
-        adapter = new ChatListAdapter(data);
+        adapter = new ChatListAdapter(data, getContext());
 
 
     }

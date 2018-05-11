@@ -1,5 +1,7 @@
 package mad.lab1.Fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +16,14 @@ import com.twitter.sdk.android.core.models.Card;
 import java.util.ArrayList;
 import java.util.List;
 
+import mad.lab1.ChatActivity;
 import mad.lab1.R;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
     //TODO: change with data from firebase
     private ArrayList<String> data;
+    private Context context;
 
     public static class ChatListViewHolder extends RecyclerView.ViewHolder{
 
@@ -38,8 +42,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     //Constructor receives data from the activity
     //TODO: change with data from firebase
-    public ChatListAdapter(ArrayList<String> data){
+    public ChatListAdapter(ArrayList<String> data, Context context){
+
         this.data = data;
+        this.context = context;
     }
 
 
@@ -47,6 +53,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     public void onBindViewHolder(@NonNull ChatListViewHolder holder, int position) {
         //Setting data in the cardview
         holder.text.setText(data.get(position));
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,ChatActivity.class);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @NonNull
