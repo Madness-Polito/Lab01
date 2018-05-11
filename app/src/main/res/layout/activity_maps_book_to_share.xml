@@ -15,6 +15,18 @@
         android:layout_height="match_parent"
         tools:context="com.example.tutorialspoint7.myapplication.MapsActivity" />
 
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/tw__composer_black"
+        android:textColor="@color/text_white"
+         />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/doneButton"
         android:layout_width="wrap_content"

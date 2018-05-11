@@ -60,4 +60,5 @@
     <string name="BorrowedBooks">Borrowed Books</string>
 
     <string name="uploadError">This book can\'t be uploaded</string>
+    <string name="dragTheMarker">Keep pressed and drag the marker</string>
 </resources>

@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -27,9 +28,16 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import mad.lab1.Database.LocalDB;
+import mad.lab1.Database.UserInfo;
 import mad.lab1.R;
 import mad.lab1.Fragments.PlaceholderFragment;
 
@@ -46,19 +54,29 @@ public class MapsBookToShare extends AppCompatActivity {
     private GPSTracker gps;
     private LatLng finalPosition = null;
     Double curlat = null, curlon = null;
+    Location currentLocation = null;
+    private TextView descriptionText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("MARKER", "onCreate()");
         if (savedInstanceState == null) {
+
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.containerFlag, new PlaceholderFragment()).commit();
+            //
+            getSavedLocation();
+            //
 
         }
         else{
+            Log.d("MARKER", "savedInstanceState != null");
             curlat = new Double(savedInstanceState.get("lat").toString()); // l is null
             curlon = new Double(savedInstanceState.get("lng").toString());
+            currentLocation = new Location("");
+            currentLocation.setLatitude(curlat);
+            currentLocation.setLongitude(curlon);
         }
 
         mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
@@ -107,6 +125,9 @@ public class MapsBookToShare extends AppCompatActivity {
         });
 
         Toast.makeText(getApplicationContext(), "choose a location", Toast.LENGTH_LONG).show();
+
+        descriptionText = findViewById(R.id.descriptionTextView);
+        descriptionText.setText(" drag the marker and choose your location ");
     }
 
 
@@ -120,23 +141,70 @@ public class MapsBookToShare extends AppCompatActivity {
 
     }
 
+    public void getSavedLocation(){
+
+        // if lat and long are registered on firebase fill them
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
+        UserInfo userInfo = LocalDB.getUserInfo(this);
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot user : dataSnapshot.getChildren()) {
+                    UserInfo u = user.getValue(UserInfo.class);
+                    // if user found, check if lat and long is null
+                    //Log.d("MARKER", "user "+u.getName()+" / "+userInfo.getName());
+                    if (u.getName().equals(userInfo.getName())){
+                        if (u.getLatitude() != null && u.getLongitude() != null){
+                            //Log.d("MARKER", "user found!");
+                            curlat = new Double(u.getLatitude());
+                            curlon = new Double(u.getLongitude());
+                            currentLocation = new Location("");
+                            currentLocation.setLatitude(curlat);
+                            currentLocation.setLongitude(curlon);
+                            Log.d("MARKER", "currLocation set");
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("MARKER", "onCancelled() called");
+            }
+        });
+        //Log.d("MARKER", "return currentLocation");
+        //return currentLocation;
+    }
+
     public void initialize(){
 
-        Location l;
+        //Location l;
+
 
         if(curlat != null && curlon != null) {
-            l = new Location("");
-            l.setLatitude(curlat);
-            l.setLongitude(curlon);
+            currentLocation = new Location("");
+            currentLocation.setLatitude(curlat);
+            currentLocation.setLongitude(curlon);
         }
 
-        else
-            l = getLastKnownLocation();
+        else {
+            getSavedLocation();
+            Log.d("MARKER", "currLoc == "+currentLocation);
+            if(currentLocation == null)
+                currentLocation = getLastKnownLocation();
 
-        if(l == null) {
+        }
+
+
+
+
+        if(currentLocation == null) {
             Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show();
-            //checkLocationPermission();
-            //l = getLastKnownLocation();
+
         }
 
         else {
@@ -148,8 +216,6 @@ public class MapsBookToShare extends AppCompatActivity {
             //getLastKnownLocation();
             Log.d("MARKER", "--> added");
             m = mMap.addMarker(new MarkerOptions().position(currentpos)
-                    //.title("Draggable Marker")
-                    //.snippet("Long press and move the marker if needed.")
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
@@ -180,7 +246,11 @@ public class MapsBookToShare extends AppCompatActivity {
     }
 
     private LatLng setZoomLevel(){
-        Location l = getLastKnownLocation();
+        Location l = null;
+        if(currentLocation == null)
+            l = getLastKnownLocation();
+        else
+            l = currentLocation;
         double curlat = l.getLatitude(); // l is null
         double curlon = l.getLongitude();
         LatLng currentpos = new LatLng(curlat, curlon);

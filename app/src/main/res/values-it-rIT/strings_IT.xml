@@ -49,5 +49,6 @@
     <string name="Library">I miei libri</string>
     <string name="BorrowedBooks">Libri presi in prestito</string>
     <string name="uploadError">Questo libro non puo\' essere caricato</string>
+    <string name="dragTheMarker">Tieni premuto e trascina il marker</string>
 
 </resources>

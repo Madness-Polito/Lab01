@@ -273,6 +273,7 @@ public class EditProfile extends AppCompatActivity{
             }else{
                 // save user data to firebase & locally
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
                 UserInfo userInfo = new UserInfo(user.getUid(),
                             name.getText().toString(),
                             mail.getText().toString(),
@@ -374,7 +375,7 @@ public class EditProfile extends AppCompatActivity{
                     LatLng coo = (LatLng) coordinates.get("LatLng");
                     latitude = new Double(coo.latitude).toString();
                     longitude = new Double(coo.longitude).toString();
-                    //todo upload in firebase
+
                     //Toast.makeText(this, "lat "+lat+" , lng "+lng, Toast.LENGTH_SHORT).show();
                 }
                 else

@@ -1,17 +1,22 @@
 package mad.lab1.Map;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -34,18 +39,21 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import mad.lab1.Database.Book;
+import mad.lab1.Database.LocalDB;
 import mad.lab1.R;
 import mad.lab1.Database.UserInfo;
 
 
-public class MapsActivityFiltered extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivityFiltered extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    //private FloatingActionButton currLocationBtn;
+    private FloatingActionButton cancelBtn;
     //private Location location;
     //private MapView mapView;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -56,6 +64,7 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
     private List<String> userIds;
     private String isbn;
     private Book book;
+    private Map<Marker, UserInfo> markUserMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +89,16 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+
+        cancelBtn = findViewById(R.id.cancelButton);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                setResult(Activity.RESULT_CANCELED, intent);
+                finish();
+            }
+        });
     }
 
     /**
@@ -123,7 +142,7 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                         .setValue(book);
 
 
-                Toast.makeText(getApplicationContext(), "Book borrowed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Book borrowed , "+markUserMap.get(marker).getName(), Toast.LENGTH_SHORT).show();
                 finish();
                 return false;
             }
@@ -174,7 +193,7 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                     for(DataSnapshot user : dataSnapshot.getChildren()) {
 
                         UserInfo u = user.getValue(UserInfo.class);
-                        if(userIds.contains(u.getUid())){
+                        if(userIds.contains(u.getUid()) && !u.getName().equals(LocalDB.getUserInfo(getApplicationContext()).getName())){
                             users.add(u);
                             //Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
                             Log.d("ADD", u.getName() + " " + u.getLatitude() + " " + users.size());
@@ -203,21 +222,28 @@ public class MapsActivityFiltered extends FragmentActivity implements OnMapReady
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString() + " km"));
 
                                 markerList.add(m);
+
+                                //store correspondance between user and marker
+                                markUserMap.put(m, u);
                             }
                         }
                     }
 
                     MarkerOptions markerOptions = new MarkerOptions();
                     LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
-                    for(Marker m : markerList)
-                        boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
-                    boundsBuilder.include(new LatLng(location.getLatitude(), location.getLongitude()));
-                    final LatLngBounds bounds = boundsBuilder.build();
-                    //todo change values according to number and distance of markers, find a right algorithm to compute height, width, padding
-                    int padding = 100; // offset from edges of the map in pixels
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,padding);
-                    mMap.animateCamera(cameraUpdate);
-
+                    if(markerList.size()==0){
+                        setZoomLevel();
+                    }
+                    else {
+                        for (Marker m : markerList)
+                            boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
+                        boundsBuilder.include(new LatLng(location.getLatitude(), location.getLongitude()));
+                        final LatLngBounds bounds = boundsBuilder.build();
+                        //todo change values according to number and distance of markers, find a right algorithm to compute height, width, padding
+                        int padding = 100; // offset from edges of the map in pixels
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                        mMap.animateCamera(cameraUpdate);
+                    }
 
 
 

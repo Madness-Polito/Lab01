@@ -1,17 +1,23 @@
 package mad.lab1.Map;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -31,18 +37,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import mad.lab1.Database.LocalDB;
 import mad.lab1.R;
 import mad.lab1.Database.UserInfo;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    //private FloatingActionButton currLocationBtn;
+    private FloatingActionButton cancelBtn, borrowBtn;
     //private Location location;
     //private MapView mapView;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -50,6 +58,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private ValueEventListener userPositionListener;
     private List<UserInfo> users;
+    private TextView descriptionTextView;
+    private Marker selectedMarker = null;
+    private Map<Marker, UserInfo> markUserMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +78,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+
+        cancelBtn = findViewById(R.id.cancelButton);
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                setResult(Activity.RESULT_CANCELED, intent);
+                finish();
+            }
+        });
+
+        borrowBtn = findViewById(R.id.borrowButton);
+        borrowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedMarker == null){
+                    Toast.makeText(MapsActivity.this, "Please select a book", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(MapsActivity.this, "Borrowed!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        descriptionTextView = findViewById(R.id.descriptionTextView);
+        descriptionTextView.setText(" select a book and borrow it ");
     }
 
     /**
@@ -91,9 +128,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                //todo create a view to specify profile name, distance, ecc
+                // todo create a view to specify profile name, distance, ecc
                 // todo or open the bookInfoPage
-                Toast.makeText(getApplicationContext(), "prenotato!", Toast.LENGTH_SHORT).show();
+                if(selectedMarker != marker)
+                   selectedMarker = marker;
+
+                Toast.makeText(getApplicationContext(), ""+markUserMap.get(marker).getName(), Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
@@ -151,7 +191,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     minDistanceFound = distanceInKmInt;
                                     minDistanceMarker = m;
                                 }
-                                markerList.add(m);
+                                if (distanceInKm < 1000)
+                                    markerList.add(m);
+
+                                // store correspondance between user and map
+                                markUserMap.put(m, u);
                             }
                         }
                     }
@@ -164,7 +208,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
                         //boundsBuilder.include(new LatLng(minDistanceMarker.getPosition().latitude, minDistanceMarker.getPosition().longitude));
                         final LatLngBounds bounds = boundsBuilder.build();
-                        int padding = 300; // offset from edges of the map in pixels
+                        int padding = 400; // offset from edges of the map in pixels
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds,padding);
                         mMap.animateCamera(cameraUpdate);
                     }

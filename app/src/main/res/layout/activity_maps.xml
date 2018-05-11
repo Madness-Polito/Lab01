@@ -15,6 +15,43 @@
         android:layout_height="match_parent"
         tools:context="com.example.tutorialspoint7.myapplication.MapsActivity" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginBottom="74dp"
+        android:layout_marginEnd="16dp"
+        android:tint="@color/text_white"
+        app:backgroundTint="@color/tw__composer_red"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/com_facebook_tooltip_black_xout"
+        />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/borrowButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:tint="@color/text_white"
+        app:backgroundTint="@color/com_facebook_blue"
+        app:layout_constraintBottom_toTopOf="@id/cancelButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/com_facebook_auth_dialog_header_background"
+        />
 
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/tw__composer_black"
+        android:textColor="@color/text_white"
+        />
 
 </android.support.constraint.ConstraintLayout>
