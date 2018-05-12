@@ -65,6 +65,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
     private String isbn;
     private Book book;
     private Map<Marker, UserInfo> markUserMap = new HashMap<>();
+    private Marker selectedMarker = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,9 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
             public boolean onMarkerClick(Marker marker) {
                 //todo create a view to specify profile name, distance, ecc
                 // todo or open the bookInfoPage
+                if(selectedMarker != marker)
+                    selectedMarker = marker;
+
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
                 ref.child(user.getUid())
