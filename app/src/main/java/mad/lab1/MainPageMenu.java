@@ -47,7 +47,9 @@ public class MainPageMenu extends AppCompatActivity {
     private Toolbar toolbar;
     private ValueEventListener bookTitleListener;
 
-    private ArrayList<String> searchableBookTitles;
+    private ArrayList<String> searchableAllBookTitles;
+    private ArrayList<String> searchableBorrowedBookTitles;
+    private ArrayList<String> searchableLibraryBookTitles;
     private HashMap<String, String> titleToISBN;
 
     private DatabaseReference dbRef;
@@ -137,42 +139,15 @@ public class MainPageMenu extends AppCompatActivity {
 
         searchView.setVoiceSearch(false);
 
-        dbTitleRef = FirebaseDatabase.getInstance().getReference().child("titleList");
-        searchableBookTitles = new ArrayList<>();
+        searchableAllBookTitles = new ArrayList<>();
+        searchableBorrowedBookTitles = new ArrayList<>();
+        searchableLibraryBookTitles = new ArrayList<>();
         titleToISBN = new HashMap<>();
 
-        bookTitleListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
-                    BookTitleInfo b = childSnapshot.getValue(BookTitleInfo.class);
-                    searchableBookTitles.add(b.getTitle());
-                    titleToISBN.put(b.getTitle(), b.getIsbn());
-                }
-
-                searchView.setSuggestions(searchableBookTitles.toArray(new String[0]));
-
-                //declare the listener here because the suggestions must be filled for it to work.
-                searchView.setOnItemClickListener((adapterView, view, i, l) -> {
-                    String query = adapterView.getItemAtPosition(i).toString();
-                    String isbn = titleToISBN.get(query);
-                    showBookInfo(isbn);
-                    searchView.closeSearch();
-                });
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-        dbTitleRef.addListenerForSingleValueEvent(bookTitleListener);
-
-
+        //create the lists for the different searchable titles
+        createAllBooksSearchList();
+        createBorrowedBooksSearchList();
+        createLibraryBooksSearchList();
 
         initialization();                                           //Initialization and getting views references
 
@@ -191,6 +166,46 @@ public class MainPageMenu extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
 
+                //change what books can be searched
+                if(position == 0){
+                    //all books
+                    searchView.setSuggestions(searchableAllBookTitles.toArray(new String[0]));
+
+                    //declare the listener here because the suggestions must be filled for it to work.
+                    searchView.setOnItemClickListener((adapterView, view, i, l) -> {
+                        String query = adapterView.getItemAtPosition(i).toString();
+                        String isbn = titleToISBN.get(query);
+                        showBookInfo(isbn);
+                        searchView.closeSearch();
+                    });
+
+                }else if(position == 1){
+                    //my library
+                    searchView.setSuggestions(searchableLibraryBookTitles.toArray(new String[0]));
+
+                    //declare the listener here because the suggestions must be filled for it to work.
+                    searchView.setOnItemClickListener((adapterView, view, i, l) -> {
+                        String query = adapterView.getItemAtPosition(i).toString();
+                        String isbn = titleToISBN.get(query);
+                        showBookInfo(isbn);
+                        searchView.closeSearch();
+                    });
+
+                }else if(position == 2){
+                    //borrowed books
+                    searchView.setSuggestions(searchableBorrowedBookTitles.toArray(new String[0]));
+
+                    //declare the listener here because the suggestions must be filled for it to work.
+                    searchView.setOnItemClickListener((adapterView, view, i, l) -> {
+                        String query = adapterView.getItemAtPosition(i).toString();
+                        String isbn = titleToISBN.get(query);
+                        showBookInfo(isbn);
+                        searchView.closeSearch();
+                    });
+
+                }else{
+                    //chats
+                }
 
                 toolbar.setTitle(titles[position]);
 
@@ -205,7 +220,7 @@ public class MainPageMenu extends AppCompatActivity {
 
 
 
-        //I hate this.
+        //I hate this. Fixes layout on first run
         searchView.post(new Runnable() {
             @Override
             public void run() {
@@ -215,6 +230,102 @@ public class MainPageMenu extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void createAllBooksSearchList() {
+        dbTitleRef = FirebaseDatabase.getInstance().getReference().child("titleList");
+
+        bookTitleListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot childSnapshot : dataSnapshot.getChildren()){
+                    BookTitleInfo b = childSnapshot.getValue(BookTitleInfo.class);
+                    searchableAllBookTitles.add(b.getTitle());
+                    titleToISBN.put(b.getTitle(), b.getIsbn());
+                }
+
+                searchView.setSuggestions(searchableAllBookTitles.toArray(new String[0]));
+
+                //declare the listener here because the suggestions must be filled for it to work.
+                searchView.setOnItemClickListener((adapterView, view, i, l) -> {
+                    String query = adapterView.getItemAtPosition(i).toString();
+                    String isbn = titleToISBN.get(query);
+                    showBookInfo(isbn);
+                    searchView.closeSearch();
+                });
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        dbTitleRef.addListenerForSingleValueEvent(bookTitleListener);
+
+
+    }
+
+    private void createBorrowedBooksSearchList(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            dbTitleRef = FirebaseDatabase.getInstance().getReference().child("borrowedBooks").child(user.getUid());
+
+            bookTitleListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        //BookTitleInfo b = childSnapshot.getValue(BookTitleInfo.class);
+                        //searchableAllBookTitles.add(b.getTitle());
+                        //titleToISBN.put(b.getTitle(), b.getIsbn());
+                        Book b = childSnapshot.getValue(Book.class);
+                        searchableBorrowedBookTitles.add(b.getTitle());
+
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbTitleRef.addListenerForSingleValueEvent(bookTitleListener);
+        }
+    }
+
+    private void createLibraryBooksSearchList(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            dbTitleRef = FirebaseDatabase.getInstance().getReference().child("bookList").child(user.getUid());
+
+            bookTitleListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        //BookTitleInfo b = childSnapshot.getValue(BookTitleInfo.class);
+                        //searchableAllBookTitles.add(b.getTitle());
+                        //titleToISBN.put(b.getTitle(), b.getIsbn());
+                        Book b = childSnapshot.getValue(Book.class);
+                        searchableLibraryBookTitles.add(b.getTitle());
+
+                    }
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            };
+            dbTitleRef.addListenerForSingleValueEvent(bookTitleListener);
+        }
     }
 
 
