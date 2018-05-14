@@ -43,6 +43,7 @@
     <string name="description">Descrizione</string>
     <string name="missingData">Per favore, riempire tutti i campi mancanti</string>
     <string name="wrongYear">L\'anno di pubblicazione e\' sbagliato, per favore usare un anno valido.</string>
+    <string name="noThumbnail">Per favore aggiungere un thumbnail</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="AllBooks">Tutti i libri</string>

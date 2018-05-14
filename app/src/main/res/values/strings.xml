@@ -42,6 +42,7 @@
     <string name="description">Description</string>
     <string name="missingData">Please fill in all the missing information</string>
     <string name="wrongYear">The year is wrong, please use a valid year</string>
+    <string name="noThumbnail">Please add a thumbnail</string>
 
     <string name="facebook_application_id" translatable="false">210891089496907</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb210891089496907</string>

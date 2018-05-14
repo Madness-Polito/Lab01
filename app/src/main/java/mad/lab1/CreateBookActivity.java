@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -62,6 +63,8 @@ public class CreateBookActivity extends AppCompatActivity {
         btn_cancel = findViewById(R.id.btn_cancel);
         btn_ok = findViewById(R.id.btn_save);
 
+        thumbnail = BitmapFactory.decodeResource(getResources(),R.drawable.my_library_tab_icon);
+
         spinList = new ArrayList<>();
 
 
@@ -90,25 +93,30 @@ public class CreateBookActivity extends AppCompatActivity {
             String description = txt_description.getText().toString();
             Integer year = Integer.parseInt(pubDate);
             int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-            if(year <= thisYear) {
-                if (condition != null && title.length() != 0 && author.length() != 0 && publisher.length() != 0 && pubDate.length() != 0 && description.length() != 0) {
-                    Intent returnIntent = new Intent();
-                    returnIntent.putExtra("condition", condition);
-                    returnIntent.putExtra("thumbnail", getResizedBitmap(thumbnail, 130, 200));
-                    returnIntent.putExtra("title", title);
-                    returnIntent.putExtra("author", author);
-                    returnIntent.putExtra("publisher", publisher);
-                    returnIntent.putExtra("pubDate", pubDate);
-                    returnIntent.putExtra("description", description);
-                    setResult(Activity.RESULT_OK, returnIntent);
-                    finish();
+
+            if(thumbnail == null) {
+                Toast.makeText(this, getString(R.string.noThumbnail), Toast.LENGTH_LONG).show();
+            }else {
+                if (year <= thisYear) {
+                    if (condition != null && title.length() != 0 && author.length() != 0 && publisher.length() != 0 && pubDate.length() != 0 && description.length() != 0) {
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra("condition", condition);
+                        returnIntent.putExtra("thumbnail", getResizedBitmap(thumbnail, 130, 200));
+                        returnIntent.putExtra("title", title);
+                        returnIntent.putExtra("author", author);
+                        returnIntent.putExtra("publisher", publisher);
+                        returnIntent.putExtra("pubDate", pubDate);
+                        returnIntent.putExtra("description", description);
+                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    } else {
+                        //data is missing
+                        Toast.makeText(this, getString(R.string.missingData), Toast.LENGTH_LONG).show();
+                    }
                 } else {
-                    //data is missing
-                    Toast.makeText(this, getString(R.string.missingData), Toast.LENGTH_LONG).show();
+                    //wrong year
+                    Toast.makeText(this, getString(R.string.wrongYear), Toast.LENGTH_LONG).show();
                 }
-            }else{
-                //wrong year
-                Toast.makeText(this, getString(R.string.wrongYear), Toast.LENGTH_LONG).show();
             }
         });
 
