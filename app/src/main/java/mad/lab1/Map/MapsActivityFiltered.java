@@ -46,6 +46,8 @@ import java.util.Map;
 
 import mad.lab1.Database.Book;
 import mad.lab1.Database.LocalDB;
+import mad.lab1.FinalBookingConfirmationActivity;
+import mad.lab1.Fragments.ShowSelectedBookInfo;
 import mad.lab1.R;
 import mad.lab1.Database.UserInfo;
 
@@ -139,15 +141,17 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                 if(selectedMarker != marker)
                     selectedMarker = marker;
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
-                ref.child(user.getUid())
-                        .child(book.getBookId())
-                        .setValue(book);
+
+                Bundle arg = new Bundle();
+                arg.putParcelable("book", book);
+                arg.putParcelable("user", markUserMap.get(marker));
+                Intent i = new Intent(getApplicationContext(), FinalBookingConfirmationActivity.class);
+                i.putExtra("argument", arg);
+                startActivity(i);
 
 
-                Toast.makeText(getApplicationContext(), "Book borrowed , "+markUserMap.get(marker).getName(), Toast.LENGTH_SHORT).show();
-                finish();
+                //Toast.makeText(getApplicationContext(), "Book borrowed , "+markUserMap.get(marker).getName(), Toast.LENGTH_SHORT).show();
+                //finish();
                 return false;
             }
         });
