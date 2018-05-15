@@ -192,5 +192,65 @@ public class Chat {
                 .child(chatId);
     }
 
+    public static void decreaseNewMsgCount(String uid, String chatId){
+
+        // decrease by 1 the msgCount of the chat we are in
+        DatabaseReference newMsgCountRef = Chat.getChatInfo(uid, chatId)
+                .child(NUM_NEW_MSG);
+        newMsgCountRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                Integer newMsgCount = mutableData.getValue(Integer.class);
+
+                if (newMsgCount == null) {
+                    newMsgCount = new Integer(0);
+                }
+
+                System.out.println("----------->newMsgCount " + newMsgCount);
+
+                newMsgCount--;
+                mutableData.setValue(newMsgCount);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+
+            }
+        });
+
+        // decrease by 1 the totNewMsgCount too
+        DatabaseReference totNewMsgCountRef = FirebaseDatabase.getInstance()
+                .getReference()
+                .child(CHAT_INFO)
+                .child(uid)
+                .child(TOT_NUM_NEW_MSG);
+        totNewMsgCountRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                Integer totNewMsgCount = mutableData.getValue(Integer.class);
+
+                if (totNewMsgCount == null) {
+                    totNewMsgCount = new Integer(0);
+                }
+
+                System.out.println("----------->totNewMsgCount " + totNewMsgCount);
+
+                totNewMsgCount--;
+                mutableData.setValue(totNewMsgCount);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
+
+            }
+        });
+
+
+    }
+
 
 }
