@@ -79,11 +79,12 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             setOtherUserImageProfile(holder, c);
             setOtherUserName(holder, c);
 
-            if(c.getNewMsgCount() > 0){
+            if(c.getNewMsgCount() >= 0){
                 //New message, show the number
-                holder.newMexCount.setText(c.getNewMsgCount());
                 holder.newMexCount.setVisibility(View.VISIBLE);
                 holder.chatNewMexCountBackground.setVisibility(View.VISIBLE);
+                holder.newMexCount.setText(String.format("%d", c.getNewMsgCount()));
+
             }else{
                 //No new messages, hide the number
                 holder.newMexCount.setVisibility(View.GONE);
@@ -124,8 +125,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
 
     private void setOtherUserImageProfile(ChatListViewHolder holder, ChatInfo c){
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference user2Ref = db.getReference().child("users").child(c.getOtherUser());
 
         Uri picUri = Uri.parse(LocalDB.getProfilePicPath(context));
         holder.chatUserImage.setImageURI(picUri);
