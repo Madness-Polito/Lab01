@@ -62,4 +62,5 @@
 
     <string name="uploadError">This book can\'t be uploaded</string>
     <string name="dragTheMarker">Keep pressed and drag the marker</string>
+    <string name="chat_edit_text">Type a message</string>
 </resources>
