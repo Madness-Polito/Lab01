@@ -16,8 +16,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -25,6 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import mad.lab1.ChatActivity;
 import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.LocalDB;
+import mad.lab1.Database.UserInfo;
 import mad.lab1.R;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
@@ -73,6 +77,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
             //Set the user profile pic
             setOtherUserImageProfile(holder, c);
+            setOtherUserName(holder, c);
 
             if(c.getNewMsgCount() > 0){
                 //New message, show the number
@@ -85,9 +90,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 holder.chatNewMexCountBackground.setVisibility(View.GONE);
             }
 
-
-            //Setting data in the cardview
-            holder.chatUserName.setText(chatList.get(position).getOtherUser());
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -127,6 +129,24 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
         Uri picUri = Uri.parse(LocalDB.getProfilePicPath(context));
         holder.chatUserImage.setImageURI(picUri);
+
+    }
+
+    private void setOtherUserName(ChatListViewHolder holder, ChatInfo c){
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference user2Ref = db.getReference().child("users").child(c.getOtherUser());
+        user2Ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                UserInfo u = dataSnapshot.getValue(UserInfo.class);
+                holder.chatUserName.setText(u.getName());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
