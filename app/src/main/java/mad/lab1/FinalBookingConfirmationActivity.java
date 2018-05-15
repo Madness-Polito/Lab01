@@ -22,6 +22,7 @@ import mad.lab1.Database.Book;
 import mad.lab1.Database.UserInfo;
 import mad.lab1.Map.MapsActivityFiltered;
 import mad.lab1.R;
+import mad.lab1.chat.ChatActivity;
 
 public class FinalBookingConfirmationActivity extends AppCompatActivity {
 
@@ -92,14 +93,10 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(view -> {
-            //add the selected book to the list of borrowed books
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
-            ref.child(user.getUid())
-                    .child(book.getBookId())
-                    .setValue(book);
 
-            //TODO: Open chat
+            Intent intent = new Intent(getBaseContext(), ChatActivity.class);
+            intent.putExtra("user2", bookOwner.getUid());
+            startActivity(intent);
         });
 
 

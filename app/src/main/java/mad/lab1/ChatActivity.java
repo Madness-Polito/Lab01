@@ -57,7 +57,8 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initialization(){
 
-        toolbar = findViewById(R.id.activityChatToolbar);
+        // TODO missing resource
+        /*toolbar = findViewById(R.id.activityChatToolbar);
         //TODO: link username here from firebase
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp);
 
@@ -70,7 +71,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onBackPressed();
             }
-        });
+        });*/
 
 
 

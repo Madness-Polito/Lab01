@@ -47,6 +47,9 @@
             android:name=".AddingBookActivity"
             android:theme="@style/AppTheme" />
         <activity
+            android:name=".chat.ChatActivity"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".CreateBookActivity"
             android:theme="@style/AppTheme" />
         <activity

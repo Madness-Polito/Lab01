@@ -23,7 +23,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import mad.lab1.Database.Book;
-import mad.lab1.Database.Chat;
+import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.UserInfo;
 import mad.lab1.Database.UsersDB;
 import mad.lab1.R;
@@ -35,7 +35,7 @@ public class ChatListFragment extends Fragment {
     private ChatListAdapter adapter;
     private FirebaseDatabase db;
     private DatabaseReference dbRef;
-    private ArrayList<Chat> chatList;
+    private ArrayList<ChatInfo> chatInfoList;
     private FirebaseUser user;
     private ChildEventListener chatListListener;
 
@@ -60,7 +60,7 @@ public class ChatListFragment extends Fragment {
 
 
         //Populating the adapter
-        adapter = new ChatListAdapter(chatList, getContext());
+        adapter = new ChatListAdapter(chatInfoList, getContext());
 
 
     }
@@ -98,8 +98,8 @@ public class ChatListFragment extends Fragment {
         //Remove childEventListener
         if(dbRef != null) {
             dbRef.removeEventListener(chatListListener);
-            int size = chatList.size();
-            chatList.clear();
+            int size = chatInfoList.size();
+            chatInfoList.clear();
             adapter.notifyItemRangeRemoved(0, size);
         }
     }
@@ -116,7 +116,7 @@ public class ChatListFragment extends Fragment {
 
     private void chatDownload(){
 
-        chatList = new ArrayList<>();
+        chatInfoList = new ArrayList<>();
 
         //Getting database reference to download chats to be listed
         db = FirebaseDatabase.getInstance();
@@ -127,14 +127,14 @@ public class ChatListFragment extends Fragment {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 //A new chat has been created
-                Chat c = dataSnapshot.getValue(Chat.class);     //Retrieving new chat
+                ChatInfo c = dataSnapshot.getValue(ChatInfo.class);     //Retrieving new chat
                 c.setChatID(dataSnapshot.getKey());
 
                 //Add chat from dataSnapshot to chatlist
-                chatList.add(c);
+                chatInfoList.add(c);
 
                 //Notify adapter that it has to render a new CardView
-                adapter.notifyItemInserted(chatList.indexOf(c));
+                adapter.notifyItemInserted(chatInfoList.indexOf(c));
             }
 
             @Override

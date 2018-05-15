@@ -97,6 +97,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Toast.makeText(MapsActivity.this, "Please select a book", Toast.LENGTH_SHORT).show();
                 }
                 else{
+
+                    // start activity to chat with this user
+
+
                     Toast.makeText(MapsActivity.this, "Borrowed!", Toast.LENGTH_SHORT).show();
                 }
             }

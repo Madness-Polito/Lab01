@@ -3,28 +3,28 @@ package mad.lab1.Database;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Chat implements Parcelable {
+public class ChatInfo implements Parcelable {
 
 
     private String chatID;          //This id has to be populated using getKey() on the datasnapshot
     private String otherUser;
-    private int newMexNumber;
+    private int newMsgCount;
     private String idLastMex;
 
     //Empty constructor to let firebase serialize this clase
-    public Chat(){
+    public ChatInfo(){
         this("", 0, "");
     }
 
-    public Chat(Parcel in){
+    public ChatInfo(Parcel in){
         this(in.readString(), in.readInt(), in.readString());
     }
 
 
-    public Chat(String otherUser, int newMexNumber, String idLastMex){
+    public ChatInfo(String otherUser, int newMsgCount, String idLastMex){
         //this.chatID = chatID;
         this.otherUser = otherUser;
-        this.newMexNumber = newMexNumber;
+        this.newMsgCount = newMsgCount;
         this.idLastMex = idLastMex;
     }
 
@@ -44,10 +44,10 @@ public class Chat implements Parcelable {
         this.otherUser = otherUser;
     }
 
-    public int getNewMexNumber(){return this.newMexNumber;}
+    public int getNewMsgCount(){return this.newMsgCount;}
 
-    public void setNewMexNumber( int newMexNumber){
-        this.newMexNumber = newMexNumber;
+    public void setNewMsgCount( int newMsgCount){
+        this.newMsgCount = newMsgCount;
     }
 
     public String getIdLastMex(){return this.idLastMex;}
@@ -65,17 +65,17 @@ public class Chat implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         //dest.writeString(this.chatID);
         dest.writeString(this.otherUser);
-        dest.writeInt(newMexNumber);
+        dest.writeInt(newMsgCount);
         dest.writeString(idLastMex);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
-        public Chat createFromParcel(Parcel in){
-            return new Chat(in);
+        public ChatInfo createFromParcel(Parcel in){
+            return new ChatInfo(in);
         }
 
-        public Chat[] newArray(int size){
-            return new Chat[size];
+        public ChatInfo[] newArray(int size){
+            return new ChatInfo[size];
         }
     };
 

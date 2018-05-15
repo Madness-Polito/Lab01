@@ -23,13 +23,13 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import mad.lab1.ChatActivity;
-import mad.lab1.Database.Chat;
+import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.LocalDB;
 import mad.lab1.R;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
-    private ArrayList<Chat> chatList;
+    private ArrayList<ChatInfo> chatList;
     private Context context;
 
     public static class ChatListViewHolder extends RecyclerView.ViewHolder{
@@ -56,7 +56,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     //Constructor receives data from the activity
 
-    public ChatListAdapter(ArrayList<Chat> chatList, Context context){
+    public ChatListAdapter(ArrayList<ChatInfo> chatList, Context context){
 
         this.chatList = chatList;
         this.context = context;
@@ -69,14 +69,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         //Check if the list contains some chat, else go on.
         if(!chatList.isEmpty()){
 
-            Chat c = chatList.get(position);
+            ChatInfo c = chatList.get(position);
 
             //Set the user profile pic
             setOtherUserImageProfile(holder, c);
 
-            if(c.getNewMexNumber() > 0){
+            if(c.getNewMsgCount() > 0){
                 //New message, show the number
-                holder.newMexCount.setText(c.getNewMexNumber());
+                holder.newMexCount.setText(c.getNewMsgCount());
                 holder.newMexCount.setVisibility(View.VISIBLE);
                 holder.chatNewMexCountBackground.setVisibility(View.VISIBLE);
             }else{
@@ -91,10 +91,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context,ChatActivity.class);
-                    Bundle b = new Bundle();
+                    Intent intent = new Intent(context, mad.lab1.chat.ChatActivity.class);
+                    /*Bundle b = new Bundle();
                     b.putParcelable("chat", c);
-                    intent.putExtra("chatInfo", b);
+                    intent.putExtra("chatInfo", b);*/
+                    intent.putExtra("user2", c.getOtherUser());
                     context.startActivity(intent);
                 }
             });
@@ -120,7 +121,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     }
 
 
-    private void setOtherUserImageProfile(ChatListViewHolder holder, Chat c){
+    private void setOtherUserImageProfile(ChatListViewHolder holder, ChatInfo c){
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference user2Ref = db.getReference().child("users").child(c.getOtherUser());
 

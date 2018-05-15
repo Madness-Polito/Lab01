@@ -53,6 +53,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:3.3.0'
     implementation 'com.firebaseui:firebase-ui-auth:3.3.0'
     implementation 'com.firebaseui:firebase-ui-storage:3.3.0'
+    implementation 'com.firebaseui:firebase-ui:0.6.0'
 
     // facebook, twitter, github
     implementation 'com.facebook.android:facebook-android-sdk:4.27.0'
