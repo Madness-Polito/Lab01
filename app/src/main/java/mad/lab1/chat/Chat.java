@@ -175,7 +175,7 @@ public class Chat {
 
     private static void setChatInfo(String uid1, String uid2, String chatId){
 
-        ChatInfo chatInfo = new ChatInfo(uid2, 0, null);
+        ChatInfo chatInfo = new ChatInfo(0, uid2);
 
         Chat.getChatInfo(uid1, chatId)
                 .setValue(chatInfo);
