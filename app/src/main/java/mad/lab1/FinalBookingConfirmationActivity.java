@@ -19,9 +19,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import mad.lab1.Database.Book;
+import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.UserInfo;
 import mad.lab1.Map.MapsActivityFiltered;
 import mad.lab1.R;
+import mad.lab1.chat.Chat;
 import mad.lab1.chat.ChatActivity;
 
 public class FinalBookingConfirmationActivity extends AppCompatActivity {
@@ -93,9 +95,11 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(view -> {
-
+            ChatInfo c = new ChatInfo(0, bookOwner.getUid());
             Intent intent = new Intent(getBaseContext(), ChatActivity.class);
-            intent.putExtra("user2", bookOwner.getUid());
+            Bundle b = new Bundle();
+            b.putParcelable("chat", c);
+            intent.putExtra("chatInfo", b);
             startActivity(intent);
         });
 

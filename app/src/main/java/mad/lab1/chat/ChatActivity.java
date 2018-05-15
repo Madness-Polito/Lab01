@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import java.util.ArrayList;
 import java.util.List;
 
+import mad.lab1.Database.ChatInfo;
 import mad.lab1.Fragments.AllBooksFragment;
 import mad.lab1.Fragments.AllBooksListAdapter;
 import mad.lab1.Map.MapsActivity;
@@ -41,11 +43,14 @@ public class ChatActivity extends AppCompatActivity {
 
     private String chatId; // id of the current chat
     private String user2;  // id of the other user
+    private String user2Name;
     private List<ChatMessage> msgList = new ArrayList<>();
     private RecyclerView cardViewList;
     private LinearLayoutManager layoutManager;
     private ChatMessageAdapter adapter;
     private String user1;
+    private Toolbar toolbar;
+    private ChatInfo chat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +70,9 @@ public class ChatActivity extends AppCompatActivity {
 
         // get intent data
         Intent intent = getIntent();
-        user2  = intent.getExtras().getString("user2");
+        Bundle arg = intent.getBundleExtra("chatInfo");
+        chat = arg.getParcelable("chat");
+        user2  = chat.getOtherUser();
 
         // generate chatId
         user1 = Authentication.getCurrentUser().getUid();
@@ -91,6 +98,9 @@ public class ChatActivity extends AppCompatActivity {
 
         // load all messages
         getMessages();
+
+
+        toolBarInitialization(chat);
 
 
     }
@@ -177,6 +187,39 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+    private void toolBarInitialization(ChatInfo c){
+        toolbar = findViewById(R.id.activityChatToolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp);
+        getOtherUserName(chat);
+        toolbar.setTitle(user2Name);
+        setSupportActionBar(toolbar);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+    }
+
+    private void getOtherUserName(ChatInfo c){
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = db.getReference().child("users").child(c.getOtherUser()).child("name");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                user2Name = (String) dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
 
 }

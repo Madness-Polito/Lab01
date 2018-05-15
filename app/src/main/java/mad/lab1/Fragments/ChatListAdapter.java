@@ -79,7 +79,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             setOtherUserImageProfile(holder, c);
             setOtherUserName(holder, c);
 
-            if(c.getNewMsgCount() >= 0){
+            if(c.getNewMsgCount() > 0){
                 //New message, show the number
                 holder.newMexCount.setVisibility(View.VISIBLE);
                 holder.chatNewMexCountBackground.setVisibility(View.VISIBLE);
@@ -95,10 +95,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, mad.lab1.chat.ChatActivity.class);
-                    /*Bundle b = new Bundle();
+                    Bundle b = new Bundle();
                     b.putParcelable("chat", c);
-                    intent.putExtra("chatInfo", b);*/
-                    intent.putExtra("user2", c.getOtherUser());
+                    intent.putExtra("chatInfo", b);
+
                     context.startActivity(intent);
                 }
             });
@@ -130,6 +130,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         holder.chatUserImage.setImageURI(picUri);
 
     }
+
 
     private void setOtherUserName(ChatListViewHolder holder, ChatInfo c){
         FirebaseDatabase db = FirebaseDatabase.getInstance();
