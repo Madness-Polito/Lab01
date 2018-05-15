@@ -1,5 +1,6 @@
 package mad.lab1.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,8 +11,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import mad.lab1.Database.Book;
+import mad.lab1.Database.Chat;
+import mad.lab1.Database.UserInfo;
+import mad.lab1.Database.UsersDB;
 import mad.lab1.R;
 
 public class ChatListFragment extends Fragment {
@@ -19,6 +33,11 @@ public class ChatListFragment extends Fragment {
     private RecyclerView chatListRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private ChatListAdapter adapter;
+    private FirebaseDatabase db;
+    private DatabaseReference dbRef;
+    private ArrayList<Chat> chatList;
+    private FirebaseUser user;
+    private ChildEventListener chatListListener;
 
 
     public static ChatListFragment newInstance(int page, String title){
@@ -35,15 +54,13 @@ public class ChatListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ArrayList<String> data = new ArrayList<>();
-        data.add("prova");
-        data.add("ciao");
-        data.add("daniele");
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        chatDownload();
 
 
 
         //Populating the adapter
-        adapter = new ChatListAdapter(data, getContext());
+        adapter = new ChatListAdapter(chatList, getContext());
 
 
     }
@@ -67,7 +84,82 @@ public class ChatListFragment extends Fragment {
         //Setting the adapter
         chatListRecyclerView.setAdapter(adapter);
 
+
+
         return v;
 
     }
+
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //Remove childEventListener
+        if(dbRef != null) {
+            dbRef.removeEventListener(chatListListener);
+            int size = chatList.size();
+            chatList.clear();
+            adapter.notifyItemRangeRemoved(0, size);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //add childEventListener
+        if(chatListListener != null) {
+            dbRef.addChildEventListener(chatListListener);
+        }
+
+    }
+
+    private void chatDownload(){
+
+        chatList = new ArrayList<>();
+
+        //Getting database reference to download chats to be listed
+        db = FirebaseDatabase.getInstance();
+        dbRef = db.getReference().child("chatInfo").child(user.getUid()).child("chatInfoList");
+
+        chatListListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                //A new chat has been created
+                Chat c = dataSnapshot.getValue(Chat.class);     //Retrieving new chat
+                c.setChatID(dataSnapshot.getKey());
+
+                //Add chat from dataSnapshot to chatlist
+                chatList.add(c);
+
+                //Notify adapter that it has to render a new CardView
+                adapter.notifyItemInserted(chatList.indexOf(c));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+    }
+
+
 }
+
