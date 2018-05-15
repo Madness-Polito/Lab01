@@ -14,6 +14,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mad.lab1.Database.ChatInfo;
+import mad.lab1.Database.UserInfo;
 import mad.lab1.Fragments.AllBooksFragment;
 import mad.lab1.Fragments.AllBooksListAdapter;
 import mad.lab1.Map.MapsActivity;
@@ -43,7 +46,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private String chatId; // id of the current chat
     private String user2;  // id of the other user
-    private String user2Name;
+    private UserInfo user2Profile;
     private List<ChatMessage> msgList = new ArrayList<>();
     private RecyclerView cardViewList;
     private LinearLayoutManager layoutManager;
@@ -72,6 +75,7 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle arg = intent.getBundleExtra("chatInfo");
         chat = arg.getParcelable("chat");
+        getOtherUserProfile(chat);
         user2  = chat.getOtherUser();
 
         // generate chatId
@@ -194,8 +198,8 @@ public class ChatActivity extends AppCompatActivity {
     private void toolBarInitialization(ChatInfo c){
         toolbar = findViewById(R.id.activityChatToolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp);
-        getOtherUserName(chat);
-        toolbar.setTitle(user2Name);
+
+
         setSupportActionBar(toolbar);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -207,14 +211,16 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void getOtherUserName(ChatInfo c){
+    private void getOtherUserProfile(ChatInfo c){
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference dbRef = db.getReference().child("users").child(c.getOtherUser()).child("name");
-        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference user2Ref = db.getReference().child("users").child(c.getOtherUser());
+        user2Ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                user2Name = (String) dataSnapshot.getValue();
+                 user2Profile = dataSnapshot.getValue(UserInfo.class);
+                 toolbar.setTitle(user2Profile.getName());
+
             }
 
             @Override
@@ -226,4 +232,22 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.chatActivityShowUserProfile:
+                //TODO: show user profile
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.chat_activity_menu, menu);
+        return true;
+    }
 }
