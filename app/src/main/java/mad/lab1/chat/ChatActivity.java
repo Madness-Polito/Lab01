@@ -140,6 +140,10 @@ public class ChatActivity extends AppCompatActivity {
 
                 // modify last viewed message of user
                 Chat.updateLastReadMsg(user1, chatId, dataSnapshot.getKey());
+
+                // decrease # of new msgs if msg from another user
+                if (!msg.getUid().equals(Authentication.getCurrentUser().getUid()))
+                    Chat.decreaseNewMsgCount(user1, chatId);
             }
 
             @Override

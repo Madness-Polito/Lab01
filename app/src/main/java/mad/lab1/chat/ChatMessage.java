@@ -5,15 +5,19 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
+import mad.lab1.User.Authentication;
+
 public class ChatMessage implements Parcelable{
 
     private String text;
     private String user;
+    private String uid;
     private long time;
 
     public ChatMessage(String text, String user) {
         this.text = text;
         this.user = user;
+        this.uid  = Authentication.getCurrentUser().getUid();
 
         // Initialize to current time
         time = new Date().getTime();
@@ -40,6 +44,14 @@ public class ChatMessage implements Parcelable{
             return new ChatMessage[size];
         }
     };
+
+    public String getUid(){
+        return uid;
+    }
+
+    public void setUid(String uid){
+        this.uid = uid;
+    }
 
     public String getText() {
         return text;
