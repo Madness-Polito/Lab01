@@ -24,6 +24,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -94,6 +97,8 @@ public class AllBooksFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         //initialize db
 
@@ -184,6 +189,7 @@ public class AllBooksFragment extends Fragment {
             Intent i = new Intent(getActivity(), MapsActivity.class);
             startActivity(i);
         });
+
 
         fab = v.findViewById(R.id.addBookToShareActionButton);
         fab.setVisibility(View.GONE);
@@ -577,6 +583,9 @@ public class AllBooksFragment extends Fragment {
             description = savedInstanceState.getString("description");
             imageLinks = savedInstanceState.getString("imageLinks");
         }
+
+
+
     }
 }
 

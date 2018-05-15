@@ -85,6 +85,9 @@ dependencies {
 
     //appIntro
     implementation 'com.github.apl-devs:appintro:v4.2.3'
+
+    //obscure backgroung tutorial
+    compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

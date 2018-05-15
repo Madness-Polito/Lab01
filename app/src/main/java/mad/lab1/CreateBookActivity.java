@@ -167,7 +167,7 @@ public class CreateBookActivity extends AppCompatActivity {
     }
 
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
+        int width = bm.getWidth(); // null pointer
         int height = bm.getHeight();
         float scaleWidth;
         float scaleHeight;

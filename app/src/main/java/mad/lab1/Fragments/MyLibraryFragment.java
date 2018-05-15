@@ -2,12 +2,15 @@ package mad.lab1.Fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -23,6 +26,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -92,6 +98,7 @@ public class MyLibraryFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private AllBooksListAdapter adapter;
     private ChildEventListener bookIDListener;
+
 
 
 
@@ -182,12 +189,15 @@ public class MyLibraryFragment extends Fragment {
         //Inflating the layout for the fragment
         View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
 
+
         map = v.findViewById(R.id.showMapActionButton);
 
         map.setOnClickListener(view -> {
             Intent i = new Intent(getActivity(), MapsActivity.class);
             startActivity(i);
         });
+
+
 
         fab = v.findViewById(R.id.addBookToShareActionButton);
 
@@ -693,9 +703,11 @@ public class MyLibraryFragment extends Fragment {
     }
 
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
+        Log.d("SHOW", "onActivityCreated()");
 
         if(savedInstanceState != null) {
             isbn = savedInstanceState.getString("isbn");
@@ -707,7 +719,54 @@ public class MyLibraryFragment extends Fragment {
             description = savedInstanceState.getString("description");
             imageLinks = savedInstanceState.getString("imageLinks");
         }
+
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getContext());
+
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("firstTutorialStart", true);
+
+        //  If the fragment has never started before...
+        if (isFirstStart) {
+            /*
+            Log.d("SHOW", "start tutorial");
+            new ShowcaseView.Builder(getActivity())
+                    .withMaterialShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setTarget(new ViewTarget(map))
+                    //.setTarget(new ViewTarget(fab))
+                    .setContentTitle("map button")
+                    .setContentText("press this button to see  books on the map")
+                    .setShowcaseEventListener(new SimpleShowcaseEventListener(){
+
+                        public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                        getActivity()
+                                .getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(, new MyLibraryFragmentTutorial()) // groupID to be removed
+                                .commit();
+
+                        }
+                    })
+                    .build();
+
+            */
+
+        /*
+        new ShowcaseView.Builder(getActivity())
+                .withMaterialShowcase()
+                .setStyle(R.style.CustomShowcaseTheme2)
+                .setTarget(new ViewTarget(fab))
+                .setContentTitle("add a new book")
+                .setContentText("press this button to add a new book on your library")
+                .build();
+        */
+        }
+
     }
+
 
 
 }

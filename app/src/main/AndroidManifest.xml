@@ -57,7 +57,7 @@
         <activity android:name=".Map.MapsBookToShare" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".FinalBookingConfirmationActivity" />
-        <activity android:name=".IntroActivity"></activity>
+        <activity android:name=".IntroTutorialActivity"></activity>
     </application>
 
 </manifest>

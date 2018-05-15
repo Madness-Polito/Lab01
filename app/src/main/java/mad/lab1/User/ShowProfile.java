@@ -1,13 +1,19 @@
 package mad.lab1.User;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import mad.lab1.Database.Globals;
 import mad.lab1.Database.LocalDB;
@@ -56,6 +62,37 @@ public class ShowProfile extends AppCompatActivity {
                     i.putExtra(KEYS[j], TEXTVIEWS[j].getText().toString());
                 startActivityForResult(i, Globals.EDIT_CODE);
         });
+
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("showProfileFirstStart", true);
+
+        Log.d("first", ""+getPrefs.getBoolean("showProfileFirstStart", true));
+        //  If the activity has never started before...
+        if (isFirstStart) {
+            // set intro of edit button
+            new ShowcaseView.Builder(this)
+                    .withMaterialShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setTarget(new ViewTarget(editButton))
+                    .setContentTitle("edit your profile")
+                    .setContentText("press this button to edit your personal informations")
+                    .build();
+
+            //  Make a new preferences editor
+            SharedPreferences.Editor e = getPrefs.edit();
+
+            //  Edit preference to make it false because we don't want this to run again
+            e.putBoolean("showProfileFirstStart", false);
+
+            //  Apply changes
+            e.apply();
+        }
+
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

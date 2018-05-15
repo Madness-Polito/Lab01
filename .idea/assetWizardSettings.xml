@@ -20,7 +20,8 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundImage" value="$USER_HOME$/Desktop/borrowing_book.png" />
+                                      <entry key="foregroundImage" value="C:\Users\Edoardo\Downloads\all_books.jpg" />
+                                      <entry key="foregroundLayerName" value="ic_all_books_foreground" />
                                       <entry key="outputName" value="ic_borrow_book" />
                                     </map>
                                   </option>

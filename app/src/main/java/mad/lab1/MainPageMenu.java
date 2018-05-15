@@ -2,17 +2,21 @@ package mad.lab1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -58,14 +62,33 @@ public class MainPageMenu extends AppCompatActivity {
     private MaterialSearchView searchView;
 
 
+
+
     @Override
     protected void onStart() {
         super.onStart();
-        loginCheck();                                               //Checking if user logged in or not
-        userCreatedCheck();                                         //check if user has filled in all necessary data
+        Log.d("MARKER", "onStart()");
+        /*
+        Log.d("MARKER", "onStart()");
+        String tutorialKey = "tutorialCheck";
+        Boolean firstTime = getPreferences(MODE_PRIVATE).getBoolean(tutorialKey, true);
+        if (firstTime) {
+            runTutorial(); // here you do what you want to do - an activity tutorial in my case
+            getPreferences(MODE_PRIVATE).edit().putBoolean(tutorialKey, false).apply();
+        }
+        */
 
-
+        //runTutorial();
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+        boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+        if(!isFirstStart) {
+            loginCheck();                                               //Checking if user logged in or not
+            userCreatedCheck();                                         //check if user has filled in all necessary data
+        }
     }
+
+
 
     private void userCreatedCheck() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -103,9 +126,7 @@ public class MainPageMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-
+        Log.d("MARKER", "onCreate()");
         setContentView(R.layout.activity_main_page_menu);
 
         searchView = findViewById(R.id.search_view);
@@ -413,8 +434,51 @@ public class MainPageMenu extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MARKER", "onResume()");
+        runTutorial();
+    }
+
+    private void runTutorial(){
+        /////////////////////////////////////////
+
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+        //  If the activity has never started before...
+        if (isFirstStart) {
+
+
+            //  Launch app intro
+            final Intent i = new Intent(getBaseContext(), IntroTutorialActivity.class);
+
+            startActivity(i);
+            //  Make a new preferences editor
+            SharedPreferences.Editor e = getPrefs.edit();
+
+            //  Edit preference to make it false because we don't want this to run again
+            e.putBoolean("firstStart", false);
+
+            //  Apply changes
+            e.apply();
+
+            //Log.d("MARKER", "upd value "+getPrefs.getBoolean("firstStart", false));// true before
+        }
+        //else
+            //Log.d("MARKER", "it's not first time app runs");
+        ////////////////////////////////////////////////////
+    }
+
     private void loginCheck() {
 
+        Log.d("MARKER", "loginCheck()");
         // if user is logged in download his data
         if (Authentication.checkSession()){
 
@@ -486,5 +550,7 @@ public class MainPageMenu extends AppCompatActivity {
         });
 
     }
+
+
 
 }
