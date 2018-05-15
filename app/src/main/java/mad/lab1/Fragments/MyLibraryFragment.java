@@ -687,7 +687,6 @@ public class MyLibraryFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
 
-
         savedInstanceState.putString("isbn", isbn);
         savedInstanceState.putString("bookID", bookID);
         savedInstanceState.putString("title", title);
@@ -696,8 +695,6 @@ public class MyLibraryFragment extends Fragment {
         savedInstanceState.putString("pubYear", pubYear);
         savedInstanceState.putString("description", description);
         savedInstanceState.putString("imageLinks", imageLinks);
-
-
 
         super.onSaveInstanceState(savedInstanceState);
     }
