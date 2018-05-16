@@ -28,14 +28,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //if the message contains data payload
         //It is a map of custom keyvalues
         //we can read it easily
-        if(remoteMessage.getData().size() > 0){
+        //if(remoteMessage.getData().size() > 0){
             //handle the data message here
-            Log.d(TAG, "Refreshed message: " + remoteMessage.getData().size());
-        }
+            //Log.d(TAG, "Refreshed message: " + remoteMessage.getData().size());
+        //}
 
         //getting the title and the body
-        String title = remoteMessage.getNotification().getTitle();
-        String body = remoteMessage.getNotification().getBody();
+        //String title = remoteMessage.getNotification().getTitle();
+        //String body = remoteMessage.getNotification().getBody();
+        String title = remoteMessage.getData().get("title");
+        String body = remoteMessage.getData().get("body");
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager =

@@ -47,6 +47,7 @@ import mad.lab1.Database.UserInfo;
 import mad.lab1.Fragments.AllBooksFragment;
 import mad.lab1.Fragments.AllBooksListAdapter;
 import mad.lab1.Map.MapsActivity;
+import mad.lab1.Notifications.Constants;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
 
@@ -172,6 +173,7 @@ public class ChatActivity extends AppCompatActivity {
 
         msgList.add(msg);
         adapter.notifyItemInserted(msgList.indexOf(msg));
+        cardViewList.scrollToPosition(msgList.size() - 1);
     }
 
     // reads all the messages from the chat and prints them to screen
@@ -320,7 +322,8 @@ public class ChatActivity extends AppCompatActivity {
                     JSONObject jsonParam3 = new JSONObject();
                     jsonParam2.put("body", msg);
                     jsonParam2.put("title", user1Name);
-                    jsonParam.put("notification", jsonParam2);
+                    jsonParam2.put("tag", Constants.NOTIFICATION_TAG);
+                    jsonParam.put("data", jsonParam2);
                     jsonParam.put("to", "/topics/" + user2ID);
 
                     /*jsonParam3.put("body", msg);

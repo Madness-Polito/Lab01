@@ -10,6 +10,7 @@ import mad.lab1.MainPageMenu;
 import mad.lab1.R;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static mad.lab1.Notifications.Constants.CHANNEL_ID;
 
 /**
  * Created by Matteo on 16/05/2018.
@@ -32,12 +33,22 @@ public class MyNotificationManager {
     }
 
     public void displayNotification(String title, String body) {
+        long time = System.currentTimeMillis();
+
+        NotificationCompat.MessagingStyle.Message message =
+                new NotificationCompat.MessagingStyle.Message(body, time, title);
 
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(mCtx, Constants.CHANNEL_ID)
+                new NotificationCompat.Builder(mCtx, CHANNEL_ID)
                         .setSmallIcon(R.drawable.all_books_tab_icon)
                         .setContentTitle(title)
-                        .setContentText(body);
+                        .setContentText(body)
+                        .setStyle(new NotificationCompat.MessagingStyle(title).addMessage(message))
+                        .setCategory(NotificationCompat.CATEGORY_MESSAGE);
+
+
+
+
 
 
         /*
@@ -73,7 +84,7 @@ public class MyNotificationManager {
         * because using this id we can modify it later
         * */
         if (mNotifyMgr != null) {
-            mNotifyMgr.notify(1, mBuilder.build());
+            mNotifyMgr.notify(Constants.NOTIFICATION_TAG, mBuilder.build());
         }
     }
 
