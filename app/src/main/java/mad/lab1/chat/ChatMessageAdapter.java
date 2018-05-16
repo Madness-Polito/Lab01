@@ -111,7 +111,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
     }
 
     private class SystemMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
+        TextView messageText;//, timeText;
 
         SystemMessageHolder(View itemView) {
             super(itemView);
@@ -124,13 +124,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
+        TextView messageText;//, timeText;
 
         SentMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body);
-            timeText    = itemView.findViewById(R.id.text_message_time);
+            //timeText    = itemView.findViewById(R.id.text_message_time);
         }
 
         void bind(ChatMessage msg) {
@@ -139,7 +139,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
             // Format the stored timestamp into a readable String using method.
             Long time = msg.getTime();
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            timeText.setText(formatter.format(time));
+            //timeText.setText(formatter.format(time));
         }
     }
 
@@ -151,7 +151,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            timeText = (TextView) itemView.findViewById(R.id.text_message_time);
+            //timeText = (TextView) itemView.findViewById(R.id.text_message_time);
             nameText = (TextView) itemView.findViewById(R.id.text_message_name);
             profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
         }
@@ -161,7 +161,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
 
             Long time = msg.getTime();
             DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            timeText.setText(formatter.format(time));
+            //timeText.setText(formatter.format(time));
 
             nameText.setText(msg.getUser());
 

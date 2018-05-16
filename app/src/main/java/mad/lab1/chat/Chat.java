@@ -1,6 +1,8 @@
 package mad.lab1.chat;
 
+import android.content.Context;
 import android.provider.ContactsContract;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +36,7 @@ public class Chat {
     }
 
     // sends a chat message
-    public static void postMessage(ChatMessage msg, String chatId, String uid2){
+    public static void postMessage(Context c, ChatMessage msg, String chatId, String uid2){
 
         System.out.println("---------->PostMessage " + msg.getText() + " from " + msg.getUser());
 
@@ -65,7 +67,7 @@ public class Chat {
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
-
+                showTransactionError(c, error, committed, currentData);
             }
         });
 
@@ -93,13 +95,13 @@ public class Chat {
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
-
+                showTransactionError(c, error, committed, currentData);
             }
         });
     }
 
     // returns the reference to the "/chats" url where chats are stored
-    private static DatabaseReference getReference(){
+    static DatabaseReference getReference(){
         return FirebaseDatabase.getInstance()
                 .getReference()
                 .child(CHATS);
@@ -190,7 +192,7 @@ public class Chat {
                 .child(chatId);
     }
 
-    public static void decreaseNewMsgCount(String uid, String chatId){
+    public static void decreaseNewMsgCount(Context c, String uid, String chatId){
 
         // decrease by 1 the msgCount of the chat we are in
         DatabaseReference newMsgCountRef = Chat.getChatInfo(uid, chatId)
@@ -201,8 +203,8 @@ public class Chat {
 
                 Integer newMsgCount = mutableData.getValue(Integer.class);
 
-                /*if (newMsgCount == null)
-                    newMsgCount = 0;*/
+                if (newMsgCount == null)
+                    return Transaction.success(mutableData);
 
                 System.out.println("----------->newMsgCount " + newMsgCount);
 
@@ -213,7 +215,7 @@ public class Chat {
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
-
+                showTransactionError(c, error, committed, currentData);
             }
         });
 
@@ -229,9 +231,9 @@ public class Chat {
 
                 Integer totNewMsgCount = mutableData.getValue(Integer.class);
 
-                /*if (totNewMsgCount == null)
-                    totNewMsgCount = 0;
-                */
+                if (totNewMsgCount == null)
+                    return Transaction.success(mutableData);
+
                 System.out.println("----------->totNewMsgCount " + totNewMsgCount);
 
                 totNewMsgCount--;
@@ -241,12 +243,23 @@ public class Chat {
 
             @Override
             public void onComplete(DatabaseError error, boolean committed, DataSnapshot currentData) {
-
+                showTransactionError(c, error, committed, currentData);
             }
         });
 
 
     }
 
+
+    private static void showTransactionError(Context c, DatabaseError dbErr, boolean committed, DataSnapshot currentData){
+
+        if (dbErr != null)
+            Toast.makeText(c, dbErr.getDetails(), Toast.LENGTH_SHORT).show();
+
+        if (!committed)
+            Toast.makeText(c, "Transaction not committed", Toast.LENGTH_SHORT).show();
+
+        //Toast.makeText(c, currentData.getValue().toString(), Toast.LENGTH_SHORT).show();
+    }
 
 }

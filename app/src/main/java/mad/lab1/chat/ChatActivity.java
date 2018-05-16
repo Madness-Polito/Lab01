@@ -14,13 +14,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -68,6 +71,8 @@ public class ChatActivity extends AppCompatActivity {
     private boolean isNewMex;
     private boolean isNextMexNew;
     private String lastReadMsg = "";
+    private DatabaseReference chatRef;
+    private ChildEventListener msgListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,7 @@ public class ChatActivity extends AppCompatActivity {
         cardViewList.setItemAnimator(new DefaultItemAnimator());
         adapter = new ChatMessageAdapter(msgList, this);
         cardViewList.setAdapter(adapter);
+        EditText input = findViewById(R.id.chatActivityEditText);
 
         // get intent data
         Intent intent = getIntent();
@@ -96,23 +102,43 @@ public class ChatActivity extends AppCompatActivity {
         user1 = Authentication.getCurrentUser().getUid();
         chatId = Chat.getChatId(user1, user2);
 
+        chatRef = Chat.getReference()
+                .child(chatId); // "/chats/chatId"
+
 
         // send message when send button pressed
         fab.setOnClickListener((View v) -> {
 
-                EditText input = findViewById(R.id.chatActivityEditText);
-
                 // Read the input field and push a new ChatMessage to Firebase
                 ChatMessage msg = new ChatMessage(input.getText().toString(), Authentication.getCurrentUser().getDisplayName());
-                Chat.postMessage(msg, chatId, user2);
+                Chat.postMessage(this, msg, chatId, user2);
 
                 //send a notification to user2
-                sendPost(Authentication.getCurrentUser().getDisplayName(), user2, msg.getText().toString());
+                sendPost(Authentication.getCurrentUser().getDisplayName(), user2, msg.getText());
 
                 // Clear the input
                 input.setText("");
             }
         );
+
+        input.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                    // Read the input field and push a new ChatMessage to Firebase
+                    ChatMessage msg = new ChatMessage(input.getText().toString(), Authentication.getCurrentUser().getDisplayName());
+                    Chat.postMessage(getApplicationContext(), msg, chatId, user2);
+
+                    //send a notification to user2
+                    sendPost(Authentication.getCurrentUser().getDisplayName(), user2, msg.getText());
+
+                    // Clear the input
+                    input.setText("");
+                    return true;
+                }
+                return false;
+            }
+        });
 
         // check if chat already exists
         checkChat();
@@ -182,7 +208,7 @@ public class ChatActivity extends AppCompatActivity {
         final Context c = this;
 
 
-        ChildEventListener msgListener = new ChildEventListener() {
+        msgListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
 
@@ -200,7 +226,9 @@ public class ChatActivity extends AppCompatActivity {
                     addMessage(tmpMsg);
                 }
 
-                if (dataSnapshot.getKey().equals(lastReadMsg)){
+                if (dataSnapshot.getKey().equals(lastReadMsg)
+                        && !msg.getUid().equals(Authentication.getCurrentUser().getUid())){
+                    lastReadMsg = dataSnapshot.getKey();
                     isNextMexNew = true;
                 }
 
@@ -209,7 +237,7 @@ public class ChatActivity extends AppCompatActivity {
                         && isNewMex) {
 
                     System.out.println("------->getMessages received msg from " + msg.getUid());
-                    Chat.decreaseNewMsgCount(user1, chatId);
+                    Chat.decreaseNewMsgCount(getApplicationContext(), user1, chatId);
                 }
 
                 if (isNewMex){
@@ -241,7 +269,29 @@ public class ChatActivity extends AppCompatActivity {
             }
         };
 
-        Chat.getMessages(msgListener, chatId);
+        chatRef.addChildEventListener(msgListener);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //Remove childEventListener
+        if(chatRef != null) {
+            chatRef.removeEventListener(msgListener);
+            int size = msgList.size();
+            msgList.clear();
+            adapter.notifyItemRangeRemoved(0, size);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //add childEventListener
+        if(msgListener != null) {
+            chatRef.addChildEventListener(msgListener);
+        }
+
     }
 
 

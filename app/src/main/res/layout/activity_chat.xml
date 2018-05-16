@@ -67,6 +67,8 @@
         android:layout_marginStart="8dp"
         android:elevation="8dp"
         android:ems="10"
+        android:maxLines="1"
+        android:singleLine="true"
         android:hint="@string/chat_edit_text"
         android:inputType="textCapSentences"
         app:layout_constraintBottom_toBottomOf="@+id/cardView5"
