@@ -220,11 +220,12 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                                 Integer distanceInKmInt = new Integer(distanceInKm.intValue());
 
                                 Marker m;
-                                if (distanceInKm < 0.1)
+                                /*if (distanceInKm < 0.1)
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt + " m"));
+                                */
                                 if (distanceInKm < 1)
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm + " km"));
-                                if (distanceInKm < 5)
+                                else if (distanceInKm < 5)
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)).title(distanceInKmInt.toString() + " km"));
                                 else
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)).title(distanceInKmInt.toString() + " km"));
