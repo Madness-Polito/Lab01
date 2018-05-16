@@ -53,9 +53,8 @@ public class Chat {
 
                 Integer newMsgCount = mutableData.getValue(Integer.class);
 
-                if (newMsgCount == null) {
-                    newMsgCount = new Integer(0);
-                }
+                if (newMsgCount == null)
+                    newMsgCount = 0;
 
                 System.out.println("----------->newMsgCount " + newMsgCount);
 
@@ -82,9 +81,8 @@ public class Chat {
 
                 Integer totNewMsgCount = mutableData.getValue(Integer.class);
 
-                if (totNewMsgCount == null) {
-                    totNewMsgCount = new Integer(0);
-                }
+                if (totNewMsgCount == null)
+                    totNewMsgCount = 0;
 
                 System.out.println("----------->totNewMsgCount " + totNewMsgCount);
 
@@ -203,9 +201,8 @@ public class Chat {
 
                 Integer newMsgCount = mutableData.getValue(Integer.class);
 
-                if (newMsgCount == null) {
-                    newMsgCount = 0;
-                }
+                /*if (newMsgCount == null)
+                    newMsgCount = 0;*/
 
                 System.out.println("----------->newMsgCount " + newMsgCount);
 
@@ -232,10 +229,9 @@ public class Chat {
 
                 Integer totNewMsgCount = mutableData.getValue(Integer.class);
 
-                if (totNewMsgCount == null) {
-                    totNewMsgCount = new Integer(0);
-                }
-
+                /*if (totNewMsgCount == null)
+                    totNewMsgCount = 0;
+                */
                 System.out.println("----------->totNewMsgCount " + totNewMsgCount);
 
                 totNewMsgCount--;

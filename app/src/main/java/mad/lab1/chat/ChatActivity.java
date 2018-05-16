@@ -189,8 +189,9 @@ public class ChatActivity extends AppCompatActivity {
 
                 System.out.println("------->getMessages received msg from " + msg.getUid());
 
-                // no previously read msg: print system message
-                if (lastReadMsg.equals("") || isNextMexNew){
+                // (no previously read msg & not my message) or new msg: print system message
+                if ((lastReadMsg.equals("") && !msg.getUid().equals(Authentication.getCurrentUser().getUid()))
+                        || isNextMexNew){
                     isNewMex = true;
                     isNextMexNew = false;
                     ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
