@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import mad.lab1.CustomTextWatcher;
@@ -56,11 +57,15 @@ public class EditProfile extends AppCompatActivity{
     private TextView[] TEXTVIEWS;
     private String picUri;
     private int BOOK_LOCATION_CODE = 1234;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_edit_profile);
+
+        //subscribe to firebase notification channel
+        FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
 
         getLatLong();
 
@@ -308,7 +313,6 @@ public class EditProfile extends AppCompatActivity{
 
             }else{
                 // save user data to firebase & locally
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                 UserInfo userInfo = new UserInfo(user.getUid(),
                             name.getText().toString(),

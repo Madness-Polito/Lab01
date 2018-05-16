@@ -13,6 +13,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +30,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.zxing.integration.android.IntentIntegrator;
 
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +51,8 @@ import mad.lab1.R;
 import mad.lab1.User.Authentication;
 
 public class ChatActivity extends AppCompatActivity {
+
+    private final String SERVER_KEY = "AAAAYKIaOw0:APA91bFrX3UYbXFsB40mpDvg3Na-bbdPSeWtLCvkGUJJjG-nAs6oJKVSTZnTCAU4LR1yGLDT4uXYnhMlliJgRcZ2tlo-90lhLj6iGqneVv5AkSGc9NPVaNKNpTRYB1ZURuqLVjmWY9BT";
 
     private String chatId; // id of the current chat
     private String user2;  // id of the other user
@@ -82,6 +92,7 @@ public class ChatActivity extends AppCompatActivity {
         user1 = Authentication.getCurrentUser().getUid();
         chatId = Chat.getChatId(user1, user2);
 
+
         // send message when send button pressed
         fab.setOnClickListener((View v) -> {
 
@@ -91,8 +102,14 @@ public class ChatActivity extends AppCompatActivity {
                 ChatMessage msg = new ChatMessage(input.getText().toString(), Authentication.getCurrentUser().getDisplayName());
                 Chat.postMessage(msg, chatId, user2);
 
+                //send a notification to user2
+                sendPost(user2, msg.getText().toString());
+
                 // Clear the input
                 input.setText("");
+
+
+
             }
         );
 
@@ -249,5 +266,57 @@ public class ChatActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_activity_menu, menu);
         return true;
+    }
+
+    public void sendPost(String user, String msg) {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Authorization", "key=" + SERVER_KEY);
+                    conn.setRequestProperty("Accept","application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    JSONObject jsonParam = new JSONObject();
+                    JSONObject jsonParam2 =  new JSONObject();
+                    JSONObject jsonParam3 = new JSONObject();
+                    jsonParam2.put("body", msg);
+                    jsonParam2.put("title", "New Message");
+                    jsonParam.put("notification", jsonParam2);
+                    jsonParam.put("to", "/topics/" + user);
+
+                    /*jsonParam3.put("body", msg);
+                    jsonParam3.put("title", "testTitle");
+                    jsonParam2.put("topic", user);
+                    jsonParam2.put("notification", jsonParam3);
+                    jsonParam.put("message", jsonParam2);*/
+
+
+                    Log.i("JSON", jsonParam.toString());
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(jsonParam.toString());
+
+                    os.flush();
+                    os.close();
+
+                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG" , conn.getResponseMessage());
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
     }
 }

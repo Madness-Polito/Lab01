@@ -3,7 +3,6 @@ package mad.lab1;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
@@ -86,6 +85,7 @@ public class MainPageMenu extends AppCompatActivity {
             loginCheck();                                               //Checking if user logged in or not
             userCreatedCheck();                                         //check if user has filled in all necessary data
         }
+
     }
 
 
@@ -250,6 +250,13 @@ public class MainPageMenu extends AppCompatActivity {
                 searchView.closeSearch();
             }
         });
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        //subscribe to firebase notification channel
+        if(user != null) {
+            FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
+        }
+
 
     }
 
