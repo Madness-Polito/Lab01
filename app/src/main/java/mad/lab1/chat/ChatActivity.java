@@ -104,7 +104,7 @@ public class ChatActivity extends AppCompatActivity {
                 Chat.postMessage(msg, chatId, user2);
 
                 //send a notification to user2
-                sendPost(user2, msg.getText().toString());
+                sendPost(Authentication.getCurrentUser().getDisplayName(), user2, msg.getText().toString());
 
                 // Clear the input
                 input.setText("");
@@ -117,11 +117,25 @@ public class ChatActivity extends AppCompatActivity {
         // check if chat already exists
         checkChat();
 
+        cardViewList.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if ( bottom < oldBottom) {
+                cardViewList.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        cardViewList.scrollToPosition(msgList.size() - 1);
+                    }
+                }, 100);
+            }
+        });
+
 
         // load all messages
         //getMessages();
 
         toolBarInitialization(chat);
+        //scroll to bottom of the messages
+        layoutManager.setStackFromEnd(true);
+        cardViewList.scrollToPosition(msgList.size() - 1);
     }
 
     private void checkChat(){
@@ -178,6 +192,9 @@ public class ChatActivity extends AppCompatActivity {
                     msgList.add(tmpMsg);
                     adapter.notifyItemInserted(msgList.indexOf(tmpMsg));
 
+                    //scroll to bottom to show new message
+                    cardViewList.scrollToPosition(msgList.size() - 1);
+
                     System.out.println("------->getMessages received msg from " + msg.getUid());
                     Chat.decreaseNewMsgCount(user1, chatId);
                 }
@@ -185,6 +202,9 @@ public class ChatActivity extends AppCompatActivity {
                 // display last received msg
                 msgList.add(msg);
                 adapter.notifyItemInserted(msgList.indexOf(msg));
+
+                //scroll to bottom to show new message
+                cardViewList.scrollToPosition(msgList.size() - 1);
 
                 // modify last viewed message of user
                 Chat.updateLastReadMsg(user1, chatId, dataSnapshot.getKey());
@@ -272,7 +292,7 @@ public class ChatActivity extends AppCompatActivity {
         return true;
     }
 
-    public void sendPost(String user, String msg) {
+    public void sendPost(String user1Name, String user2ID, String msg) {
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -292,9 +312,9 @@ public class ChatActivity extends AppCompatActivity {
                     JSONObject jsonParam2 =  new JSONObject();
                     JSONObject jsonParam3 = new JSONObject();
                     jsonParam2.put("body", msg);
-                    jsonParam2.put("title", "New Message");
+                    jsonParam2.put("title", user1Name);
                     jsonParam.put("notification", jsonParam2);
-                    jsonParam.put("to", "/topics/" + user);
+                    jsonParam.put("to", "/topics/" + user2ID);
 
                     /*jsonParam3.put("body", msg);
                     jsonParam3.put("title", "testTitle");
