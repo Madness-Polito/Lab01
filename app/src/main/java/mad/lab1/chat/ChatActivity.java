@@ -65,6 +65,8 @@ public class ChatActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ChatInfo chat;
     private boolean isNewMex;
+    private boolean isNextMexNew;
+    private String lastReadMsg = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,9 +110,6 @@ public class ChatActivity extends AppCompatActivity {
 
                 // Clear the input
                 input.setText("");
-
-
-
             }
         );
 
@@ -144,8 +143,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
-                String lastReadMsg = "";
-
                 System.out.println("-------->checkChat");
 
                 // no chat exists: create new one
@@ -160,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 // get all messages
-                getMessages(lastReadMsg);
+                getMessages();
             }
             @Override
             public void onCancelled(DatabaseError dbError) {
@@ -171,12 +168,17 @@ public class ChatActivity extends AppCompatActivity {
         Chat.getChatInfo(user1, chatId).addListenerForSingleValueEvent(valueListener);
     }
 
+    private void addMessage(ChatMessage msg){
+
+        msgList.add(msg);
+        adapter.notifyItemInserted(msgList.indexOf(msg));
+    }
+
     // reads all the messages from the chat and prints them to screen
-    private void getMessages(String lastReadMsg){
+    private void getMessages(){
 
         final Context c = this;
 
-        isNewMex = lastReadMsg.equals("");
 
         ChildEventListener msgListener = new ChildEventListener() {
             @Override
@@ -185,33 +187,37 @@ public class ChatActivity extends AppCompatActivity {
                 // A new comment has been added, add it to the displayed list
                 ChatMessage msg = dataSnapshot.getValue(ChatMessage.class);
 
-                // decrease # of new msgs if msg from another user and comes after last read msg
-                if (!msg.getUid().equals(Authentication.getCurrentUser().getUid()) &&
-                        isNewMex) {
-                    ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
-                    msgList.add(tmpMsg);
-                    adapter.notifyItemInserted(msgList.indexOf(tmpMsg));
+                System.out.println("------->getMessages received msg from " + msg.getUid());
 
-                    //scroll to bottom to show new message
-                    cardViewList.scrollToPosition(msgList.size() - 1);
+                // no previously read msg: print system message
+                if (lastReadMsg.equals("") || isNextMexNew){
+                    isNewMex = true;
+                    isNextMexNew = false;
+                    ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
+                    addMessage(tmpMsg);
+                }
+
+                if (dataSnapshot.getKey().equals(lastReadMsg)){
+                    isNextMexNew = true;
+                }
+
+                // decrease # of new msgs if msg from another user and comes after last read msg
+                if (!msg.getUid().equals(Authentication.getCurrentUser().getUid())
+                        && isNewMex) {
 
                     System.out.println("------->getMessages received msg from " + msg.getUid());
                     Chat.decreaseNewMsgCount(user1, chatId);
                 }
 
-                // display last received msg
-                msgList.add(msg);
-                adapter.notifyItemInserted(msgList.indexOf(msg));
+                if (isNewMex){
+                    // modify last viewed message of user
+                    lastReadMsg = dataSnapshot.getKey();
+                    Chat.updateLastReadMsg(user1, chatId, lastReadMsg);
+                }
 
-                //scroll to bottom to show new message
+                // display last received msg & scroll to bottom
+                addMessage(msg);
                 cardViewList.scrollToPosition(msgList.size() - 1);
-
-                // modify last viewed message of user
-                Chat.updateLastReadMsg(user1, chatId, dataSnapshot.getKey());
-
-                // check if we reached last read msg
-                if (dataSnapshot.getKey().equals(lastReadMsg))
-                    isNewMex = false;
             }
 
             @Override

@@ -1,6 +1,7 @@
 package mad.lab1.chat;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.StorageReference;
 import com.twitter.sdk.android.core.models.Card;
 
 import java.text.DateFormat;
@@ -19,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mad.lab1.ChatActivity;
+import mad.lab1.Database.StorageDB;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
 
@@ -27,6 +34,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT     = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
     private static final int VIEW_TYPE_MESSAGE_SYSTEM   = 3;
+    private static final String DATE_FORMAT = "dd/MM/YY HH:mm";
 
     private List<ChatMessage> msgList;
     private Context context;
@@ -130,7 +138,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
 
             // Format the stored timestamp into a readable String using method.
             Long time = msg.getTime();
-            DateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             timeText.setText(formatter.format(time));
         }
     }
@@ -152,15 +160,29 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
             messageText.setText(msg.getText());
 
             Long time = msg.getTime();
-            DateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
             timeText.setText(formatter.format(time));
 
             nameText.setText(msg.getUser());
 
+            // TODO fix download the pic at the beginning of the chat
             // Insert the profile image from the URL into the ImageView.
-            Glide.with(context)
-                    .load("gs://madness-f0043.appspot.com/thumbnails/" + msg.getUid()) // image url
-                    .into(profileImage);
+            StorageReference picRef = StorageDB.getProfilePicRef()
+                                    .child(msg.getUid());
+            picRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    String imageURL = uri.toString();
+                    Glide.with(context)
+                            .load(imageURL)
+                            .into(profileImage);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(context, "Error downloading profile pic", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }

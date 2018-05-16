@@ -18,7 +18,7 @@ public class StorageDB {
     private final static String PICS_PATH = "userPics";      // name of folder in firebase storage where user's profile pictures are saved
 
     // returns a reference to the folder where profile pics are saved
-    private static StorageReference getProfilePicRef(){
+    public static StorageReference getProfilePicRef(){
 
         StorageReference storageRef = FirebaseStorage.getInstance().getReference();
         return storageRef.child(PICS_PATH);
