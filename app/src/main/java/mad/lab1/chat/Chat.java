@@ -204,7 +204,7 @@ public class Chat {
                 Integer newMsgCount = mutableData.getValue(Integer.class);
 
                 if (newMsgCount == null) {
-                    newMsgCount = new Integer(0);
+                    newMsgCount = 0;
                 }
 
                 System.out.println("----------->newMsgCount " + newMsgCount);

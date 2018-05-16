@@ -23,6 +23,15 @@ public class ChatMessage implements Parcelable{
         time = new Date().getTime();
     }
 
+    public ChatMessage(String text, String user, String uid) {
+        this.text = text;
+        this.user = user;
+        this.uid  = uid;
+
+        // Initialize to current time
+        time = new Date().getTime();
+    }
+
     public ChatMessage(){
 
     }

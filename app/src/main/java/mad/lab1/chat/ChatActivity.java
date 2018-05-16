@@ -64,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
     private String user1;
     private Toolbar toolbar;
     private ChatInfo chat;
+    private boolean isNewMex;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,12 +119,9 @@ public class ChatActivity extends AppCompatActivity {
 
 
         // load all messages
-        getMessages();
-
+        //getMessages();
 
         toolBarInitialization(chat);
-
-
     }
 
     private void checkChat(){
@@ -131,10 +129,24 @@ public class ChatActivity extends AppCompatActivity {
         ValueEventListener valueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+
+                String lastReadMsg = "";
+
+                System.out.println("-------->checkChat");
+
+                // no chat exists: create new one
                 if (snapshot.getValue() == null) {
                     System.out.println("Such chat does not exist");
                     Chat.setChatInfos(user1, user2);
                 }
+                // chat exists: parse it
+                else{
+                    ChatInfo chatInfo = snapshot.getValue(ChatInfo.class);
+                    lastReadMsg = chatInfo.getLastReadMsg();
+                }
+
+                // get all messages
+                getMessages(lastReadMsg);
             }
             @Override
             public void onCancelled(DatabaseError dbError) {
@@ -146,9 +158,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     // reads all the messages from the chat and prints them to screen
-    private void getMessages(){
+    private void getMessages(String lastReadMsg){
 
-        Context c = this;
+        final Context c = this;
+
+        isNewMex = lastReadMsg.equals("");
 
         ChildEventListener msgListener = new ChildEventListener() {
             @Override
@@ -156,50 +170,40 @@ public class ChatActivity extends AppCompatActivity {
 
                 // A new comment has been added, add it to the displayed list
                 ChatMessage msg = dataSnapshot.getValue(ChatMessage.class);
+
+                // decrease # of new msgs if msg from another user and comes after last read msg
+                if (!msg.getUid().equals(Authentication.getCurrentUser().getUid()) &&
+                        isNewMex) {
+                    ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
+                    msgList.add(tmpMsg);
+                    adapter.notifyItemInserted(msgList.indexOf(tmpMsg));
+
+                    System.out.println("------->getMessages received msg from " + msg.getUid());
+                    Chat.decreaseNewMsgCount(user1, chatId);
+                }
+
+                // display last received msg
                 msgList.add(msg);
                 adapter.notifyItemInserted(msgList.indexOf(msg));
 
                 // modify last viewed message of user
                 Chat.updateLastReadMsg(user1, chatId, dataSnapshot.getKey());
 
-                // decrease # of new msgs if msg from another user
-                if (!msg.getUid().equals(Authentication.getCurrentUser().getUid()))
-                    Chat.decreaseNewMsgCount(user1, chatId);
+                // check if we reached last read msg
+                if (dataSnapshot.getKey().equals(lastReadMsg))
+                    isNewMex = false;
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-               /* Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
-
-                // A comment has changed, use the key to determine if we are displaying this
-                // comment and if so displayed the changed comment.
-                Comment newComment = dataSnapshot.getValue(Comment.class);
-                String commentKey = dataSnapshot.getKey();
-
-                // ...*/
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-               /* Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-
-                // A comment has changed, use the key to determine if we are displaying this
-                // comment and if so remove it.
-                String commentKey = dataSnapshot.getKey();
-
-                // ...*/
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-              /*  Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
-
-                // A comment has changed position, use the key to determine if we are
-                // displaying this comment and if so move it.
-                Comment movedComment = dataSnapshot.getValue(Comment.class);
-                String commentKey = dataSnapshot.getKey();
-
-                // ...*/
             }
 
             @Override

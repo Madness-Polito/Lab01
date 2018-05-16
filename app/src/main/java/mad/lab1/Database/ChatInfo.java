@@ -9,7 +9,7 @@ public class ChatInfo implements Parcelable {
     private String chatID;          //This id has to be populated using getKey() on the datasnapshot
     private String otherUser;
     private int newMsgCount;
-    //private String idLastMex;
+    private String lastReadMsg;
 
     //Empty constructor to let firebase serialize this clase
     public ChatInfo(){
@@ -25,7 +25,7 @@ public class ChatInfo implements Parcelable {
         //this.chatID = chatID;
         this.otherUser = otherUser;
         this.newMsgCount = newMsgCount;
-        //this.idLastMex = idLastMex;
+        this.lastReadMsg = "";
     }
 
 
@@ -50,11 +50,11 @@ public class ChatInfo implements Parcelable {
         this.newMsgCount = newMsgCount;
     }
 
-    //public String getIdLastMex(){return this.idLastMex;}
+    public String getLastReadMsg(){return this.lastReadMsg;}
 
-    //public void setIdLastMex(String idLastMex){
-        //this.idLastMex = idLastMex;
-    //}
+    public void setLastReadMsg(String lastReadMsg){
+        this.lastReadMsg = lastReadMsg;
+    }
 
     @Override
     public int describeContents() {
@@ -64,10 +64,9 @@ public class ChatInfo implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         //dest.writeString(this.chatID);
-        dest.writeInt(this.newMsgCount);
-        dest.writeString(this.otherUser);
-
-        //dest.writeString(this.idLastMex);
+        dest.writeInt(newMsgCount);
+        dest.writeString(otherUser);
+        dest.writeString(lastReadMsg);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
