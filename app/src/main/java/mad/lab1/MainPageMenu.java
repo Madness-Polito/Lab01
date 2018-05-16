@@ -1,5 +1,6 @@
 package mad.lab1;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ import mad.lab1.Database.StorageDB;
 import mad.lab1.Database.UserInfo;
 import mad.lab1.Database.UsersDB;
 import mad.lab1.Fragments.ShowSelectedBookInfo;
+import mad.lab1.Notifications.Constants;
 import mad.lab1.User.Authentication;
 import mad.lab1.User.EditProfile;
 import mad.lab1.User.ShowProfile;
@@ -226,6 +228,9 @@ public class MainPageMenu extends AppCompatActivity {
 
                 }else{
                     //chats
+                    //clear all chat notifications
+                    NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+                    notificationManager.cancel(Constants.NOTIFICATION_TAG);
                 }
 
                 toolbar.setTitle(titles[position]);
@@ -255,6 +260,11 @@ public class MainPageMenu extends AppCompatActivity {
         //subscribe to firebase notification channel
         if(user != null) {
             FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
+        }
+
+        //check if a notification has been clicked. If yes, go to tab 4 (chats)
+        if(getIntent().getAction().equals(Constants.OPEN_CHAT)){
+            viewPager.setCurrentItem(3);
         }
 
 
@@ -445,6 +455,13 @@ public class MainPageMenu extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d("MARKER", "onResume()");
+
+        if(viewPager.getCurrentItem() == 3){
+            //clear all chat notifications, we are on the chat page
+            NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(Constants.NOTIFICATION_TAG);
+        }
+
         runTutorial();
     }
 

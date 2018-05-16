@@ -1,5 +1,6 @@
 package mad.lab1.Notifications;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -58,6 +59,9 @@ public class MyNotificationManager {
         * */
 
         Intent resultIntent = new Intent(mCtx, MainPageMenu.class);
+        resultIntent
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .setAction(Constants.OPEN_CHAT);
 
         /*
         *  Now we will create a pending intent
@@ -67,7 +71,11 @@ public class MyNotificationManager {
         *  We can detect this code in the activity that will open by this we can get
         *  Which notification opened the activity
         * */
-        PendingIntent pendingIntent = PendingIntent.getActivity(mCtx, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                mCtx,
+                0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         /*
         *  Setting the pending intent to notification builder
@@ -78,13 +86,16 @@ public class MyNotificationManager {
         NotificationManager mNotifyMgr =
                 (NotificationManager) mCtx.getSystemService(NOTIFICATION_SERVICE);
 
+        Notification notification = mBuilder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
         /*
         * The first parameter is the notification id
         * better don't give a literal here (right now we are giving a int literal)
         * because using this id we can modify it later
         * */
         if (mNotifyMgr != null) {
-            mNotifyMgr.notify(Constants.NOTIFICATION_TAG, mBuilder.build());
+            mNotifyMgr.notify(Constants.NOTIFICATION_TAG, notification);
         }
     }
 

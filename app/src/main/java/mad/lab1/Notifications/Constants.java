@@ -9,4 +9,5 @@ public class Constants {
     public static final String CHANNEL_NAME = "Madness notification channel";
     public static final String CHANNEL_DESCRIPTION = "Madness chat notification channel";
     public static final int NOTIFICATION_TAG = 865786;
+    public static final String OPEN_CHAT = "OPEN_CHAT";
 }
