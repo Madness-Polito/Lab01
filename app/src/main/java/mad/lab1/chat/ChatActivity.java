@@ -119,6 +119,7 @@ public class ChatActivity extends AppCompatActivity {
         fab.setOnClickListener((View v) -> {
 
                 // Read the input field and push a new ChatMessage to Firebase
+            if(input.getText().length() != 0) {
                 ChatMessage msg = new ChatMessage(input.getText().toString(), Authentication.getCurrentUser().getDisplayName());
                 Chat.postMessage(this, msg, chatId, user2);
 
@@ -127,6 +128,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 // Clear the input
                 input.setText("");
+            }
             }
         );
 
