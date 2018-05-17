@@ -182,8 +182,6 @@ public class MapsBookToShare extends AppCompatActivity {
 
     public void initialize(){
 
-        //Location l;
-
 
         if(curlat != null && curlon != null) {
             currentLocation = new Location("");
@@ -203,8 +201,8 @@ public class MapsBookToShare extends AppCompatActivity {
 
 
         if(currentLocation == null) {
-            Toast.makeText(this, "Location not available", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this, R.string.location_not_available, Toast.LENGTH_SHORT).show();
+            //finish();
         }
 
         else {

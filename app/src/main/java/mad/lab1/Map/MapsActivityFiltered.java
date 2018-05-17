@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -159,6 +162,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
     }
 
     public void addMarkers(){
+        Log.d("here", "addmarkers()");
         // add a list of all book titles of a user and the distance between curr position and users
         Location location = getLastKnownLocation();
         users = new LinkedList<>();
@@ -187,7 +191,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
     private void placeMarkers(Location location){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");//FirebaseDatabase.getInstance().getReference("users");
-
+        Log.d("here", "place markers");
         //markerList = new LinkedList<>();
         if(location != null) {
             ref.addValueEventListener(new ValueEventListener() {
@@ -244,11 +248,11 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                         setZoomLevel();
                     }
                     else {
+                        Log.d("here", "add markers");
                         for (Marker m : markerList)
                             boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
                         boundsBuilder.include(new LatLng(location.getLatitude(), location.getLongitude()));
                         final LatLngBounds bounds = boundsBuilder.build();
-                        //todo change values according to number and distance of markers, find a right algorithm to compute height, width, padding
                         int padding = 100; // offset from edges of the map in pixels
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                         mMap.animateCamera(cameraUpdate);
@@ -265,10 +269,100 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
             });
 
         }
+        else{
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    //DataSnapshot userSnapshot = dataSnapshot.child("users");
+                    //Iterable<DataSnapshot> usersChildren = userSnapshot.getChildren();
+
+                    //Toast.makeText(MapsActivity.this, "bauuuuuu", Toast.LENGTH_SHORT).show();
+                    List<Marker> markerList = new LinkedList<>();
+                    for(DataSnapshot user : dataSnapshot.getChildren()) {
+
+                        UserInfo u = user.getValue(UserInfo.class);
+                        if(userIds.contains(u.getUid()) && !u.getName().equals(LocalDB.getUserInfo(getApplicationContext()).getName())){
+                            users.add(u);
+                            //Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
+                            Log.d("ADD", u.getName() + " " + u.getLatitude() + " " + users.size());
+                            if (u.getLatitude() != null && u.getLongitude() != null) {
+                                Double lat = new Double(u.getLatitude());
+                                Double lng = new Double(u.getLongitude());
+                                LatLng myLatLng = new LatLng(lat, lng);
+
+                                Location l = new Location("");
+                                l.setLatitude(lat);
+                                l.setLongitude(lng);
+
+                                Marker m;
+
+                                m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+                                markerList.add(m);
+
+                                //store correspondance between user and marker
+                                markUserMap.put(m, u);
+                            }
+                        }
+                    }
+
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
+                    if(markerList.size()==0){
+                        setZoomLevel();
+                    }
+                    else {
+                        Log.d("here", "add markers");
+                        //for (Marker m : markerList)
+                            //boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
+
+                        boundsBuilder.include(putDefaultLocations("Torino"));
+                        //boundsBuilder.include(putDefaultLocations("Milano"));
+                        //boundsBuilder.include(putDefaultLocations("Roma"));
+                        //boundsBuilder.include(putDefaultLocations("Palermo"));
+                        boundsBuilder.include(putDefaultLocations("Taranto"));
+                        final LatLngBounds bounds = boundsBuilder.build();
+                        int padding = 200; // offset from edges of the map in pixels
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                        mMap.animateCamera(cameraUpdate);
+                    }
+
+
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+            Toast.makeText(this, R.string.location_not_available, Toast.LENGTH_LONG).show();
+        }
     }
 
 
+    public LatLng putDefaultLocations(String desideredLocation){
+        if(Geocoder.isPresent()){
+            try {
+                String location = desideredLocation;
+                Geocoder gc = new Geocoder(this);
+                List<Address> addresses= gc.getFromLocationName(location, 5); // get the found Address Objects
 
+                List<LatLng> ll = new ArrayList<LatLng>(addresses.size()); // A list to save the coordinates if they are available
+                for(Address a : addresses){
+                    if(a.hasLatitude() && a.hasLongitude()){
+                        ll.add(new LatLng(a.getLatitude(), a.getLongitude()));
+                    }
+                }
+                if(ll.size()!= 0)
+                    return ll.get(0);
+                else
+                    return null;
+            } catch (IOException e) {
+                // handle the exception
+            }
+        }
+        return null;
+    }
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
@@ -354,13 +448,17 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
     private void setZoomLevel(){
         Location l = getLastKnownLocation();
-        double curlat = l.getLatitude(); // l is null
-        double curlon = l.getLongitude();
-        LatLng currentpos = new LatLng(curlat, curlon);
+        if(l!= null) {
+            double curlat = l.getLatitude(); // l is null
+            double curlon = l.getLongitude();
+            LatLng currentpos = new LatLng(curlat, curlon);
 
-        float zoomLevel = 10.0f; //This goes up to 21
+            float zoomLevel = 10.0f; //This goes up to 21
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(curlat, curlon), zoomLevel));
+        }
+        //else
+            //Toast.makeText(this, R.string.location_not_available, Toast.LENGTH_LONG).show();
     }
 
     private Location getLastKnownLocation() {

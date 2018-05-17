@@ -53,4 +53,22 @@
     <string name="dragTheMarker">Tieni premuto e trascina il marker</string>
     <string name="chat_edit_text">Scrivi un messaggio</string>
 
+    <string name="location_not_available">Posizione non disponibile, attivala dalle impostazioni</string>
+    <string name="select_book_map">Seleziona un libro e prendilo in prestito</string>
+    <string name="borrowed_book">Preso in prestito!</string>
+    <string name="no_book_selected">Per favore, seleziona un libro</string>
+
+    <!-- tutorial -->
+    <string name="tutorial_welcome">BENVENUTO</string>
+    <string name="tutorial_signin">AUTENTICATI</string>
+    <string name="tutorial_profile">PROFILO PERSONALE</string>
+    <string name="tutorial_chat">CHAT</string>
+    <string name="tutorial_letsstart">INIZIAMO</string>
+
+    <!-- tutorial text-->
+    <string name="tutorial_welcome_text">Benvenuto su Pazzia Libro Condivisione! :D Con questa app potrai condividere tantissimi libri con altruì utenti</string>
+    <string name="tutorial_signin_text">Autenticati tramite la tua email o i tuoi account social</string>
+    <string name="tutorial_profile_text">Completa il tuo profilo aggiungendo una foto e altri dettagli</string>
+    <string name="tutorial_chat_text">Comunica con gli altri utenti attraverso la tua chat personale</string>
+    <string name="tutorial_letsstart_text">Ora cerca il libro che ti piace e inizia la condivisione</string>
 </resources>

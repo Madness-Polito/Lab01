@@ -125,6 +125,7 @@ public class EditProfile extends AppCompatActivity{
         //  If the activity has never started before...
         if (isFirstStart) {
             // set intro of edit button
+            /*
             new ShowcaseView.Builder(this)
                     .withMaterialShowcase()
                     .setStyle(R.style.CustomShowcaseTheme2)
@@ -132,7 +133,7 @@ public class EditProfile extends AppCompatActivity{
                     .setContentTitle("book location")
                     .setContentText("press this button to edit your actual location")
                     .build();
-
+            */
             //  Make a new preferences editor
             SharedPreferences.Editor e = getPrefs.edit();
 
