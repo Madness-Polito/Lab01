@@ -95,6 +95,14 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(view -> {
+            //add the selected book to the list of borrowed books
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
+            ref.child(user.getUid())
+                    .child(book.getBookId())
+                    .setValue(book);
+
+            //open the chat interface with the book owner
             ChatInfo c = new ChatInfo(0, bookOwner.getUid());
             Intent intent = new Intent(getBaseContext(), ChatActivity.class);
             Bundle b = new Bundle();

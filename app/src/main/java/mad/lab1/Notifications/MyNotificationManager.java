@@ -5,10 +5,15 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+
+import java.net.URI;
 
 import mad.lab1.MainPageMenu;
 import mad.lab1.R;
+import mad.lab1.chat.ChatActivity;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static mad.lab1.Notifications.Constants.CHANNEL_ID;
@@ -33,21 +38,21 @@ public class MyNotificationManager {
         return mInstance;
     }
 
-    public void displayNotification(String title, String body) {
+    public void displayNotification(String title, String body, String user2) {
+
+        int notificationTag = (int) (Math.random() * 10000);
         long time = System.currentTimeMillis();
 
-        NotificationCompat.MessagingStyle.Message message =
+        /*NotificationCompat.MessagingStyle.Message message =
                 new NotificationCompat.MessagingStyle.Message(body, time, title);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mCtx, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.all_books_tab_icon)
+                        .setSmallIcon(R.drawable.all_books_selected_24dp)
                         .setContentTitle(title)
                         .setContentText(body)
                         .setStyle(new NotificationCompat.MessagingStyle(title).addMessage(message))
-                        .setCategory(NotificationCompat.CATEGORY_MESSAGE);
-
-
+                        .setCategory(NotificationCompat.CATEGORY_MESSAGE);*/
 
 
 
@@ -58,10 +63,8 @@ public class MyNotificationManager {
         *  But for your project you can customize it as you want
         * */
 
-        Intent resultIntent = new Intent(mCtx, MainPageMenu.class);
-        resultIntent
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                .setAction(Constants.OPEN_CHAT);
+        Intent resultIntent = new Intent(mCtx, ChatActivity.class);
+        resultIntent.setAction(user2);
 
         /*
         *  Now we will create a pending intent
@@ -81,13 +84,29 @@ public class MyNotificationManager {
         *  Setting the pending intent to notification builder
         * */
 
-        mBuilder.setContentIntent(pendingIntent);
+        Notification parentNotification = new NotificationCompat.Builder(mCtx, CHANNEL_ID)
+                .setSmallIcon(R.drawable.all_books_selected_24dp)
+                .setGroupSummary(true)
+                .setGroup(user2)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        Notification childNotification = new NotificationCompat.Builder(mCtx, CHANNEL_ID)
+                .setSmallIcon(R.drawable.all_books_selected_24dp)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setGroup(user2)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+
+
+
+        //mBuilder.setContentIntent(pendingIntent);
 
         NotificationManager mNotifyMgr =
                 (NotificationManager) mCtx.getSystemService(NOTIFICATION_SERVICE);
-
-        Notification notification = mBuilder.build();
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         /*
         * The first parameter is the notification id
@@ -95,7 +114,8 @@ public class MyNotificationManager {
         * because using this id we can modify it later
         * */
         if (mNotifyMgr != null) {
-            mNotifyMgr.notify(Constants.NOTIFICATION_TAG, notification);
+            mNotifyMgr.notify(user2.hashCode(), parentNotification);
+            mNotifyMgr.notify(notificationTag, childNotification);
         }
     }
 

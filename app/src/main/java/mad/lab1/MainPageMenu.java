@@ -228,9 +228,6 @@ public class MainPageMenu extends AppCompatActivity {
 
                 }else{
                     //chats
-                    //clear all chat notifications
-                    NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.cancel(Constants.NOTIFICATION_TAG);
                 }
 
                 toolbar.setTitle(titles[position]);
@@ -260,11 +257,6 @@ public class MainPageMenu extends AppCompatActivity {
         //subscribe to firebase notification channel
         if(user != null) {
             FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
-        }
-
-        //check if a notification has been clicked. If yes, go to tab 4 (chats)
-        if(getIntent().getAction().equals(Constants.OPEN_CHAT)){
-            viewPager.setCurrentItem(3);
         }
 
 
@@ -395,7 +387,10 @@ public class MainPageMenu extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.logout_toolbar_button:
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(user.getUid());
                 Authentication.signOut(this);
+
                 break;
         }
 

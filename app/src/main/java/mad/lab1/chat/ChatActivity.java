@@ -1,6 +1,7 @@
 package mad.lab1.chat;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -91,12 +92,20 @@ public class ChatActivity extends AppCompatActivity {
         cardViewList.setAdapter(adapter);
         EditText input = findViewById(R.id.chatActivityEditText);
 
-        // get intent data
-        Intent intent = getIntent();
-        Bundle arg = intent.getBundleExtra("chatInfo");
-        chat = arg.getParcelable("chat");
-        getOtherUserProfile(chat);
-        user2  = chat.getOtherUser();
+        toolBarInitialization(chat);
+
+        if(getIntent().getAction() == null) {
+            // get intent data if the activity has been started normally
+            Intent intent = getIntent();
+            Bundle arg = intent.getBundleExtra("chatInfo");
+            chat = arg.getParcelable("chat");
+            getOtherUserProfile(chat);
+            user2 = chat.getOtherUser();
+        }else{
+            //has been started from a notification
+            user2 = getIntent().getAction();
+            toolbar.setTitle(user2);
+        }
 
         // generate chatId
         user1 = Authentication.getCurrentUser().getUid();
@@ -158,7 +167,12 @@ public class ChatActivity extends AppCompatActivity {
         // load all messages
         //getMessages();
 
-        toolBarInitialization(chat);
+        //remove notifications related to this chat
+        //clear all chat notifications
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(user2.hashCode());
+
+
         //scroll to bottom of the messages
         layoutManager.setStackFromEnd(true);
         cardViewList.scrollToPosition(msgList.size() - 1);
@@ -276,7 +290,8 @@ public class ChatActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         //Remove childEventListener
-        if(chatRef != null) {
+        if(chatRef != null && msgListener != null) {
+
             chatRef.removeEventListener(msgListener);
             int size = msgList.size();
             msgList.clear();
@@ -373,6 +388,7 @@ public class ChatActivity extends AppCompatActivity {
                     jsonParam2.put("body", msg);
                     jsonParam2.put("title", user1Name);
                     jsonParam2.put("tag", Constants.NOTIFICATION_TAG);
+                    jsonParam2.put("user2", user1);
                     jsonParam.put("data", jsonParam2);
                     jsonParam.put("to", "/topics/" + user2ID);
 

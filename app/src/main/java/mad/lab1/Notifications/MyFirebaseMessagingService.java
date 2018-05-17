@@ -31,13 +31,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //if(remoteMessage.getData().size() > 0){
             //handle the data message here
             //Log.d(TAG, "Refreshed message: " + remoteMessage.getData().size());
-        //}
+        //
+        // }
 
         //getting the title and the body
         //String title = remoteMessage.getNotification().getTitle();
         //String body = remoteMessage.getNotification().getBody();
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
+        String user2 = remoteMessage.getData().get("user2");
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager mNotificationManager =
@@ -53,7 +55,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
 
 
-        MyNotificationManager.getInstance(this).displayNotification(title, body);
+        MyNotificationManager.getInstance(this).displayNotification(title, body, user2);
 
     }
 }

@@ -167,7 +167,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
 
             // TODO fix download the pic at the beginning of the chat
             // Insert the profile image from the URL into the ImageView.
-            StorageReference picRef = StorageDB.getProfilePicRef()
+            /*StorageReference picRef = StorageDB.getProfilePicRef()
                                     .child(msg.getUid());
             picRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
@@ -182,7 +182,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                 public void onFailure(@NonNull Exception exception) {
                     Toast.makeText(context, "Error downloading profile pic", Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
         }
     }
 }
