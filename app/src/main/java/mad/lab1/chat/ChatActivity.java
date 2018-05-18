@@ -69,8 +69,9 @@ public class ChatActivity extends AppCompatActivity {
     private String user1;
     private Toolbar toolbar;
     private ChatInfo chat;
-    private boolean isNewMex;
-    private boolean isNextMexNew;
+    private boolean isNewMsg;
+    private boolean isNextMsgNew;
+    private boolean isFirstMsg;
     private String lastReadMsg = "";
     private DatabaseReference chatRef;
     private ChildEventListener msgListener;
@@ -222,6 +223,8 @@ public class ChatActivity extends AppCompatActivity {
         final Context c = this;
 
 
+
+        // # SACRED CODE, PLEASE DO NOT TOUCH IT
         msgListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
@@ -231,11 +234,85 @@ public class ChatActivity extends AppCompatActivity {
 
                 System.out.println("------->getMessages received msg from " + msg.getUid());
 
+                // no previously read msg
+                if (lastReadMsg.equals("")){
+
+                    // if msg from other user
+                    if (!msg.getUid().equals(Authentication.getCurrentUser().getUid())) {
+
+                        // print system box
+                        ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
+                        addMessage(tmpMsg);
+                        /*isNewMsg   = true;
+                        isFirstMsg = true;*/
+                        Chat.decreaseNewMsgCount(getApplicationContext(), user1, chatId);
+                    }
+
+                    isNewMsg   = true;
+                    isFirstMsg = true;
+
+                    // print received msg
+                    addMessage(msg);
+
+                    // update last read message
+                    lastReadMsg = dataSnapshot.getKey();
+                    Chat.updateLastReadMsg(user1, chatId, lastReadMsg);
+                }
+                else{
+                    // reached last read msg, mark following as not read
+                    if (lastReadMsg.equals(dataSnapshot.getKey())){
+                        isNextMsgNew = true;
+                        addMessage(msg);
+
+                        // update last read message
+                        /*lastReadMsg = dataSnapshot.getKey();
+                        Chat.updateLastReadMsg(user1, chatId, lastReadMsg);*/
+                    }
+                    // neither first ever msg nor equal to lastReadMsg
+                    else{
+                        // if isNewMsg print first the system box
+                        if (isNextMsgNew && !isFirstMsg){
+                            isNextMsgNew = false;
+                            isNewMsg = true;
+
+                            // print system bar & received msg
+                            // if msg from other user
+                            if (!msg.getUid().equals(Authentication.getCurrentUser().getUid())) {
+                                ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
+                                addMessage(tmpMsg);
+                            }
+                        }
+
+                        if (isNewMsg) {
+                            // update last read message
+                            lastReadMsg = dataSnapshot.getKey();
+
+                            if (!msg.getUid().equals(Authentication.getCurrentUser().getUid()))
+                                Chat.decreaseNewMsgCount(getApplicationContext(), user1, chatId);
+
+                            Chat.updateLastReadMsg(user1, chatId, lastReadMsg);
+                        }
+
+                        if (msg.getUid().equals(Authentication.getCurrentUser().getUid()) && isNewMsg) {
+                            lastReadMsg = dataSnapshot.getKey();
+                            Chat.updateLastReadMsg(user1, chatId, lastReadMsg);
+                        }
+                        
+                        // then print the msg
+                        addMessage(msg);
+                    }
+                    isFirstMsg = false;
+                }
+
+
+
+              /*
                 // (no previously read msg & not my message) or new msg: print system message
                 if ((lastReadMsg.equals("") && !msg.getUid().equals(Authentication.getCurrentUser().getUid()))
                         || isNextMexNew){
                     isNewMex = true;
                     isNextMexNew = false;
+                    lastReadMsg = dataSnapshot.getKey();
                     ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
                     addMessage(tmpMsg);
                 }
@@ -261,8 +338,8 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 // display last received msg & scroll to bottom
-                addMessage(msg);
-                cardViewList.scrollToPosition(msgList.size() - 1);
+                addMessage(msg);*/
+
             }
 
             @Override
@@ -302,6 +379,10 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        isNewMsg     = false;
+        isNextMsgNew = false;
+
         //add childEventListener
         if(msgListener != null) {
             chatRef.addChildEventListener(msgListener);

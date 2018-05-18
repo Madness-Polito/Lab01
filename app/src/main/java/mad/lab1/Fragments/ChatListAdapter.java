@@ -11,11 +11,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +37,7 @@ import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.LocalDB;
 import mad.lab1.Database.UserInfo;
 import mad.lab1.R;
+import mad.lab1.User.Authentication;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> {
 
@@ -78,18 +86,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             //Set the user profile pic
             setOtherUserImageProfile(holder, c);
             setOtherUserName(holder, c);
-
-            if(c.getNewMsgCount() > 0){
-                //New message, show the number
-                holder.newMexCount.setVisibility(View.VISIBLE);
-                holder.chatNewMexCountBackground.setVisibility(View.VISIBLE);
-                holder.newMexCount.setText(String.format("%d", c.getNewMsgCount()));
-
-            }else{
-                //No new messages, hide the number
-                holder.newMexCount.setVisibility(View.GONE);
-                holder.chatNewMexCountBackground.setVisibility(View.GONE);
-            }
+            setNewMsgCount(holder, c);
 
             holder.card.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,6 +126,74 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         Uri picUri = Uri.parse(LocalDB.getProfilePicPath(context));
         holder.chatUserImage.setImageURI(picUri);
 
+    }
+
+    private void setNewMsgCount(ChatListViewHolder holder, ChatInfo c){
+
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference newMsgCountRef = db.getReference()
+                                            .child("chatInfo")
+                                            .child(Authentication.getCurrentUser().getUid())
+                                            .child("chatInfoList")
+                                            .child(c.getChatID())
+                                            .child("newMsgCount");
+
+        ValueEventListener newMsgCountListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Integer newMsgCount = dataSnapshot.getValue(Integer.class);
+
+                if (newMsgCount > 0) {
+                    //New message, show the number
+                    holder.newMexCount.setVisibility(View.VISIBLE);
+                    holder.chatNewMexCountBackground.setVisibility(View.VISIBLE);
+                    holder.newMexCount.setText(newMsgCount.toString());
+
+                    // play shake animation
+                    Animation animation;
+                    animation = AnimationUtils.loadAnimation(context,R.anim.shake_animation);
+                    holder.chatNewMexCountBackground.startAnimation(animation);
+                    holder.newMexCount.startAnimation(animation);
+
+                } else {
+                    //No new messages, hide the number
+                    holder.newMexCount.setVisibility(View.GONE);
+                    holder.chatNewMexCountBackground.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        newMsgCountRef.addValueEventListener(newMsgCountListener);
+
+       /* newMsgCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Integer newMsgCount = dataSnapshot.getValue(Integer.class);
+
+                if(newMsgCount > 0){
+                    //New message, show the number
+                    holder.newMexCount.setVisibility(View.VISIBLE);
+                    holder.chatNewMexCountBackground.setVisibility(View.VISIBLE);
+                    holder.newMexCount.setText(newMsgCount.toString());
+
+                }else{
+                    //No new messages, hide the number
+                    holder.newMexCount.setVisibility(View.GONE);
+                    holder.chatNewMexCountBackground.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
     }
 
 
