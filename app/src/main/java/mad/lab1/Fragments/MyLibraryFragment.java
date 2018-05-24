@@ -96,7 +96,7 @@ public class MyLibraryFragment extends Fragment {
     private DatabaseReference dbRef;
     private RecyclerView cardViewList;
     private LinearLayoutManager layoutManager;
-    private AllBooksListAdapter adapter;
+    private MyLibraryListAdapter adapter;
     private ChildEventListener bookIDListener;
 
 
@@ -113,24 +113,10 @@ public class MyLibraryFragment extends Fragment {
 
 
             allBookList = new ArrayList<>();
-            adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
+            /*adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
                 @Override
                 public void onBookClicked(Book b) {
-                    //create a dialog fragment that shows all the informatio related to the book selected
-                    //Toast.makeText(getContext(), b.getTitle(), Toast.LENGTH_SHORT).show();
-                /*
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                //Checking if previous dialog are active
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                if (prev != null) {
-                    ft.remove(prev);
-                }
-                ft.addToBackStack(null);
 
-                // Create and show the dialog.
-                ShowSelelctedBookInfoDialogFragment newFragment = ShowSelelctedBookInfoDialogFragment.newInstance(b);
-                newFragment.show(ft, "dialog");
-                */
                     Bundle arg = new Bundle();
                     arg.putParcelable("book", b);
                     Intent i = new Intent(getContext(), ShowSelectedBookInfo.class);
@@ -138,6 +124,9 @@ public class MyLibraryFragment extends Fragment {
                     startActivity(i);
                 }
             });
+            */
+
+            adapter = new MyLibraryListAdapter(allBookList, getContext());
 
             bookIDListener = new ChildEventListener() {
                 @Override

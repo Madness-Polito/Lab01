@@ -97,10 +97,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
     public ChatListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //If there are some view in the list to be initialized instead of recycled, this method is invoked to
         //link a viewHolder
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.open_chat_list_layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_card_view_open_chat, parent, false);
 
-        //Instantiatin a viewHolder and passing the newly created view.
-        //It can then acquire reference to all elements inside of v
+        //Instantiating a viewHolder and passing the newly created view.
+        //It can then acquire reference to all elements inside v
         ChatListViewHolder c = new ChatListViewHolder(v);
         return c;
     }
@@ -160,30 +160,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         };
 
         newMsgCountRef.addValueEventListener(newMsgCountListener);
-
-       /* newMsgCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Integer newMsgCount = dataSnapshot.getValue(Integer.class);
-
-                if(newMsgCount > 0){
-                    //New message, show the number
-                    holder.newMexCount.setVisibility(View.VISIBLE);
-                    holder.chatNewMexCountBackground.setVisibility(View.VISIBLE);
-                    holder.newMexCount.setText(newMsgCount.toString());
-
-                }else{
-                    //No new messages, hide the number
-                    holder.newMexCount.setVisibility(View.GONE);
-                    holder.chatNewMexCountBackground.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });*/
     }
 
 

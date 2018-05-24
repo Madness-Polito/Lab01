@@ -68,7 +68,6 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
         descriptionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: ADD DIALOG WITH COMPLETE DESCRIPTION
                 // custom dialog
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.description_layout);

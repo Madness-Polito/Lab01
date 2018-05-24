@@ -56,7 +56,7 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
     private ArrayList<Book> allSharedBooks;
     private final OnBookClicked listener;
 
-    //TODO: IT WILL RECEIVE THE LIST OF BOOK ITEMS TO DISPLAY
+
     public AllBooksListAdapter(ArrayList<Book> allSharedBooks, OnBookClicked listener){
         this.allSharedBooks = allSharedBooks;
         this.listener = listener;
@@ -70,7 +70,7 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_element_card_view, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.element_card_view_all_book, parent, false);
         CardViewHolder cardViewHolder = new CardViewHolder(v);
         return cardViewHolder;
     }
@@ -92,8 +92,5 @@ public class AllBooksListAdapter extends RecyclerView.Adapter<AllBooksListAdapte
         holder.bind(allSharedBooks.get(position), listener);
     }
 
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-    }
+
 }

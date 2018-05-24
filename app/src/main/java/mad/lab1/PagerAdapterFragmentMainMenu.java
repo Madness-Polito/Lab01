@@ -17,7 +17,7 @@ public class PagerAdapterFragmentMainMenu extends FragmentPagerAdapter {
         super(fragmentManager);
     }
 
-    //TODO: to be modified if more fragments are needed
+    //To be modified if more pages are needed
     public static final int PAGE_NUM = 4;
 
     //This method will return a fragment. It is call by the ViewPager when it needs to change page
