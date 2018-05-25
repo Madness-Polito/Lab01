@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import mad.lab1.Database.Book;
 import mad.lab1.Database.ChatInfo;
@@ -95,20 +96,43 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(view -> {
+
             //add the selected book to the list of borrowed books
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
+            /*DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
             ref.child(user.getUid())
                     .child(book.getBookId())
-                    .setValue(book);
+                    .setValue(book);*/
+
+            //add the user to the list of users asking for this book
+
+            DatabaseReference ref = FirebaseDatabase.getInstance()
+                    .getReference("bookList");
+            ref.child(bookOwner.getUid())
+                    .child(book.getBookId())
+                    .child("requests")
+                    .child(user.getUid())
+                    .setValue(user.getUid());
+
+            ///change the status of the book to "pending"
+            ref.child(bookOwner.getUid())
+                    .child(book.getBookId())
+                    .child("status")
+                    .setValue("pending");
+
+            //TODO: close this activity
 
             //open the chat interface with the book owner
-            ChatInfo c = new ChatInfo(0, bookOwner.getUid());
+            /*ChatInfo c = new ChatInfo(0, bookOwner.getUid());
             Intent intent = new Intent(getBaseContext(), ChatActivity.class);
             Bundle b = new Bundle();
             b.putParcelable("chat", c);
             intent.putExtra("chatInfo", b);
-            startActivity(intent);
+            startActivity(intent);*/
+
+
+
+
         });
 
 

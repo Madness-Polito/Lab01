@@ -64,7 +64,9 @@ public class MyNotificationManager {
         * */
 
         Intent resultIntent = new Intent(mCtx, ChatActivity.class);
-        resultIntent.setAction(user2);
+        resultIntent
+                .setAction(user2)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         /*
         *  Now we will create a pending intent
@@ -114,8 +116,8 @@ public class MyNotificationManager {
         * because using this id we can modify it later
         * */
         if (mNotifyMgr != null) {
-            mNotifyMgr.notify(user2.hashCode(), parentNotification);
             mNotifyMgr.notify(notificationTag, childNotification);
+            mNotifyMgr.notify(user2.hashCode(), parentNotification);
         }
     }
 

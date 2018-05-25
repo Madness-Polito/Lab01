@@ -48,7 +48,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
             mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
             mChannel.enableLights(true);
-            mChannel.setLightColor(Color.RED);
+            mChannel.setLightColor(Color.WHITE);
             mChannel.enableVibration(true);
             mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
             mNotificationManager.createNotificationChannel(mChannel);

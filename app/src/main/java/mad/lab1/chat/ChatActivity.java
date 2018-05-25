@@ -57,7 +57,7 @@ import mad.lab1.User.Authentication;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private final String SERVER_KEY = "AAAAYKIaOw0:APA91bFrX3UYbXFsB40mpDvg3Na-bbdPSeWtLCvkGUJJjG-nAs6oJKVSTZnTCAU4LR1yGLDT4uXYnhMlliJgRcZ2tlo-90lhLj6iGqneVv5AkSGc9NPVaNKNpTRYB1ZURuqLVjmWY9BT";
+    private static final String SERVER_KEY = "AAAAYKIaOw0:APA91bFrX3UYbXFsB40mpDvg3Na-bbdPSeWtLCvkGUJJjG-nAs6oJKVSTZnTCAU4LR1yGLDT4uXYnhMlliJgRcZ2tlo-90lhLj6iGqneVv5AkSGc9NPVaNKNpTRYB1ZURuqLVjmWY9BT";
 
     private String chatId; // id of the current chat
     private String user2;  // id of the other user
@@ -75,6 +75,12 @@ public class ChatActivity extends AppCompatActivity {
     private String lastReadMsg = "";
     private DatabaseReference chatRef;
     private ChildEventListener msgListener;
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
