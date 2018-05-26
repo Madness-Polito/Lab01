@@ -3,6 +3,8 @@ package mad.lab1.Fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +15,9 @@ import android.support.v7.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import mad.lab1.Database.Book;
 import mad.lab1.Map.MapsActivityFiltered;
@@ -89,9 +94,51 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
             startActivity(intent);
         });
         
-        
+        //run first time tutorial
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
 
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("showSelectedBookFirstStart", true);
 
+        if (isFirstStart) {
+            showcase("fab");
+            //  Make a new preferences editor
+            SharedPreferences.Editor e = getPrefs.edit();
+
+            //  Edit preference to make it false because we don't want this to run again
+            e.putBoolean("showSelectedBookFirstStart", false);
+
+            //  Apply changes
+            e.apply();
+        }
+    }
+
+    private void showcase(String btn){
+        switch(btn){
+            case "fab" :
+                new ShowcaseView.Builder(this)
+                        //.withMaterialShowcase()
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setTarget(new ViewTarget(fab))
+                        .setContentTitle("SHOW ON MAP")
+                        .setContentText("press this button to see book location on map and to borrow it")
+
+                        .setShowcaseEventListener(
+                                new SimpleShowcaseEventListener(){
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        //showcase("personalInfoButton");
+                                    }
+                                }
+                        )
+                        .build();
+                break;
+
+                default:
+
+        }
     }
 
     private void initialization(){

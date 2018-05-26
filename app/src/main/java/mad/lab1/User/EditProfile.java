@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,6 +60,8 @@ public class EditProfile extends AppCompatActivity{
     private int BOOK_LOCATION_CODE = 1234;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+    private ImageButton personalInfoButton, locationButton, bioButton, favBooksButton;
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
@@ -77,6 +80,12 @@ public class EditProfile extends AppCompatActivity{
         ImageButton but_persInfo = findViewById(R.id.editPersonalInfo);
         ImageButton but_bio = findViewById(R.id.editBio);
         ImageButton backButton = findViewById(R.id.editProfileBackButton);
+
+        this.personalInfoButton = but_persInfo;
+        this.locationButton = but_bookLocation;
+        this.bioButton = but_bio;
+        //this.favBooksButton
+
         bio = findViewById(R.id.showTextBio);
         name = findViewById(R.id.showTextName);
         city = findViewById(R.id.showTextCityStateName);
@@ -113,37 +122,7 @@ public class EditProfile extends AppCompatActivity{
             //then manage activity result, take long and lat and load them on firebase
         });
 
-        //  Initialize SharedPreferences
-        SharedPreferences getPrefs = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
-
-
-        //  Create a new boolean and preference and set it to true
-        boolean isFirstStart = getPrefs.getBoolean("editProfileFirstStart", true);
-
-        Log.d("first", ""+getPrefs.getBoolean("editProfileFirstStart", true));
-        //  If the activity has never started before...
-        if (isFirstStart) {
-            // set intro of edit button
-            /*
-            new ShowcaseView.Builder(this)
-                    .withMaterialShowcase()
-                    .setStyle(R.style.CustomShowcaseTheme2)
-                    .setTarget(new ViewTarget(but_bookLocation))
-                    .setContentTitle("book location")
-                    .setContentText("press this button to edit your actual location")
-                    .build();
-            */
-            //  Make a new preferences editor
-            SharedPreferences.Editor e = getPrefs.edit();
-
-            //  Edit preference to make it false because we don't want this to run again
-            e.putBoolean("editProfileFirstStart", false);
-
-            //  Apply changes
-            e.apply();
-
-        }
+        runFirstTimeTutorial();
 
         but_nameCity.setOnClickListener((View v) -> {
             // get prompts.xml view
@@ -369,14 +348,95 @@ public class EditProfile extends AppCompatActivity{
         });
     }
 
-    /*private void updateView(UserInfo userInfo){
-        name.setText(userInfo.getName());
-        mail.setText(userInfo.getMail());
-        bio.setText(userInfo.getBio());
-        DoB.setText(userInfo.getDob());
-        city.setText(userInfo.getCity());
-        phone.setText(userInfo.getPhone());
-    }*/
+    private void runFirstTimeTutorial(){
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("editProfileFirstStart", true);
+
+        Log.d("first", ""+getPrefs.getBoolean("editProfileFirstStart", true));
+        //  If the activity has never started before...
+        if (isFirstStart) {
+            // set intro of edit button
+
+            //TODO add strings.xml strings for each button once everything is finished
+            showcase("locationButton");
+            //  Make a new preferences editor
+            SharedPreferences.Editor e = getPrefs.edit();
+
+            //  Edit preference to make it false because we don't want this to run again
+            e.putBoolean("editProfileFirstStart", false);
+
+            //  Apply changes
+            e.apply();
+
+        }
+    }
+
+    private void showcase(String btnName){
+        switch (btnName){
+            case "locationButton" :
+                new ShowcaseView.Builder(this)
+                        .withMaterialShowcase()
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setTarget(new ViewTarget(locationButton))
+                        .setContentTitle("book location")
+                        .setContentText("press this button to edit your actual location")
+                        .setShowcaseEventListener(
+                                new SimpleShowcaseEventListener(){
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        showcase("personalInfoButton");
+                                    }
+                                }
+                        )
+                        .build();
+                break;
+
+            case "personalInfoButton":
+                new ShowcaseView.Builder(this)
+                        .withMaterialShowcase()
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setTarget(new ViewTarget(personalInfoButton))
+                        .setContentTitle("personal information")
+                        .setContentText("press this button to edit your personal info")
+                        .setShowcaseEventListener(
+                                new SimpleShowcaseEventListener(){
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        showcase("bioButton");
+                                    }
+                                }
+                        )
+                        .build();
+                break;
+
+            case "bioButton":
+
+                new ShowcaseView.Builder(this)
+                        .withMaterialShowcase()
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setTarget(new ViewTarget(bioButton))
+                        .setContentTitle("biography")
+                        .setContentText("write something about you to let other users to know who you are")
+                        .setShowcaseEventListener(
+                                new SimpleShowcaseEventListener(){
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        //showcaseBio(bioButton);
+                                        //call again this method with a new String if you have to add another button
+                                    }
+                                }
+                        )
+                        .build();
+
+                break;
+        }
+    }
+
+
 
     @Override
     @SuppressLint("NewApi")

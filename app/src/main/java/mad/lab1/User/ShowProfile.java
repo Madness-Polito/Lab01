@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import mad.lab1.Database.Globals;
@@ -63,35 +64,7 @@ public class ShowProfile extends AppCompatActivity {
                 startActivityForResult(i, Globals.EDIT_CODE);
         });
 
-        //  Initialize SharedPreferences
-        SharedPreferences getPrefs = PreferenceManager
-                .getDefaultSharedPreferences(getBaseContext());
-
-        //  Create a new boolean and preference and set it to true
-        boolean isFirstStart = getPrefs.getBoolean("showProfileFirstStart", true);
-
-        Log.d("first", ""+getPrefs.getBoolean("showProfileFirstStart", true));
-        //  If the activity has never started before...
-        if (isFirstStart) {
-            // set intro of edit button
-            /*
-            new ShowcaseView.Builder(this)
-                    .withMaterialShowcase()
-                    .setStyle(R.style.CustomShowcaseTheme2)
-                    .setTarget(new ViewTarget(editButton))
-                    .setContentTitle("edit your profile")
-                    .setContentText("press this button to edit your personal informations")
-                    .build();
-             */
-            //  Make a new preferences editor
-            SharedPreferences.Editor e = getPrefs.edit();
-
-            //  Edit preference to make it false because we don't want this to run again
-            e.putBoolean("showProfileFirstStart", false);
-
-            //  Apply changes
-            e.apply();
-        }
+        runFirstTimeTutorial();
 
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +74,8 @@ public class ShowProfile extends AppCompatActivity {
             }
         });
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,6 +94,38 @@ public class ShowProfile extends AppCompatActivity {
         }
     }
 
+
+    private void runFirstTimeTutorial(){
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("showProfileFirstStart", true);
+
+        Log.d("first", ""+getPrefs.getBoolean("showProfileFirstStart", true));
+        //  If the activity has never started before...
+        if (isFirstStart) {
+            // set intro of edit button
+
+            new ShowcaseView.Builder(this)
+                    .withMaterialShowcase()
+                    .setStyle(R.style.CustomShowcaseTheme2)
+                    .setTarget(new ViewTarget(editButton))
+                    .setContentTitle("edit your profile")
+                    .setContentText("press this button to edit your personal informations")
+                    .build();
+
+            //  Make a new preferences editor
+            SharedPreferences.Editor e = getPrefs.edit();
+
+            //  Edit preference to make it false because we don't want this to run again
+            e.putBoolean("showProfileFirstStart", false);
+
+            //  Apply changes
+            e.apply();
+        }
+    }
     // copies data from user info on the db to the textviews
     private void updateView(UserInfo userInfo){
         name.setText(userInfo.getName());
