@@ -1,33 +1,39 @@
 package mad.lab1.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import mad.lab1.AllRequestsBookList;
 import mad.lab1.Database.Book;
 import mad.lab1.R;
+import mad.lab1.User.Authentication;
 
 public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdapter.MyLibraryListViewHolder> {
 
 
-    //TODO: change this value if needed based on the database
-    private final int BOOK_FREE = 0;
-    private final int BOOK_PENDING = 1;
-    private final int BOOK_BOOKED = 2;
+
     private Context context;
-    private int status;
+    private String status;
 
     public static class MyLibraryListViewHolder extends RecyclerView.ViewHolder{
 
@@ -36,6 +42,8 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         private TextView authorText;
         private ImageView image;
         private CardView card;
+        private TextView bookRequestCounter;
+        private de.hdodenhof.circleimageview.CircleImageView bookRequestCounterBackground;
 
         //Constructor
         public MyLibraryListViewHolder(View v){
@@ -44,6 +52,8 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
             titleText = v.findViewById(R.id.titleBookTextViewMyLibrary);
             authorText = v.findViewById(R.id.authorBookTextViewMyLibrary);
             image = v.findViewById(R.id.imageBookMyLibrary);
+            bookRequestCounter = v.findViewById(R.id.newBookRequestCountMyLibrary);
+            bookRequestCounterBackground = v.findViewById(R.id.newBookRequestCountBackgroundMyLibrary);
         }
 
     }
@@ -55,7 +65,6 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
     public MyLibraryListAdapter(ArrayList<Book> allSharedBooks, Context context){
         this.allSharedBooks = allSharedBooks;
         this.context = context;
-        status = getBookStatus();
     }
 
     @NonNull
@@ -91,19 +100,25 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         *
         * */
 
-        //It is better to keep getBookStatus call separated from the onClick, to avoid cumbersome operations during event handling
-        status = getBookStatus();
+
+
+        status = allSharedBooks.get(position).getStatus();
+        setBookCounter(holder, allSharedBooks.get(position));
+
+
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: based on the book status, it will trigger different actions
                 switch(status){
-                    case BOOK_FREE:
-                        Toast.makeText(context, "Free book", Toast.LENGTH_SHORT).show();
+                    case "free":
+                        Intent i = new Intent(context, AllRequestsBookList.class);
+                        context.startActivity(i);
                         break;
-                    case BOOK_PENDING:
+                    case "pending":
+
                         break;
-                    case BOOK_BOOKED:
+                    case "booked":
                         break;
                 }
             }
@@ -113,14 +128,74 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
     }
 
+
+
     @Override
     public int getItemCount() {
         return allSharedBooks.size();
     }
 
 
-    private int getBookStatus(){
-        //TODO this function should retrieve the status from firebase and return the corresponding constant
-        return BOOK_FREE;
+    private void setBookCounter(MyLibraryListViewHolder holder, Book b){
+        //TODO this function should retrieve the number of request from firebase and return the corresponding constant
+
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference requestBookReference = db.getReference().child("bookList")
+                .child(Authentication.getCurrentUser().getUid())
+                .child(b.getBookId()).child("numRequests");
+
+        ValueEventListener requestBookListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Integer requestCounter = dataSnapshot.getValue(Integer.class);
+
+                if (requestCounter > 0) {
+                    //New requests, show the number
+                    holder.bookRequestCounter.setVisibility(View.VISIBLE);
+                    holder.bookRequestCounterBackground.setVisibility(View.VISIBLE);
+                    holder.bookRequestCounter.setText(requestCounter.toString());
+
+                    // play shake animation
+                    Animation animation;
+                    animation = AnimationUtils.loadAnimation(context,R.anim.shake_animation);
+                    holder.bookRequestCounterBackground.startAnimation(animation);
+                    holder.bookRequestCounter.startAnimation(animation);
+
+
+                } else {
+                    //No new requests, hide the number
+                    holder.bookRequestCounter.setVisibility(View.GONE);
+                    holder.bookRequestCounterBackground.setVisibility(View.GONE);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+
+        switch(status){
+            case "free":
+                requestBookReference.addValueEventListener(requestBookListener);
+                break;
+            case "pending":
+                requestBookReference.addValueEventListener(requestBookListener);
+                break;
+            case "booked":
+                hideBookCounter(holder);
+                break;
+        }
+
+
+
+    }
+
+    private void hideBookCounter(MyLibraryListViewHolder holder){
+        holder.bookRequestCounter.setVisibility(View.GONE);
+        holder.bookRequestCounterBackground.setVisibility(View.GONE);
     }
 }

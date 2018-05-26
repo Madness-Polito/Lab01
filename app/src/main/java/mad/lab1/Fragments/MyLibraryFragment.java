@@ -132,6 +132,7 @@ public class MyLibraryFragment extends Fragment {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Book b = dataSnapshot.getValue(Book.class);
+                    b.setBookId(dataSnapshot.getKey());
                     allBookList.add(b);
                     adapter.notifyItemInserted(allBookList.indexOf(b));
                 }
@@ -140,10 +141,14 @@ public class MyLibraryFragment extends Fragment {
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     int i = 0;
                     Book b = dataSnapshot.getValue(Book.class);
-                    while (allBookList.get(i).getBookId() != b.getBookId()) {
+                    b.setBookId(dataSnapshot.getKey());
+
+                    while (!allBookList.get(i).getBookId().equals(b.getBookId())) {
                         i++;
                     }
+
                     allBookList.set(i, b);
+
                     adapter.notifyItemChanged(i);
 
                 }
