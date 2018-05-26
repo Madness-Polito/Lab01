@@ -6,11 +6,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -21,6 +23,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -59,6 +64,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
     private GoogleMap mMap;
     private FloatingActionButton cancelBtn;
+    private FloatingActionButton borrowBtn;
     //private Location location;
     //private MapView mapView;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -71,6 +77,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
     private Book book;
     private Map<Marker, UserInfo> markUserMap = new HashMap<>();
     private Marker selectedMarker = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +112,9 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                 finish();
             }
         });
+
+        borrowBtn = findViewById(R.id.borrowButton);
+        runFirstTimeTutotrial();
     }
 
     /**
@@ -189,7 +199,77 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
     }
 
+    private void runFirstTimeTutotrial(){
+        //run first time tutorial
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(getBaseContext());
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("FilteredMapFirstStart", true);
+
+        if (isFirstStart) {
+            showcase("confirm");
+            //  Make a new preferences editor
+            SharedPreferences.Editor e = getPrefs.edit();
+
+            //  Edit preference to make it false because we don't want this to run again
+            e.putBoolean("FilteredMapFirstStart", false);
+
+            //  Apply changes
+            e.apply();
+        }
+    }
+
+    private void showcase(String btn){
+
+        switch(btn){
+            case "cancel":
+
+                    new ShowcaseView.Builder(this)
+                            .withMaterialShowcase()
+                            .setStyle(R.style.CustomShowcaseTheme2)
+                            .setTarget(new ViewTarget(cancelBtn))
+                            .setContentTitle("cancel")
+                            .setContentText("press this button to come back to book description")
+                            .setShowcaseEventListener(
+                                    new SimpleShowcaseEventListener(){
+                                        @Override
+                                        public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                            //showcase("confirm");
+                                        }
+                                    }
+                            )
+                            .build();
+
+                    break;
+
+            case "confirm":
+                new ShowcaseView.Builder(this)
+                        .withMaterialShowcase()
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setTarget(new ViewTarget(borrowBtn))
+                        .setContentTitle("borrow")
+                        .setContentText("press this button to borrow the selected book on the map")
+                        .setShowcaseEventListener(
+                                new SimpleShowcaseEventListener(){
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        showcase("cancel");
+                                    }
+                                }
+                        )
+                        .build();
+
+                break;
+        }
+
+    }
+
     private void placeMarkers(Location location){
+
+
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");//FirebaseDatabase.getInstance().getReference("users");
         Log.d("here", "place markers");
         //markerList = new LinkedList<>();
@@ -249,13 +329,18 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                     }
                     else {
                         Log.d("here", "add markers");
+
                         for (Marker m : markerList)
                             boundsBuilder.include(new LatLng(m.getPosition().latitude, m.getPosition().longitude));
+
                         boundsBuilder.include(new LatLng(location.getLatitude(), location.getLongitude()));
                         final LatLngBounds bounds = boundsBuilder.build();
                         int padding = 100; // offset from edges of the map in pixels
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                         mMap.animateCamera(cameraUpdate);
+
+
+
                     }
 
 

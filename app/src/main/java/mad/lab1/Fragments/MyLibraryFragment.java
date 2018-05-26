@@ -168,6 +168,74 @@ public class MyLibraryFragment extends Fragment {
 
         }
 
+        //runFirstTimeTutotrial();
+
+    }
+
+    private void runFirstTimeTutotrial(){
+        //run first time tutorial
+        //  Initialize SharedPreferences
+        SharedPreferences getPrefs = PreferenceManager
+                .getDefaultSharedPreferences(this.getActivity());
+
+        //  Create a new boolean and preference and set it to true
+        boolean isFirstStart = getPrefs.getBoolean("MyLibraryFirstStart", true);
+
+        //if (isFirstStart) {
+        showcase("allBooksOnMap");
+        //  Make a new preferences editor
+        SharedPreferences.Editor e = getPrefs.edit();
+
+        //  Edit preference to make it false because we don't want this to run again
+        e.putBoolean("MyLibraryFirstStart", false);
+
+        //  Apply changes
+        e.apply();
+        //}
+    }
+
+    private void showcase(String btn){
+
+        switch(btn){
+            case "allBooksOnMap":
+
+                new ShowcaseView.Builder(this.getActivity())
+                        .withMaterialShowcase()
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setTarget(new ViewTarget(this.map))
+                        .setContentTitle("Map")
+                        .setContentText("press this button to see all books on the map")
+                        .setShowcaseEventListener(
+                                new SimpleShowcaseEventListener(){
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        showcase("addBook");
+                                    }
+                                }
+                        )
+                        .build();
+
+                break;
+
+            case "addBook":
+                new ShowcaseView.Builder(this.getActivity())
+                        .withMaterialShowcase()
+                        .setStyle(R.style.CustomShowcaseTheme2)
+                        .setTarget(new ViewTarget(this.fab))
+                        .setContentTitle("Add a new book")
+                        .setContentText("press this button to add a new book in the system")
+                        .setShowcaseEventListener(
+                                new SimpleShowcaseEventListener(){
+                                    @Override
+                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                                        //showcase("cancel");
+                                    }
+                                }
+                        )
+                        .build();
+
+                break;
+        }
 
     }
 
@@ -245,6 +313,7 @@ public class MyLibraryFragment extends Fragment {
 
         });
 
+
         cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -266,6 +335,8 @@ public class MyLibraryFragment extends Fragment {
         super.onStart();
 
     }
+
+
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -666,10 +737,15 @@ public class MyLibraryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        Log.d("TUT", "onResume()");
         //add childEventListener
         if(bookIDListener != null) {
             dbRef.addChildEventListener(bookIDListener);
         }
+
+        //TODO call it in a method which is called ONLY when the user is in MyLibraryFragment
+        //runFirstTimeTutotrial();
 
     }
 

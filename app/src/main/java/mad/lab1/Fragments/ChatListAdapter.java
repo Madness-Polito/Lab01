@@ -74,7 +74,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             ChatInfo c = chatList.get(position);
 
             //Set the user profile pic
-            setOtherUserImageProfile(holder, c);
+            //setOtherUserImageProfile(holder, c);
             setOtherUserName(holder, c);
             setNewMsgCount(holder, c);
 
