@@ -261,6 +261,8 @@ public class MyLibraryFragment extends Fragment {
         map = v.findViewById(R.id.showMapActionButton);
 
         map.setOnClickListener(view -> {
+
+            // pass bookID to the activity so that can be retrieved
             Intent i = new Intent(getActivity(), MapsActivity.class);
             startActivity(i);
         });
@@ -749,7 +751,7 @@ public class MyLibraryFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Log.d("TUT", "onResume()");
+
         //add childEventListener
         if(bookIDListener != null) {
             dbRef.addChildEventListener(bookIDListener);

@@ -91,6 +91,7 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(fab.getContext(), MapsActivityFiltered.class);
             intent.putExtra("isbn",book.getIsbn());
+            //intent.putExtra("bookID", this.bookID);
             startActivity(intent);
         });
         

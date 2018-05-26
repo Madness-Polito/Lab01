@@ -52,7 +52,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import mad.lab1.BookUser;
 import mad.lab1.Database.Book;
+import mad.lab1.Database.BookIdInfo;
 import mad.lab1.Database.LocalDB;
 import mad.lab1.FinalBookingConfirmationActivity;
 import mad.lab1.Fragments.ShowSelectedBookInfo;
@@ -76,7 +78,9 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
     private String isbn;
     private Book book;
     private Map<Marker, UserInfo> markUserMap = new HashMap<>();
+    private Map<Marker, BookUser> markBookUserMap = new HashMap<>();
     private Marker selectedMarker = null;
+    private int i = 0;
 
 
     @Override
@@ -158,6 +162,12 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                 Bundle arg = new Bundle();
                 arg.putParcelable("book", book);
                 arg.putParcelable("user", markUserMap.get(marker));
+                //todo UPDATED retrieve from here information from BookUser
+                BookUser bu = markBookUserMap.get(marker);
+                if(bu == null)
+                    Toast.makeText(MapsActivityFiltered.this, "NULL PD", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(MapsActivityFiltered.this, "bookID-> "+bu.getBook().getUid()+" userID->"+bu.getUser().getUid(), Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), FinalBookingConfirmationActivity.class);
                 i.putExtra("argument", arg);
                 startActivity(i);
@@ -172,7 +182,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
     }
 
     public void addMarkers(){
-        Log.d("here", "addmarkers()");
+
         // add a list of all book titles of a user and the distance between curr position and users
         Location location = getLastKnownLocation();
         users = new LinkedList<>();
@@ -268,28 +278,29 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
     private void placeMarkers(Location location){
 
-
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");//FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
         Log.d("here", "place markers");
-        //markerList = new LinkedList<>();
+
         if(location != null) {
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    //DataSnapshot userSnapshot = dataSnapshot.child("users");
-                    //Iterable<DataSnapshot> usersChildren = userSnapshot.getChildren();
 
-                    //Toast.makeText(MapsActivity.this, "bauuuuuu", Toast.LENGTH_SHORT).show();
                     List<Marker> markerList = new LinkedList<>();
+
+                    // for each user
                     for(DataSnapshot user : dataSnapshot.getChildren()) {
 
                         UserInfo u = user.getValue(UserInfo.class);
                         if(userIds.contains(u.getUid()) && !u.getName().equals(LocalDB.getUserInfo(getApplicationContext()).getName())){
+
                             users.add(u);
-                            //Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
-                            Log.d("ADD", u.getName() + " " + u.getLatitude() + " " + users.size());
+
+                            Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
+                            Log.d("ADDING", i+" - "+u.getName() + " " + u.getLatitude() + " " + u.getLongitude() + " " + u.getUid());
+                            i++;
                             if (u.getLatitude() != null && u.getLongitude() != null) {
+
                                 Double lat = new Double(u.getLatitude());
                                 Double lng = new Double(u.getLongitude());
                                 LatLng myLatLng = new LatLng(lat, lng);
@@ -304,9 +315,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                                 Integer distanceInKmInt = new Integer(distanceInKm.intValue());
 
                                 Marker m;
-                                /*if (distanceInKm < 0.1)
-                                    m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distanceInMt + " m"));
-                                */
+
                                 if (distanceInKm < 1)
                                     m = mMap.addMarker(new MarkerOptions().position(myLatLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(distKm + " km"));
                                 else if (distanceInKm < 5)
@@ -317,7 +326,35 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                                 markerList.add(m);
 
                                 //store correspondance between user and marker
-                                markUserMap.put(m, u);
+                                //markUserMap.put(m, u);
+
+                                // now retrieve information about the book of the user
+                                ////////// ------------------------------------------------------------------------------
+                                // get reference ref1
+                                DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference().child("bookList").child(u.getUid());
+                                // now I have all books of u.getUid(), scan looking for isbn.
+                                /////////////////////////////////////////
+                                ref1.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        //Log.d("BookUser", "start scanning to look for "+isbn);
+                                        for(DataSnapshot book : dataSnapshot.getChildren()){
+                                            BookIdInfo b = book.getValue(BookIdInfo.class);
+                                            Log.d("BookUser", "scanning isbn-> "+b.getIsbn()+" vs "+isbn+" "+b.getTitle());
+                                            if(b.getIsbn().equals(isbn)){
+                                                Log.d("BookUser", "found");
+                                                markBookUserMap.put(m, new BookUser(u, b));
+                                                Log.d("BookUser", "user: "+u.getName()+" uid: "+u.getUid()+" book: "+b.getTitle()+" bID: "+b.getUid());
+                                            }
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                /////////////////////////////////////////
+                                ////////// ------------------------------------------------------------------------------
                             }
                         }
                     }
@@ -385,7 +422,34 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                                 markerList.add(m);
 
                                 //store correspondance between user and marker
-                                markUserMap.put(m, u);
+                                //markUserMap.put(m, u);
+
+                                ////////// ------------------------------------------------------------------------------
+                                // get reference ref1
+                                DatabaseReference ref1 = FirebaseDatabase.getInstance().getReference().child("bookList").child(u.getUid());
+                                // now I have all books of u.getUid(), scan looking for isbn.
+                                /////////////////////////////////////////
+                                ref1.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        //Log.d("BookUser", "start scanning to look for "+isbn);
+                                        for(DataSnapshot book : dataSnapshot.getChildren()){
+                                            BookIdInfo b = book.getValue(BookIdInfo.class);
+                                            Log.d("BookUser", "scanning isbn-> "+b.getIsbn()+" vs "+isbn+" "+b.getTitle());
+                                            if(b.getIsbn().equals(isbn)){
+                                                Log.d("BookUser", "found");
+                                                markBookUserMap.put(m, new BookUser(u, b));
+                                                Log.d("BookUser", "user: "+u.getName()+" uid: "+u.getUid()+" book: "+b.getTitle()+" bID: "+b.getUid());
+                                            }
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                                /////////////////////////////////////////
+                                ////////// ------------------------------------------------------------------------------
                             }
                         }
                     }
