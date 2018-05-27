@@ -99,6 +99,8 @@ public class AllBooksFragment extends Fragment {
     private ArrayList<Book> allBookListCopy; //needed to not lose data when filtering
     private ArrayList<Book> allBookList;
 
+    private ArrayList<String> selectedFilters;
+
     private Boolean filterApplied = false;
     private ArrayList<String> categories;
 
@@ -123,6 +125,7 @@ public class AllBooksFragment extends Fragment {
 
         categories = new ArrayList<>();
         allBookList = new ArrayList<>();
+        selectedFilters = new ArrayList<>();
         allBookListCopy = new ArrayList<>();
         adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
             @Override
@@ -234,6 +237,13 @@ public class AllBooksFragment extends Fragment {
             final ListView lsv_categories = promptsView.findViewById(R.id.lsv_categories);
             lsv_categories.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_multiple_choice, categories));
 
+            //select previously applied filters
+            for(Integer i = 0; i < categories.size(); i++){
+                if(selectedFilters.contains(lsv_categories.getItemAtPosition(i).toString())){
+                    lsv_categories.setItemChecked(i, true);
+                }
+            }
+
 
 
             // set dialog message
@@ -253,12 +263,14 @@ public class AllBooksFragment extends Fragment {
                     //find what categories were chosen, add books in the category to a list
                     allBookList.clear();
 
-
+                    selectedFilters.clear();
                     SparseBooleanArray checkedItems = lsv_categories.getCheckedItemPositions();
                     if (checkedItems != null) {
                         for (int i=0; i<checkedItems.size(); i++) {
                             if (checkedItems.valueAt(i)) {
+                                //save what filter was selected for when the dialog is opened again
                                 String item = lsv_categories.getAdapter().getItem(checkedItems.keyAt(i)).toString();
+                                selectedFilters.add(item);
                                 Log.i(TAG,item + " was selected");
                                 for(Book b : allBookListCopy){
                                     //select the given books
@@ -285,6 +297,9 @@ public class AllBooksFragment extends Fragment {
                     //TODO
                     //adapter.notify();
                     adapter.notifyDataSetChanged();
+
+                    //nothing has been filtered
+                    selectedFilters.clear();
 
                 }
                 alertDialog.cancel();
