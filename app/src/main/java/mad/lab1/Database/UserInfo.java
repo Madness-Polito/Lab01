@@ -18,6 +18,7 @@ public class UserInfo implements Parcelable{
 
     public UserInfo(){}
 
+
     public UserInfo(String uid, String name, String mail, String phone){
         this.uid   = uid;
         this.name  = name;

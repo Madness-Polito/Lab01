@@ -18,8 +18,9 @@ public class Book implements Parcelable {
     private String pubYear;
     private String description;
     private String thumbURL;
+    private String category;
 
-    public Book(String bookId, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String description,String thumbURL) {
+    public Book(String bookId, String isbn, String title, String author, String status, String condition, String publisher, String pubYear, String description,String thumbURL, String category) {
         this.bookId = bookId;
         this.isbn = isbn;
         this.title = title;
@@ -30,6 +31,7 @@ public class Book implements Parcelable {
         this.pubYear = pubYear;
         this.description = description;
         this.thumbURL = thumbURL;
+        this.category = category;
     }
 
     public Book(Parcel in){
@@ -43,9 +45,10 @@ public class Book implements Parcelable {
         this.pubYear = in.readString();
         this.description = in.readString();
         this.thumbURL = in.readString();
+        this.category = in.readString();
     }
     public Book(){
-        this("", "", "", "", "", "", "", "", "", "");
+        this("", "", "", "", "", "", "", "", "", "", "");
     }
 
     public String getBookId() {
@@ -97,6 +100,13 @@ public class Book implements Parcelable {
         return thumbURL;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     @Override
     public int describeContents() {
@@ -115,6 +125,7 @@ public class Book implements Parcelable {
         dest.writeString(this.pubYear);
         dest.writeString(this.description);
         dest.writeString(this.thumbURL);
+        dest.writeString(this.category);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){

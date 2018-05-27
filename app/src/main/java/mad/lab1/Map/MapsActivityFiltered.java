@@ -161,9 +161,9 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
                 Bundle arg = new Bundle();
                 arg.putParcelable("book", book);
-                arg.putParcelable("user", markUserMap.get(marker));
-                //todo UPDATED retrieve from here information from BookUser
                 BookUser bu = markBookUserMap.get(marker);
+                arg.putParcelable("user", bu.getUser());
+
                 if(bu == null)
                     Toast.makeText(MapsActivityFiltered.this, "NULL PD", Toast.LENGTH_SHORT).show();
                 else
