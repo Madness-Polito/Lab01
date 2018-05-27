@@ -176,6 +176,7 @@ public class AllBooksFragment extends Fragment {
                     adapter.notifyItemChanged(i);
                 }
 
+
             }
 
             @Override

@@ -119,11 +119,11 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
                     .setValue(user.getUid());
 
             ///change the status of the book to "pending"
-            ref.child(bookOwner.getUid())
+            /*ref.child(bookOwner.getUid())
                     .child(book.getBookId())
                     .child("status")
                     .setValue("pending");
-
+            */
 
             //TODO: close this activity
 

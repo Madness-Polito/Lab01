@@ -150,20 +150,27 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Integer requestCounter = dataSnapshot.getValue(Integer.class);
 
-                if (requestCounter > 0) {
-                    //New requests, show the number
-                    holder.bookRequestCounter.setVisibility(View.VISIBLE);
-                    holder.bookRequestCounterBackground.setVisibility(View.VISIBLE);
-                    holder.bookRequestCounter.setText(requestCounter.toString());
+                if(requestCounter != null){
+                    if (requestCounter > 0) {
+                        //New requests, show the number
+                        holder.bookRequestCounter.setVisibility(View.VISIBLE);
+                        holder.bookRequestCounterBackground.setVisibility(View.VISIBLE);
+                        holder.bookRequestCounter.setText(requestCounter.toString());
 
-                    // play shake animation
-                    Animation animation;
-                    animation = AnimationUtils.loadAnimation(context,R.anim.shake_animation);
-                    holder.bookRequestCounterBackground.startAnimation(animation);
-                    holder.bookRequestCounter.startAnimation(animation);
+                        // play shake animation
+                        Animation animation;
+                        animation = AnimationUtils.loadAnimation(context,R.anim.shake_animation);
+                        holder.bookRequestCounterBackground.startAnimation(animation);
+                        holder.bookRequestCounter.startAnimation(animation);
 
+                    }else {
+                        //No new requests, hide the number
+                        holder.bookRequestCounter.setVisibility(View.GONE);
+                        holder.bookRequestCounterBackground.setVisibility(View.GONE);
 
-                } else {
+                    }
+                }
+                else {
                     //No new requests, hide the number
                     holder.bookRequestCounter.setVisibility(View.GONE);
                     holder.bookRequestCounterBackground.setVisibility(View.GONE);

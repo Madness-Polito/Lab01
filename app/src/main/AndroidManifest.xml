@@ -93,7 +93,8 @@
         </service>
         <!-- [END firebase_iid_service] -->
 
-        <activity android:name=".AllRequestsBookList"></activity>
+        <activity android:name=".AllRequestsBookList" />
+        <activity android:name=".User.ShowProfileAndReviews"></activity>
     </application>
 
 </manifest>

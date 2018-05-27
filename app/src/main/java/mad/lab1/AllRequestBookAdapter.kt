@@ -1,6 +1,7 @@
 package mad.lab1
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -25,7 +26,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>, val c : Context):Recycle
     override fun onBindViewHolder(holder: AllRequestBookViewHolder, position: Int) {
 
         holder.nameTextView.setText(data.get(position))
-        holder.cardView.setOnClickListener { v: View? -> Toast.makeText(c, "ciao", Toast.LENGTH_SHORT).show() }
+        holder.cardView.setOnClickListener { Toast.makeText(c, "prova", Toast.LENGTH_SHORT).show() }
     }
 
 

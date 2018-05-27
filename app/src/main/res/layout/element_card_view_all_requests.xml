@@ -46,12 +46,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:ellipsize="end"
             android:maxEms="12"
             android:maxLines="1"
             android:text="Nome Cognome"
-            android:textSize="24dp"
+            android:textSize="20dp"
             app:layout_constraintStart_toEndOf="@+id/requestProfileImage"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,7 +64,7 @@
             android:maxEms="12"
             android:maxLines="1"
             android:text="città"
-            android:textSize="20dp"
+            android:textSize="16dp"
             app:layout_constraintStart_toEndOf="@+id/requestProfileImage"
             app:layout_constraintTop_toBottomOf="@+id/requestProfileName" />
 
