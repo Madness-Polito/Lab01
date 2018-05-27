@@ -34,6 +34,7 @@ public class CreateBookActivity extends AppCompatActivity {
     private EditText txt_publisher;
     private EditText txt_pubDate;
     private EditText txt_description;
+    private EditText txt_category;
     private Spinner spin_condition;
     private List<String> spinList;
     private ImageButton btn_thumbnail;
@@ -58,6 +59,7 @@ public class CreateBookActivity extends AppCompatActivity {
         txt_publisher = findViewById(R.id.txt_publisher);
         txt_pubDate = findViewById(R.id.txt_date);
         txt_description = findViewById(R.id.txt_description);
+        txt_category = findViewById(R.id.txt_category);
         spin_condition = findViewById(R.id.spin_condition);
         btn_thumbnail = findViewById(R.id.btn_thumbnail);
         btn_cancel = findViewById(R.id.btn_cancel);
@@ -91,6 +93,7 @@ public class CreateBookActivity extends AppCompatActivity {
             String publisher = txt_publisher.getText().toString();
             String pubDate = txt_pubDate.getText().toString();
             String description = txt_description.getText().toString();
+            String category = txt_category.getText().toString();
             Integer year = Integer.parseInt(pubDate);
             int thisYear = Calendar.getInstance().get(Calendar.YEAR);
 
@@ -98,7 +101,7 @@ public class CreateBookActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.noThumbnail), Toast.LENGTH_LONG).show();
             }else {
                 if (year <= thisYear) {
-                    if (condition != null && title.length() != 0 && author.length() != 0 && publisher.length() != 0 && pubDate.length() != 0 && description.length() != 0) {
+                    if (condition != null && title.length() != 0 && author.length() != 0 && publisher.length() != 0 && pubDate.length() != 0 && description.length() != 0 && category.length() != 0) {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("condition", condition);
                         returnIntent.putExtra("thumbnail", getResizedBitmap(thumbnail, 130, 200));
@@ -107,6 +110,7 @@ public class CreateBookActivity extends AppCompatActivity {
                         returnIntent.putExtra("publisher", publisher);
                         returnIntent.putExtra("pubDate", pubDate);
                         returnIntent.putExtra("description", description);
+                        returnIntent.putExtra("category", category);
                         setResult(Activity.RESULT_OK, returnIntent);
                         finish();
                     } else {
@@ -199,12 +203,14 @@ public class CreateBookActivity extends AppCompatActivity {
         String publisher = txt_publisher.getText().toString();
         String pubDate = txt_pubDate.getText().toString();
         String description = txt_description.getText().toString();
+        String category = txt_category.getText().toString();
         savedInstanceState.putString("title", title);
         savedInstanceState.putString("author", author);
         savedInstanceState.putString("publisher", publisher);
         savedInstanceState.putString("pubDate", pubDate);
         savedInstanceState.putString("description", description);
         savedInstanceState.putParcelable("thumbnail", thumbnail);
+        savedInstanceState.putString("category", category);
         savedInstanceState.putInt("condition", spin_condition.getSelectedItemPosition());
 
         super.onSaveInstanceState(savedInstanceState);
@@ -222,6 +228,7 @@ public class CreateBookActivity extends AppCompatActivity {
         txt_publisher.setText(savedInstanceState.getString("publisher"));
         txt_pubDate.setText(savedInstanceState.getString("pubDate"));
         txt_description.setText(savedInstanceState.getString("description"));
+        txt_category.setText(savedInstanceState.getString("category"));
         thumbnail = savedInstanceState.getParcelable("thumbnail");
         if(thumbnail != null) {
             img_thumbnail.setImageBitmap(thumbnail);

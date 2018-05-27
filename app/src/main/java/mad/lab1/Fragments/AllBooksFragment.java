@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,12 +19,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -61,8 +67,10 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import mad.lab1.AddingBookActivity;
+import mad.lab1.CustomTextWatcher;
 import mad.lab1.Database.Book;
 import mad.lab1.Database.BookIdInfo;
 import mad.lab1.Database.BookTitleDB;
@@ -71,6 +79,9 @@ import mad.lab1.Database.IsbnDB;
 import mad.lab1.Database.IsbnInfo;
 import mad.lab1.Map.MapsActivity;
 import mad.lab1.R;
+import mad.lab1.TextValidation;
+
+import static android.content.ContentValues.TAG;
 
 public class AllBooksFragment extends Fragment {
 
@@ -85,7 +96,11 @@ public class AllBooksFragment extends Fragment {
     private String description;
     private String imageLinks;
 
+    private ArrayList<Book> allBookListCopy; //needed to not lose data when filtering
     private ArrayList<Book> allBookList;
+
+    private Boolean filterApplied = false;
+    private ArrayList<String> categories;
 
 
     private DatabaseReference dbRef;
@@ -106,8 +121,9 @@ public class AllBooksFragment extends Fragment {
 
         dbRef = FirebaseDatabase.getInstance().getReference().child("isbn");
 
-
+        categories = new ArrayList<>();
         allBookList = new ArrayList<>();
+        allBookListCopy = new ArrayList<>();
         adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
             @Override
             public void onBookClicked(Book b) {
@@ -138,19 +154,27 @@ public class AllBooksFragment extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Book b = dataSnapshot.getValue(Book.class);
+                //create a list of different categories of books to allow for filtering
+                if(b.getCategory() != null && !categories.contains(b.getCategory()) && b.getCategory() != ""){
+                    categories.add(b.getCategory());
+                }
                 allBookList.add(b);
+                allBookListCopy.add(b);
                 adapter.notifyItemInserted(allBookList.indexOf(b));
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                int i = 0;
-                Book b = dataSnapshot.getValue(Book.class);
-                while (allBookList.get(i).getBookId() != b.getBookId()){
-                    i++;
+                if(!filterApplied) {
+                    int i = 0;
+                    Book b = dataSnapshot.getValue(Book.class);
+                    while (allBookList.get(i).getBookId() != b.getBookId()) {
+                        i++;
+                    }
+                    allBookList.set(i, b);
+                    allBookListCopy.set(i, b);
+                    adapter.notifyItemChanged(i);
                 }
-                allBookList.set(i, b);
-                adapter.notifyItemChanged(i);
 
             }
 
@@ -194,60 +218,76 @@ public class AllBooksFragment extends Fragment {
 
 
         fab = v.findViewById(R.id.addBookToShareActionButton);
-        fab.setVisibility(View.GONE);
 
         fab.setOnClickListener(view -> {
 
+            // get prompts.xml view
+            LayoutInflater li = LayoutInflater.from(getContext());
+            View promptsView = li.inflate(R.layout.select_category_dialog, null);
 
-            // custom dialog
-            final Dialog dialog = new Dialog(getContext());
-            dialog.setContentView(R.layout.isbn_input_layout);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
 
-            // set the custom dialog components - text, image and button
-            ImageButton btn_camera = dialog.findViewById(R.id.btn_camera);
-            ImageButton btn_manual = dialog.findViewById(R.id.btn_manual);
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
 
-            btn_camera.setOnClickListener(view1 -> {
-                dialog.dismiss();
+            final ListView lsv_categories = promptsView.findViewById(R.id.lsv_categories);
+            lsv_categories.setAdapter(new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_multiple_choice, categories));
 
-                IntentIntegrator.forSupportFragment(AllBooksFragment.this)
-                        .setDesiredBarcodeFormats(IntentIntegrator.PRODUCT_CODE_TYPES)
-                        .setOrientationLocked(false)
-                        .setBeepEnabled(false)
-                        .initiateScan();
+
+
+            // set dialog message
+            alertDialogBuilder
+                    .setCancelable(true)
+                    .setPositiveButton(getString(R.string.ok),     (dialog, id) -> {})
+                    .setNegativeButton(getString(R.string.cancel), (dialog, id) -> dialog.cancel());
+            // create alert dialog
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            // show it
+            alertDialog.show();
+            // override positive buttton to check data
+            alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view2 ->{
+                if(lsv_categories.getCheckedItemCount() > 0){
+                    //some categories have been selected, only show the books in those categories.
+                    filterApplied = true;
+                    //find what categories were chosen, add books in the category to a list
+                    allBookList.clear();
+
+
+                    SparseBooleanArray checkedItems = lsv_categories.getCheckedItemPositions();
+                    if (checkedItems != null) {
+                        for (int i=0; i<checkedItems.size(); i++) {
+                            if (checkedItems.valueAt(i)) {
+                                String item = lsv_categories.getAdapter().getItem(checkedItems.keyAt(i)).toString();
+                                Log.i(TAG,item + " was selected");
+                                for(Book b : allBookListCopy){
+                                    //select the given books
+                                    if(b.getCategory().equals(item)){
+                                        allBookList.add(b);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    //TODO
+                    //adapter.notify();
+                    adapter.notifyDataSetChanged();
+
+
+                }else{
+                    filterApplied = false;
+                    //regenerate allBookList
+                    allBookList.clear();
+                    for(Book b : allBookListCopy){
+                        allBookList.add(b);
+                    }
+                    //allBookList = (ArrayList<Book>) allBookListCopy.clone();
+                    //TODO
+                    //adapter.notify();
+                    adapter.notifyDataSetChanged();
+
+                }
+                alertDialog.cancel();
             });
-
-            btn_manual.setOnClickListener(view1 -> {
-                dialog.dismiss();
-
-                // get prompts.xml view
-                LayoutInflater li = LayoutInflater.from(getContext());
-                View promptsView = li.inflate(R.layout.isbn_manual_input_layout, null);
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-
-                // set prompts.xml to alertdialog builder
-                alertDialogBuilder.setView(promptsView);
-
-                EditText txt_isbn = promptsView.findViewById(R.id.txt_isbn);
-
-                alertDialogBuilder
-                        .setCancelable(true)
-                        .setPositiveButton(getString(R.string.ok), (dialog2, id) -> {
-                            GetBookInfo getBookInfo = new GetBookInfo();
-                            getBookInfo.execute(txt_isbn.getText().toString());
-                        })
-                        .setNegativeButton(getString(R.string.cancel), (dialog2, id) -> dialog2.cancel())
-                        .setTitle(R.string.insertISBN);
-
-                //create alert dialog
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                //show it
-                alertDialog.show();
-
-            });
-
-            dialog.show();
 
         });
 
@@ -275,71 +315,6 @@ public class AllBooksFragment extends Fragment {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode == IntentIntegrator.REQUEST_CODE) {
-            //result from zxing
-            if (data != null) {
-                IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-                String scanContent = scanningResult.getContents().toString();
-                //txt_isbn.setText(scanContent);
-
-                GetBookInfo getBookInfo = new GetBookInfo();
-                getBookInfo.execute(scanContent);
-            }
-        }else if(requestCode == 1 && resultCode == Activity.RESULT_OK){
-
-            String condition = data.getStringExtra("condition");
-
-
-            // upload book to firebase
-            IsbnInfo isbnInfo = new IsbnInfo(
-                    isbn,
-                    title,
-                    author,
-                    publisher,
-                    pubYear,
-                    description,
-                    null);
-            IsbnDB.setBook(isbnInfo);
-
-            BookTitleInfo bookTitleInfo = new BookTitleInfo(
-                    title,
-                    isbn);
-            BookTitleDB.setBook(bookTitleInfo);
-
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-
-            BookIdInfo bookIdInfo = new BookIdInfo(
-                    user.getUid(),
-                    isbn,
-                    title,
-                    author,
-                    "free",
-                    condition,
-                    publisher,
-                    pubYear,
-                    description
-            );
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookID");
-
-            // read the bookId key and save bookId Info
-            bookID = ref.push().getKey();
-            ref.child(bookID).setValue(bookIdInfo);
-
-
-            //generate bookList
-            DatabaseReference ref2 = FirebaseDatabase.getInstance().getReference("bookList");
-
-            ref2.child(user.getUid())
-                    .child(bookID)
-                    .setValue(bookIdInfo);
-
-            //get the thumbnail
-
-            GetBookThumb getBookThumb = new GetBookThumb();
-            getBookThumb.execute(imageLinks);
-
-        }
     }
 
 
@@ -354,184 +329,6 @@ public class AllBooksFragment extends Fragment {
         return fragment;
     }
 
-    private class GetBookInfo extends AsyncTask<String, Object, JSONObject> {
-        @Override
-        protected JSONObject doInBackground(String... isbns) {
-
-            // Stop if cancelled
-            if(isCancelled()){
-                return null;
-            }
-
-            String apiUrlString = "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbns[0];
-            try{
-                HttpURLConnection connection = null;
-                // Build Connection.
-                try{
-                    URL url = new URL(apiUrlString);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("GET");
-                    connection.setReadTimeout(5000); // 5 seconds
-                    connection.setConnectTimeout(5000); // 5 seconds
-                } catch (MalformedURLException e) {
-                    // Impossible: The only two URLs used in the app are taken from string resources.
-                    e.printStackTrace();
-                } catch (ProtocolException e) {
-                    // Impossible: "GET" is a perfectly valid request method.
-                    e.printStackTrace();
-                }
-                int responseCode = connection.getResponseCode();
-                if(responseCode != 200){
-                    Log.w(getClass().getName(), "GoogleBooksAPI request failed. Response Code: " + responseCode);
-                    connection.disconnect();
-                    return null;
-                }
-
-                // Read data from response.
-                StringBuilder builder = new StringBuilder();
-                BufferedReader responseReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line = responseReader.readLine();
-                while (line != null){
-                    builder.append(line);
-                    line = responseReader.readLine();
-                }
-                String responseString = builder.toString();
-                Log.d(getClass().getName(), "Response String: " + responseString);
-                JSONObject responseJson = new JSONObject(responseString);
-                // Close connection and return response code.
-                connection.disconnect();
-                return responseJson;
-            } catch (SocketTimeoutException e) {
-                Log.w(getClass().getName(), "Connection timed out. Returning null");
-                return null;
-            } catch(IOException e){
-                Log.d(getClass().getName(), "IOException when connecting to Google Books API.");
-                e.printStackTrace();
-                return null;
-            } catch (JSONException e) {
-                Log.d(getClass().getName(), "JSONException when connecting to Google Books API.");
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-
-        @Override
-        protected void onPostExecute(JSONObject jsonObject) {
-            super.onPostExecute(jsonObject);
-            try {
-
-                JSONArray items = jsonObject.getJSONArray("items");
-                //get 1st item
-                JSONObject item = items.getJSONObject(0);
-
-                JSONObject volumeInfo = item.getJSONObject("volumeInfo");
-                JSONArray authors = volumeInfo.getJSONArray("authors");
-                JSONObject imageLinksJSON = volumeInfo.getJSONObject("imageLinks");
-                imageLinks = imageLinksJSON.getString("thumbnail");
-                JSONArray industryIdentifiers = volumeInfo.getJSONArray("industryIdentifiers");
-
-                isbn = industryIdentifiers.getJSONObject(0).getString("identifier");
-                author = authors.getString(0);
-                title = volumeInfo.getString("title");
-                description = volumeInfo.getString("description");
-                publisher = volumeInfo.getString("publisher");
-                pubYear = volumeInfo.getString("publishedDate");
-
-                Intent i = new Intent(getActivity(), AddingBookActivity.class);
-                i.putExtra("author",author);
-                i.putExtra("description",description);
-                i.putExtra("title",title);
-                startActivityForResult(i, 1);
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), getContext().getString(R.string.uploadError), Toast.LENGTH_SHORT);
-            }
-        }
-    }
-
-    private class GetBookThumb extends AsyncTask<String, Void, String> {
-        private Bitmap thumbImg;
-
-        @Override
-        protected String doInBackground(String... thumbURLs) {
-
-            try{
-                //try to download
-                URL thumbURL = new URL(thumbURLs[0]);
-                URLConnection thumbConn = thumbURL.openConnection();
-                thumbConn.connect();
-                InputStream thumbIn = thumbConn.getInputStream();
-                BufferedInputStream thumbBuff = new BufferedInputStream(thumbIn);
-                thumbImg = BitmapFactory.decodeStream(thumbBuff);
-                thumbBuff.close();
-                thumbIn.close();
-
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }
-
-            return "";
-        }
-
-        protected void onPostExecute(String result) {
-
-            //save the thumbnail to firebase
-
-            ByteArrayOutputStream bYtE = new ByteArrayOutputStream();
-            thumbImg.compress(Bitmap.CompressFormat.PNG, 100, bYtE);
-            thumbImg.recycle();
-            byte[] byteArray = bYtE.toByteArray();
-            /*String encodedImage = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
-            ref.child(isbn).child("encodedThumbnail").setValue(encodedImage);
-
-            ref = FirebaseDatabase.getInstance().getReference("bookID");
-            ref.child(bookID).child("encodedThumbnail").setValue(encodedImage);
-
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            ref = FirebaseDatabase.getInstance().getReference("bookList");
-            ref.child(user.getUid()).child(bookID).child("encodedThumbnail").setValue(encodedImage);*/
-
-            //save the thumbnail in FirebaseStorage
-            FirebaseStorage storage = FirebaseStorage.getInstance();
-            StorageReference storageRef = storage.getReference();
-            StorageReference imageRef = storageRef.child("thumbnails/"+ isbn +".png");
-            UploadTask uploadTask = imageRef.putBytes(byteArray);
-            uploadTask.addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    // Handle unsuccessful uploads
-                }
-            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    //save the URL for the thumbnail on the database
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
-
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
-                    ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
-
-                    ref = FirebaseDatabase.getInstance().getReference("bookID");
-                    ref.child(bookID).child("thumbURL").setValue(downloadUrl.toString());
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    ref = FirebaseDatabase.getInstance().getReference("bookList");
-                    ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());
-                }
-            });
-
-
-            //StorageDB.putProfilePic(getImageUri(getActivity(), thumbImg).toString());
-            //thumbView.setImageBitmap(thumbImg);
-        }
-
-    }
-
 
     @Override
     public void onPause() {
@@ -540,6 +337,7 @@ public class AllBooksFragment extends Fragment {
         dbRef.removeEventListener(bookIDListener);
         int size = allBookList.size();
         allBookList.clear();
+        allBookListCopy.clear();
         adapter.notifyItemRangeRemoved(0, size);
     }
 

@@ -105,6 +105,7 @@ public class BookIdInfo implements Parcelable{
         this.description = description;
     }
 
+
     // In constructor you will read the variables from Parcel. Make sure to read them in the same sequence in which you have written them in Parcel.
     private BookIdInfo(Parcel in) {
 

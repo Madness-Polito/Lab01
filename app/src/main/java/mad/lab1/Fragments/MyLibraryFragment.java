@@ -87,6 +87,7 @@ public class MyLibraryFragment extends Fragment {
     private String pubYear;
     private String description;
     private String imageLinks;
+    private String category;
 
     private Boolean creatingNewBook = false;
 
@@ -255,6 +256,8 @@ public class MyLibraryFragment extends Fragment {
         map = v.findViewById(R.id.showMapActionButton);
 
         map.setOnClickListener(view -> {
+
+            // pass bookID to the activity so that can be retrieved
             Intent i = new Intent(getActivity(), MapsActivity.class);
             startActivity(i);
         });
@@ -358,6 +361,8 @@ public class MyLibraryFragment extends Fragment {
             }
         }else if(requestCode == 1 && resultCode == Activity.RESULT_OK){
 
+            //book has been retrieved from google API, add it to the database
+
             String condition = data.getStringExtra("condition");
 
 
@@ -369,7 +374,8 @@ public class MyLibraryFragment extends Fragment {
                     publisher,
                     pubYear,
                     description,
-                    null);
+                    null
+                    ,category);
             IsbnDB.setBook(isbnInfo);
 
             BookTitleInfo bookTitleInfo = new BookTitleInfo(
@@ -419,12 +425,15 @@ public class MyLibraryFragment extends Fragment {
 
         }else if(requestCode == CREATE_NEW_BOOK &&resultCode == Activity.RESULT_OK){
 
+            //book hasn't been found in google API and has been manually created, add it to the database
+
             String condition = data.getStringExtra("condition");
             title = data.getStringExtra("title");
             author = data.getStringExtra("author");
             publisher = data.getStringExtra("publisher");
             pubYear = data.getStringExtra("pubDate");
             description = data.getStringExtra("description");
+            category = data.getStringExtra("category");
             Bitmap thumbnail = data.getParcelableExtra("thumbnail");
 
 
@@ -436,7 +445,8 @@ public class MyLibraryFragment extends Fragment {
                     publisher,
                     pubYear,
                     description,
-                    null);
+                    null,
+                    category);
             IsbnDB.setBook(isbnInfo);
 
             BookTitleInfo bookTitleInfo = new BookTitleInfo(
@@ -625,6 +635,8 @@ public class MyLibraryFragment extends Fragment {
                 description = volumeInfo.getString("description");
                 publisher = volumeInfo.getString("publisher");
                 pubYear = volumeInfo.getString("publishedDate");
+                JSONArray categories = volumeInfo.getJSONArray("categories");
+                category = categories.getString(0);
 
                 Intent i = new Intent(getActivity(), AddingBookActivity.class);
                 i.putExtra("author",author);
@@ -743,7 +755,7 @@ public class MyLibraryFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Log.d("TUT", "onResume()");
+
         //add childEventListener
         if(bookIDListener != null) {
             dbRef.addChildEventListener(bookIDListener);
@@ -765,6 +777,7 @@ public class MyLibraryFragment extends Fragment {
         savedInstanceState.putString("pubYear", pubYear);
         savedInstanceState.putString("description", description);
         savedInstanceState.putString("imageLinks", imageLinks);
+        savedInstanceState.putString("category", category);
 
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -785,6 +798,7 @@ public class MyLibraryFragment extends Fragment {
             pubYear = savedInstanceState.getString("pubYear");
             description = savedInstanceState.getString("description");
             imageLinks = savedInstanceState.getString("imageLinks");
+            category = savedInstanceState.getString("category");
         }
 
         SharedPreferences getPrefs = PreferenceManager
