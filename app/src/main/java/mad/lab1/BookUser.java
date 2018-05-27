@@ -8,10 +8,12 @@ public class BookUser {
 
     private BookIdInfo book;
     private UserInfo user;
+    private String bookID;
 
-    public BookUser (UserInfo u, BookIdInfo b){
+    public BookUser (UserInfo u, BookIdInfo b, String bookID){
         this.user = u;
         this.book = b;
+        this.bookID = bookID;
     }
 
     public BookIdInfo getBook() {
@@ -28,5 +30,13 @@ public class BookUser {
 
     public void setUser(UserInfo user) {
         this.user = user;
+    }
+
+    public String getBookID() {
+        return bookID;
+    }
+
+    public void setBookID(String bookID) {
+        this.bookID = bookID;
     }
 }

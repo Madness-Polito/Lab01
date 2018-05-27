@@ -47,6 +47,20 @@ public class Book implements Parcelable {
         this.thumbURL = in.readString();
         this.category = in.readString();
     }
+
+    public Book (BookIdInfo b, String bookId){
+        this.isbn = b.getIsbn();
+        this.title = b.getTitle();
+        this.author = b.getAuthor();
+        this.status = b.getStatus();
+        this.condition = b.getCondition();
+        this.publisher = b.getPublisher();
+        this.pubYear = b.getPubYear();
+        this.description = b.getDescription();
+        this.bookId = bookId;
+
+    }
+
     public Book(){
         this("", "", "", "", "", "", "", "", "", "", "");
     }

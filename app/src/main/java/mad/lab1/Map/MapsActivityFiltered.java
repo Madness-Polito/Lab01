@@ -160,8 +160,9 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
 
                 Bundle arg = new Bundle();
-                arg.putParcelable("book", book);
                 BookUser bu = markBookUserMap.get(marker);
+                Book parcelableBook = new Book(bu.getBook(), bu.getBookID());
+                arg.putParcelable("book", parcelableBook);
                 arg.putParcelable("user", bu.getUser());
 
                 if(bu == null)
@@ -338,13 +339,16 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         //Log.d("BookUser", "start scanning to look for "+isbn);
-                                        for(DataSnapshot book : dataSnapshot.getChildren()){
+                                        for(DataSnapshot book : dataSnapshot.getChildren()) {
+
                                             BookIdInfo b = book.getValue(BookIdInfo.class);
-                                            Log.d("BookUser", "scanning isbn-> "+b.getIsbn()+" vs "+isbn+" "+b.getTitle());
-                                            if(b.getIsbn().equals(isbn)){
-                                                Log.d("BookUser", "found");
-                                                markBookUserMap.put(m, new BookUser(u, b));
-                                                Log.d("BookUser", "user: "+u.getName()+" uid: "+u.getUid()+" book: "+b.getTitle()+" bID: "+b.getUid());
+                                            if(b.getIsbn() != null){
+                                                Log.d("BookUser", "scanning isbn-> " + b.getIsbn() + " vs " + isbn + " " + b.getTitle());
+                                                if (b.getIsbn().equals(isbn)) {
+                                                    Log.d("BookUser", "found");
+                                                    markBookUserMap.put(m, new BookUser(u, b, book.getKey()));
+                                                    Log.d("BookUser", "user: " + u.getName() + " uid: " + u.getUid() + " book: " + b.getTitle() + " bID: " + b.getUid());
+                                                }
                                             }
                                         }
                                     }
@@ -438,7 +442,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                                             Log.d("BookUser", "scanning isbn-> "+b.getIsbn()+" vs "+isbn+" "+b.getTitle());
                                             if(b.getIsbn().equals(isbn)){
                                                 Log.d("BookUser", "found");
-                                                markBookUserMap.put(m, new BookUser(u, b));
+                                                markBookUserMap.put(m, new BookUser(u, b, book.getKey()));
                                                 Log.d("BookUser", "user: "+u.getName()+" uid: "+u.getUid()+" book: "+b.getTitle()+" bID: "+b.getUid());
                                             }
                                         }
