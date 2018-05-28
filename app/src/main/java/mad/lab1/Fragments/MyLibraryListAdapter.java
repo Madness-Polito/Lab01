@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -33,11 +34,12 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
 
     private Context context;
-    private String status;
+
 
     public static class MyLibraryListViewHolder extends RecyclerView.ViewHolder{
 
-
+        private String status;
+        private Book b;
         private TextView titleText;
         private TextView authorText;
         private ImageView image;
@@ -75,6 +77,8 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         return holder;
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull MyLibraryListViewHolder holder, int position) {
         holder.titleText.setText(allSharedBooks.get(position).getTitle());
@@ -102,7 +106,9 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
 
 
-        status = allSharedBooks.get(position).getStatus();
+
+        holder.b = allSharedBooks.get(position);
+        holder.status = holder.b.getStatus();
         setBookCounter(holder, allSharedBooks.get(position));
 
 
@@ -110,13 +116,14 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
             @Override
             public void onClick(View v) {
                 //TODO: based on the book status, it will trigger different actions
-                switch(status){
+
+                switch(holder.status){
                     case "free":
                         Intent i = new Intent(context, AllRequestsBookList.class);
                         context.startActivity(i);
                         break;
                     case "pending":
-
+                        Toast.makeText(context, "Pending", Toast.LENGTH_SHORT).show();
                         break;
                     case "booked":
                         break;
@@ -185,7 +192,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         };
 
 
-        switch(status){
+        switch(holder.status){
             case "free":
                 requestBookReference.addValueEventListener(requestBookListener);
                 break;
