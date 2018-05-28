@@ -134,8 +134,6 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                         break;
                     case "pending":
                         openPendingDialog(holder);
-
-                        Toast.makeText(context, "Pending", Toast.LENGTH_SHORT).show();
                         break;
                     case "booked":
                         break;
@@ -176,10 +174,10 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
     }
 
     private void removerequest(MyLibraryListViewHolder holder) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
         //get the user to delete
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("bookList").child(user.getUid()).child(holder.b.getBookId()).child("selectedRequest");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("bookList").child(fbUser.getUid()).child(holder.b.getBookId()).child("selectedRequest");
 
         ValueEventListener bookTitleListener = new ValueEventListener() {
             @Override
@@ -189,6 +187,14 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                 //remove the user's request from the database
                 dataSnapshot.getRef().removeValue();
                 dataSnapshot.getRef().getParent().child("requests").child(user).removeValue();
+                //set book status to free
+                DatabaseReference ref2 = FirebaseDatabase.getInstance()
+                        .getReference("bookList")
+                        .child(fbUser.getUid())
+                        .child(holder.b.getBookId())
+                        .child("status");
+
+                ref2.setValue("free");
             }
 
             @Override
