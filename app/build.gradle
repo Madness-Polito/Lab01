@@ -91,9 +91,19 @@ dependencies {
     //obscure backgroung tutorial
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
+androidExtensions {
+    experimental = true
+}
+apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
