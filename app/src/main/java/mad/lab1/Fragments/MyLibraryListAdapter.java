@@ -3,19 +3,26 @@ package mad.lab1.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,8 +33,11 @@ import java.util.ArrayList;
 
 import mad.lab1.AllRequestsBookList;
 import mad.lab1.Database.Book;
+import mad.lab1.Database.BookTitleInfo;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
+
+import static android.content.ContentValues.TAG;
 
 public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdapter.MyLibraryListViewHolder> {
 
@@ -123,6 +133,8 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                         context.startActivity(i);
                         break;
                     case "pending":
+                        openPendingDialog(holder);
+
                         Toast.makeText(context, "Pending", Toast.LENGTH_SHORT).show();
                         break;
                     case "booked":
@@ -135,6 +147,57 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
     }
 
+    private void openPendingDialog(MyLibraryListViewHolder holder) {
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from(context);
+        View promptsView = li.inflate(R.layout.pending_dialog, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+
+
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(true)
+                .setPositiveButton(context.getString(R.string.yes),     (dialog, id) -> {})
+                .setNegativeButton(context.getString(R.string.no), (dialog, id) -> dialog.cancel());
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        // show it
+        alertDialog.show();
+        // override positive buttton to check data
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(view2 ->{
+            removerequest(holder);
+            alertDialog.cancel();
+        });
+    }
+
+    private void removerequest(MyLibraryListViewHolder holder) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //get the user to delete
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("bookList").child(user.getUid()).child(holder.b.getBookId()).child("selectedRequest");
+
+        ValueEventListener bookTitleListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //get the user to remove
+                String user = dataSnapshot.getValue().toString();
+                //remove the user's request from the database
+                dataSnapshot.getRef().removeValue();
+                dataSnapshot.getRef().getParent().child("requests").child(user).removeValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        ref.addListenerForSingleValueEvent(bookTitleListener);
+    }
 
 
     @Override
