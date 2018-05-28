@@ -96,7 +96,7 @@
         <activity android:name=".review.ReviewsActivity" />
         <activity android:name=".review.ReviewActivity" />
         <activity android:name=".AllRequestsBookList" />
-        <activity android:name=".User.ShowProfileAndReviews"></activity>
+        <activity android:name=".User.ShowProfileAndReviews" />
     </application>
 
 </manifest>
