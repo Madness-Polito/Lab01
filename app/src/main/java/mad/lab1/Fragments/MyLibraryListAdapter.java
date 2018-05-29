@@ -6,18 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -33,11 +28,8 @@ import java.util.ArrayList;
 
 import mad.lab1.AllRequestsBookList;
 import mad.lab1.Database.Book;
-import mad.lab1.Database.BookTitleInfo;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
-
-import static android.content.ContentValues.TAG;
 
 public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdapter.MyLibraryListViewHolder> {
 
@@ -130,6 +122,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                 switch(holder.status){
                     case "free":
                         Intent i = new Intent(context, AllRequestsBookList.class);
+                        i.putExtra("bookId", holder.b.getBookId());
                         context.startActivity(i);
                         break;
                     case "pending":

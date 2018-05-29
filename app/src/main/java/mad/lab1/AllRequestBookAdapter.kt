@@ -13,7 +13,8 @@ import android.widget.Toast
 class AllRequestBookAdapter (val d : ArrayList<String>, val c : Context):RecyclerView.Adapter<AllRequestBookAdapter.AllRequestBookViewHolder>(){
 
     //TODO change with real value taken from firebase
-    private var data : ArrayList<String> = d
+    private var users : ArrayList<String> = d
+    private lateinit var data : ArrayList<String>
 
     class AllRequestBookViewHolder(val view : View) : RecyclerView.ViewHolder(view){
         var nameTextView : TextView = view.findViewById(R.id.requestProfileName)
@@ -25,7 +26,8 @@ class AllRequestBookAdapter (val d : ArrayList<String>, val c : Context):Recycle
 
     override fun onBindViewHolder(holder: AllRequestBookViewHolder, position: Int) {
 
-        holder.nameTextView.setText(data.get(position))
+        holder.nameTextView.setText(users.get(position))
+        holder.nameTextView.setText(data.get(0))
         holder.cardView.setOnClickListener { Toast.makeText(c, "prova", Toast.LENGTH_SHORT).show() }
     }
 
@@ -38,6 +40,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>, val c : Context):Recycle
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return users.size
     }
+
 }
