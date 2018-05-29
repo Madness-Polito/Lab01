@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,10 +24,17 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONObject;
+
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import mad.lab1.Database.Book;
 import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.UserInfo;
 import mad.lab1.Map.MapsActivityFiltered;
+import mad.lab1.Notifications.Constants;
 import mad.lab1.R;
 import mad.lab1.chat.Chat;
 import mad.lab1.chat.ChatActivity;
@@ -127,6 +135,8 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
 
             //TODO: close this activity
 
+            sendNotification(book, bookOwner);
+
             //open the chat interface with the book owner
             /*ChatInfo c = new ChatInfo(0, bookOwner.getUid());
             Intent intent = new Intent(getBaseContext(), ChatActivity.class);
@@ -142,6 +152,61 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
 
 
 
+
+    }
+
+    private void sendNotification(Book book, UserInfo bookOwner) {
+
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    URL url = new URL("https://fcm.googleapis.com/fcm/send");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Authorization", "key=" + Constants.SERVER_KEY);
+                    conn.setRequestProperty("Accept","application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    JSONObject jsonParam = new JSONObject();
+                    JSONObject jsonParam2 =  new JSONObject();
+                    jsonParam2.put("body", getString(R.string.requestBody) + " " + book.getTitle());
+                    jsonParam2.put("title", getString(R.string.requestTitle));
+                    jsonParam2.put("tag", Constants.NOTIFICATION_TAG);
+                    jsonParam2.put("bookTitle", book.getTitle());
+                    jsonParam2.put("type", Constants.NEWBOOKING);
+                    jsonParam.put("data", jsonParam2);
+                    jsonParam.put("to", "/topics/" + bookOwner.getUid());
+
+                    /*jsonParam3.put("body", msg);
+                    jsonParam3.put("title", "testTitle");
+                    jsonParam2.put("topic", user);
+                    jsonParam2.put("notification", jsonParam3);
+                    jsonParam.put("message", jsonParam2);*/
+
+
+                    Log.i("JSON", jsonParam.toString());
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(jsonParam.toString());
+
+                    os.flush();
+                    os.close();
+
+                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG" , conn.getResponseMessage());
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
 
     }
 

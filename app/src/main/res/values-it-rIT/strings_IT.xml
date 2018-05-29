@@ -50,6 +50,8 @@
     <string name="cancelBookingDesc">Vuoi rimuovere davvero la richiesta di prenotazione da questo libro e renderlo libero di nuovo?</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
+    <string name="requestTitle">Nuova richiesta per un tuo libro</string>
+    <string name="requestBody">Hai una nuova richiesta per </string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="AllBooks">Tutti i libri</string>

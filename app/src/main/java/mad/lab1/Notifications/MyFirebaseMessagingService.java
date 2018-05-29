@@ -37,25 +37,55 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //getting the title and the body
         //String title = remoteMessage.getNotification().getTitle();
         //String body = remoteMessage.getNotification().getBody();
-        String title = remoteMessage.getData().get("title");
-        String body = remoteMessage.getData().get("body");
-        String user2 = remoteMessage.getData().get("user2");
+        String type = remoteMessage.getData().get("type");
+        String title;
+        String body;
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
-            mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
-            mChannel.enableLights(true);
-            mChannel.setLightColor(Color.WHITE);
-            mChannel.enableVibration(true);
-            mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-            mNotificationManager.createNotificationChannel(mChannel);
+        switch (type) {
+            case Constants.MESSAGE:
+                title = remoteMessage.getData().get("title");
+                body = remoteMessage.getData().get("body");
+                String user2 = remoteMessage.getData().get("user2");
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                    NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+                    mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+                    mChannel.enableLights(true);
+                    mChannel.setLightColor(Color.WHITE);
+                    mChannel.enableVibration(true);
+                    mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    mNotificationManager.createNotificationChannel(mChannel);
+                }
+
+
+                MyNotificationManager.getInstance(this).displayNotification(title, body, user2);
+                break;
+
+            case Constants.NEWBOOKING:
+                title = remoteMessage.getData().get("title");
+                body = remoteMessage.getData().get("body");
+                String bookTitle = remoteMessage.getData().get("bookTitle");
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                    NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+                    mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+                    mChannel.enableLights(true);
+                    mChannel.setLightColor(Color.WHITE);
+                    mChannel.enableVibration(true);
+                    mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    mNotificationManager.createNotificationChannel(mChannel);
+                }
+
+
+                MyNotificationManager.getInstance(this).displayNotificationNewRequest(title, body, bookTitle);
+                break;
         }
-
-
-        MyNotificationManager.getInstance(this).displayNotification(title, body, user2);
 
     }
 }

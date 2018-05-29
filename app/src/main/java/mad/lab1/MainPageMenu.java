@@ -259,6 +259,12 @@ public class MainPageMenu extends AppCompatActivity {
             FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
         }
 
+        if(getIntent().getAction() != null) {
+            //this has been opened from a notification
+            viewPager.setCurrentItem(1);
+        }
+
+
 
     }
 

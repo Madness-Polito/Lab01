@@ -478,6 +478,7 @@ public class ChatActivity extends AppCompatActivity {
                     jsonParam2.put("title", user1Name);
                     jsonParam2.put("tag", Constants.NOTIFICATION_TAG);
                     jsonParam2.put("user2", user1);
+                    jsonParam2.put("type", Constants.MESSAGE);
                     jsonParam.put("data", jsonParam2);
                     jsonParam.put("to", "/topics/" + user2ID);
 
