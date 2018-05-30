@@ -80,7 +80,7 @@ public class BorrowedBooksFragment extends Fragment {
     private DatabaseReference dbRef;
     private RecyclerView cardViewList;
     private LinearLayoutManager layoutManager;
-    private AllBooksListAdapter adapter;
+    private BorrowedBooksListAdapter adapter;
     private ChildEventListener bookIDListener;
 
 
@@ -96,31 +96,7 @@ public class BorrowedBooksFragment extends Fragment {
 
 
             allBookList = new ArrayList<>();
-            adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
-                @Override
-                public void onBookClicked(Book b) {
-                    //create a dialog fragment that shows all the informatio related to the book selected
-                    //Toast.makeText(getContext(), b.getTitle(), Toast.LENGTH_SHORT).show();
-                /*
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                //Checking if previous dialog are active
-                Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-                if (prev != null) {
-                    ft.remove(prev);
-                }
-                ft.addToBackStack(null);
-
-                // Create and show the dialog.
-                ShowSelelctedBookInfoDialogFragment newFragment = ShowSelelctedBookInfoDialogFragment.newInstance(b);
-                newFragment.show(ft, "dialog");
-                */
-                    Bundle arg = new Bundle();
-                    arg.putParcelable("book", b);
-                    Intent i = new Intent(getContext(), ShowSelectedBookInfo.class);
-                    i.putExtra("argument", b);
-                    startActivity(i);
-                }
-            });
+            adapter = new BorrowedBooksListAdapter(allBookList, getContext());
 
             bookIDListener = new ChildEventListener() {
                 @Override

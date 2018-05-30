@@ -111,14 +111,14 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
 
             //add the selected book to the list of borrowed books
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            /*DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("borrowedBooks");
             ref.child(user.getUid())
                     .child(book.getBookId())
-                    .setValue(book);*/
+                    .setValue(book);
 
             //add the user to the list of users asking for this book
 
-            DatabaseReference ref = FirebaseDatabase.getInstance()
+            ref = FirebaseDatabase.getInstance()
                     .getReference("bookList");
             ref.child(bookOwner.getUid())
                     .child(book.getBookId())

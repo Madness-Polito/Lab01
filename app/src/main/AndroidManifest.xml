@@ -97,6 +97,7 @@
         <activity android:name=".review.ReviewActivity" />
         <activity android:name=".AllRequestsBookList" />
         <activity android:name=".User.ShowProfileAndReviews" />
+        <activity android:name=".Fragments.BorrowedBooksListAdapter"></activity>
     </application>
 
 </manifest>
