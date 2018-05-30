@@ -256,6 +256,13 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                         .child("status");
 
                 ref2.setValue("free");
+
+                DatabaseReference ref3 = FirebaseDatabase.getInstance()
+                        .getReference("borrowedBooks")
+                        .child(user)
+                        .child(holder.b.getBookId());
+                ref3.removeValue();
+
             }
 
             @Override
