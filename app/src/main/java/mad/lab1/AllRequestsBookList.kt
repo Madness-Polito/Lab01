@@ -19,6 +19,7 @@ class AllRequestsBookList : AppCompatActivity() {
     private var db: FirebaseDatabase? = null
     private var dbRef: DatabaseReference? = null
     private var userListener: ChildEventListener? = null
+    private var recyclerView: RecyclerView? = null
 
     private lateinit var toolbar: Toolbar
 
@@ -37,9 +38,9 @@ class AllRequestsBookList : AppCompatActivity() {
         val book = intent.getStringExtra("bookId")
 
         // init layout
-        val recyclerView = findViewById<RecyclerView>(R.id.requestBookListRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = AllRequestBookAdapter(users, this)
+        recyclerView = findViewById<RecyclerView>(R.id.requestBookListRecyclerView)
+        recyclerView?.layoutManager = LinearLayoutManager(this)
+        recyclerView?.adapter = AllRequestBookAdapter(users, this)
 
 
         db = FirebaseDatabase.getInstance()
@@ -53,6 +54,7 @@ class AllRequestsBookList : AppCompatActivity() {
             override fun onChildAdded(dataSnapshot: DataSnapshot?, previousChildName: String?) {
                 val u = dataSnapshot!!.key
                 users.add(u!!)
+                recyclerView?.adapter?.notifyItemInserted(users.indexOf(u))
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot?, previousChildName: String?) {
@@ -70,14 +72,17 @@ class AllRequestsBookList : AppCompatActivity() {
 
     }
 
-    override fun onRestart() {
-        super.onRestart()
+    override fun onResume() {
+        super.onResume()
         dbRef?.addChildEventListener(userListener)
     }
 
     override fun onPause() {
         super.onPause()
         dbRef?.removeEventListener(userListener)
+        var size = users.size
+        users.clear()
+        recyclerView?.adapter?.notifyItemRangeChanged(0, size)
     }
 
 

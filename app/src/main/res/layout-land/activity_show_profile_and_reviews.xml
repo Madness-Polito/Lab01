@@ -4,97 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".User.ShowProfileAndReviews"
-    tools:layout_editor_absoluteY="25dp">
+    tools:context=".BookRequests.ShowRequestProfile">
 
 
     <include
         android:id="@+id/requestBookListToolbar"
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="269dp"
+        android:layout_height="0dp"
+        android:background="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/requestBookListToolbar">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/showRequestImageProfile"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="52dp"
+            android:src="@drawable/ic_account_circle_144dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/showRequestTextName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/showImageProfile"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+
+            android:layout_marginTop="8dp"
+            android:elevation="4dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:hint="@string/nameHint"
+            android:maxEms="14"
+            android:maxLines="1"
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/showRequestImageProfile" />
+
+        <TextView
+            android:id="@+id/showTextCityStateName"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/showTextName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:elevation="4dp"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:hint="@string/cityHint"
+            android:maxEms="14"
+            android:maxLines="1"
+            android:textColor="@color/text_white"
+            android:textColorHint="@color/text_white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/showRequestTextName"
+            app:layout_constraintVertical_bias="0.0" />
+    </android.support.constraint.ConstraintLayout>
 
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/scrollView3"
-        android:layout_width="match_parent"
-        android:layout_height="511dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:fillViewport="true"
         android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@+id/requestBookListToolbar"
-        tools:layout_editor_absoluteX="28dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/requestBookListToolbar">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/showRequestImageProfile"
-                    android:layout_width="144dp"
-                    android:layout_height="144dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="32dp"
-                    android:src="@drawable/ic_account_circle_144dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/showRequestTextName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/showImageProfile"
-                    android:layout_centerHorizontal="true"
-
-                    android:layout_marginStart="29dp"
-                    android:layout_marginTop="16dp"
-                    android:elevation="4dp"
-                    android:ellipsize="end"
-                    android:gravity="center_horizontal"
-                    android:hint="@string/nameHint"
-                    android:maxEms="14"
-                    android:maxLines="1"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_white"
-                    android:textColorHint="@color/text_white"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@+id/showRequestImageProfile"
-                    app:layout_constraintTop_toBottomOf="@+id/showRequestImageProfile" />
-
-                <TextView
-                    android:id="@+id/showTextCityStateName"
-                    android:layout_width="wrap_content"
-
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@id/showTextName"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="40dp"
-                    android:layout_marginEnd="15dp"
-                    android:elevation="4dp"
-                    android:ellipsize="end"
-                    android:gravity="center_horizontal"
-                    android:hint="@string/cityHint"
-                    android:maxEms="14"
-                    android:maxLines="1"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_white"
-                    android:textColorHint="@color/text_white"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/showRequestTextName"
-                    app:layout_constraintTop_toBottomOf="@+id/showRequestTextName"
-                    app:layout_constraintVertical_bias="0.0" />
-
-            </android.support.constraint.ConstraintLayout>
 
             <android.support.v7.widget.CardView
                 android:id="@+id/request_rating_card"
@@ -103,7 +116,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="248dp"
+                android:layout_marginTop="8dp"
                 app:cardBackgroundColor="#EEEEEE"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="8dp"
@@ -117,27 +130,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <View
-                        android:id="@+id/divider4"
-                        android:layout_width="1dp"
-                        android:layout_height="0dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="30dp"
-                        android:layout_marginTop="8dp"
-                        android:background="?android:attr/listDivider"
-                        android:elevation="8dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/textView6"
-                        app:layout_constraintStart_toEndOf="@+id/request_rating_bar"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
-
                     <TextView
                         android:id="@+id/textView6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="2dp"
-                        android:layout_marginEnd="31dp"
+                        android:layout_marginEnd="18dp"
                         android:elevation="8dp"
                         android:maxEms="5"
                         android:maxLines="2"
@@ -148,20 +146,33 @@
                         app:layout_constraintStart_toEndOf="@+id/divider4"
                         app:layout_constraintTop_toBottomOf="@+id/showMoreReviews" />
 
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="36dp"
+                        android:elevation="8dp"
+                        android:maxEms="5"
+                        android:maxLines="1"
+                        android:text="prova"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/divider5"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <View
                         android:id="@+id/divider5"
                         android:layout_width="1dp"
                         android:layout_height="0dp"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="38dp"
+                        android:layout_marginEnd="30dp"
                         android:layout_marginTop="8dp"
                         android:background="?android:attr/listDivider"
                         android:elevation="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/textView4"
                         app:layout_constraintStart_toEndOf="@+id/textView6"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <RatingBar
 
@@ -173,8 +184,8 @@
                         android:layout_centerVertical="true"
                         android:layout_gravity="center"
 
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="13dp"
+                        android:layout_marginStart="8dp"
                         android:elevation="8dp"
                         android:isIndicator="true"
                         android:numStars="5"
@@ -184,8 +195,21 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/divider4"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.52" />
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="1dp"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="18dp"
+                        android:layout_marginTop="8dp"
+                        android:background="?android:attr/listDivider"
+                        android:elevation="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/textView6"
+                        app:layout_constraintStart_toEndOf="@+id/request_rating_bar"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:id="@+id/showMoreReviews"
@@ -198,20 +222,6 @@
                         app:layout_constraintBottom_toTopOf="@+id/textView6"
                         app:layout_constraintStart_toStartOf="@+id/textView6"
                         app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="49dp"
-                        android:elevation="8dp"
-                        android:maxEms="5"
-                        android:maxLines="1"
-                        android:text="prova"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/divider5"
-                        app:layout_constraintTop_toTopOf="parent" />
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
 
@@ -223,7 +233,7 @@
                 android:layout_gravity="center"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="36dp"
                 app:cardBackgroundColor="#EEEEEE"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="8dp"
@@ -324,27 +334,6 @@
                 </android.support.constraint.ConstraintLayout>
             </android.support.v7.widget.CardView>
 
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="264dp" />
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="121dp" />
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="20dp" />
-
 
         </android.support.constraint.ConstraintLayout>
 
@@ -357,7 +346,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_done_32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_done_32dp"/>
 </android.support.constraint.ConstraintLayout>
