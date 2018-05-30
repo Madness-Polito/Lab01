@@ -74,6 +74,10 @@ class ShowProfileAndReviews : AppCompatActivity() {
             refBorrowed.child(u.uid)
                     .child(b?.bookId)
                     .setValue(b)
+            refBorrowed.child(u.uid)
+                    .child(b?.bookId)
+                    .child("owner")
+                    .setValue(bookOwner)
 
             refBorrowed.child(u.uid).child(b.bookId).child("status").setValue("pending")
 
@@ -86,6 +90,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
                     .child(b?.bookId)
                     .child("status")
                     .setValue("pending")
+            refPending.child(bookOwner).child(b?.bookId).child("selectedRequest").setValue(u.uid)
 
 
         }

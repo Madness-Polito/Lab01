@@ -19,7 +19,7 @@ class ReviewActivity : AppCompatActivity() {
     private val BODY  : String = "body"
     private val NUM_STARS : String = "numStars"
 
-    private val uid = intent.getStringExtra("uid") // uid of user we want to give a review
+    private var uid : String? = null
     private var title : EditText? = null
     private var body  : EditText? = null
     private var ratingBar : RatingBar? = null
@@ -28,6 +28,7 @@ class ReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
+        uid = intent.getStringExtra("uid") // uid of user we want to give a review
 
         // identify layout objects
         title = findViewById(R.id.title)

@@ -1,7 +1,10 @@
 package mad.lab1.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -30,6 +33,7 @@ import mad.lab1.AllRequestsBookList;
 import mad.lab1.Database.Book;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
+import mad.lab1.review.ReviewActivity;
 
 public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdapter.MyLibraryListViewHolder> {
 
@@ -129,6 +133,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                         openPendingDialog(holder);
                         break;
                     case "booked":
+                        openBookedDialog(holder);
                         break;
                 }
             }
@@ -136,6 +141,60 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
 
 
+    }
+
+    private void openBookedDialog(MyLibraryListViewHolder holder) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.reviewTitle);
+        builder.setMessage(R.string.reviewBody);
+        builder.setCancelable(true);
+
+        builder.setPositiveButton(
+                R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        startReview(holder);
+                        dialog.cancel();
+                    }
+                });
+
+        builder.setNegativeButton(
+                R.string.no,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder.create();
+        alert11.show();
+    }
+
+    private void startReview(MyLibraryListViewHolder holder) {
+        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        //get the user to review
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("bookList").child(fbUser.getUid()).child(holder.b.getBookId()).child("selectedRequest");
+
+        ValueEventListener bookTitleListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //get the user to review
+                String user = dataSnapshot.getValue().toString();
+                Intent intent = new Intent(context, ReviewActivity.class);
+                intent.putExtra("uid", user);
+
+                context.startActivity(intent);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        ref.addListenerForSingleValueEvent(bookTitleListener);
     }
 
     private void openPendingDialog(MyLibraryListViewHolder holder) {

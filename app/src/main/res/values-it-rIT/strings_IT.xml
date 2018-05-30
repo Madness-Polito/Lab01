@@ -52,6 +52,10 @@
     <string name="no">No</string>
     <string name="requestTitle">Nuova richiesta per un tuo libro</string>
     <string name="requestBody">Hai una nuova richiesta per </string>
+    <string name="recievedBook">Ho ricevuto il libro</string>
+    <string name="returnedBook">Ho reso il libro</string>
+    <string name="reviewTitle">Recensione</string>
+    <string name="reviewBody">Vuoi recensire l\'utente che ha preso questo libro in prestitio?</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="AllBooks">Tutti i libri</string>

@@ -51,6 +51,10 @@
     <string name="no">No</string>
     <string name="requestTitle">New book request</string>
     <string name="requestBody">You have a new request for </string>
+    <string name="recievedBook">I\'ve recieved the book</string>
+    <string name="returnedBook">I\'ve returned the book</string>
+    <string name="reviewTitle">Review</string>
+    <string name="reviewBody">Do you want to write a review on the user borrowing this book?</string>
 
     <string name="facebook_application_id" translatable="false">210891089496907</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb210891089496907</string>
