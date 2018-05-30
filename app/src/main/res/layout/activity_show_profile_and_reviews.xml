@@ -16,11 +16,13 @@
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/scrollView3"
         android:layout_width="match_parent"
-        android:layout_height="511dp"
+        android:layout_height="0dp"
         android:fillViewport="true"
         android:scrollbars="none"
-        app:layout_constraintTop_toBottomOf="@+id/requestBookListToolbar"
-        tools:layout_editor_absoluteX="28dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/requestBookListToolbar">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -29,7 +31,7 @@
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="268dp"
                 android:background="@color/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -39,8 +41,10 @@
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/showRequestImageProfile"
                     android:layout_width="144dp"
-                    android:layout_height="144dp"
+                    android:layout_height="136dp"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="32dp"
                     android:src="@drawable/ic_account_circle_144dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -54,8 +58,9 @@
                     android:layout_below="@id/showImageProfile"
                     android:layout_centerHorizontal="true"
 
-                    android:layout_marginStart="29dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:elevation="4dp"
                     android:ellipsize="end"
                     android:gravity="center_horizontal"
@@ -66,7 +71,8 @@
                     android:textColor="@color/text_white"
                     android:textColorHint="@color/text_white"
                     android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="@+id/showRequestImageProfile"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/showRequestImageProfile" />
 
                 <TextView
@@ -77,8 +83,9 @@
                     android:layout_alignParentBottom="true"
                     android:layout_below="@id/showTextName"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="40dp"
-                    android:layout_marginEnd="15dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:elevation="4dp"
                     android:ellipsize="end"
                     android:gravity="center_horizontal"
@@ -89,10 +96,9 @@
                     android:textColor="@color/text_white"
                     android:textColorHint="@color/text_white"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/showRequestTextName"
-                    app:layout_constraintTop_toBottomOf="@+id/showRequestTextName"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/showRequestTextName" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -158,7 +164,7 @@
                         android:background="?android:attr/listDivider"
                         android:elevation="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/textView4"
+                        app:layout_constraintEnd_toStartOf="@+id/showRequestBookBorrowed"
                         app:layout_constraintStart_toEndOf="@+id/textView6"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0" />
@@ -200,7 +206,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/textView4"
+                        android:id="@+id/showRequestBookBorrowed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="49dp"
@@ -242,10 +248,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="16dp"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
                         android:hint="@string/mailHint"
+                        android:textAlignment="center"
                         android:textSize="12sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/imageRequestEmail"
@@ -255,9 +263,9 @@
                         android:id="@+id/imageRequestEmail"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginBottom="16dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
                         android:src="@drawable/ic_email_black_24dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -269,8 +277,10 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical"
                         android:hint="@string/phoneHint"
+                        android:textAlignment="center"
                         android:textSize="12sp"
                         app:layout_constraintStart_toEndOf="@+id/imageRequestTelephoneNumber"
                         app:layout_constraintTop_toBottomOf="@+id/showRequestTextBirthDate" />
@@ -280,7 +290,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="16dp"
                         android:src="@drawable/ic_phone_android_24dp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/imageRequestBirthDate" />
