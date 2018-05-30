@@ -2,10 +2,10 @@ package mad.lab1.Fragments
 
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +15,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import mad.lab1.Database.Book
+import mad.lab1.Notifications.Constants
 import mad.lab1.R
 import mad.lab1.chat.ChatActivity
 import mad.lab1.review.ReviewActivity
+import org.json.JSONObject
+import java.io.DataOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.ArrayList
 
 class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):RecyclerView.Adapter<BorrowedBooksListAdapter.BorrowedBooksViewHolder>() {
@@ -120,7 +125,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             val intent = Intent(c, ReviewActivity::class.java)
             intent.putExtra("uid", user);
             c.startActivity(intent)
-            customDialog.cancel()
+            customDialog.dismiss()
 
             val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
             refBookId.child(book.bookId).child("status").setValue("free")
@@ -145,7 +150,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             //TODO: make this intent start in the proper way
             intent.setAction(user);
             c.startActivity(intent)
-            customDialog.cancel()
+            customDialog.dismiss()
         })
 
         //book status = booked; deleted all requests for this book
@@ -158,14 +163,85 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
 
 
             //TODO: send notification to all other users that the book isn't available
-            ref.child("requests").removeValue();
-            ref.child("status").setValue("booked")
-            ref2.setValue("booked")
-            val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
-            refBookId.child(book.bookId).child("status").setValue("booked")
+            val bookTitleListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    //get the users that were in the waiting list
+                    for(waitingUsers in dataSnapshot.children){
+                        if(!waitingUsers.value!!.equals(fbUser.uid)){
+                            sendNotification(waitingUsers.value!!, book.title)
+                        }
+                    }
+
+                    ref.child("requests").removeValue();
+                    ref.child("status").setValue("booked")
+                    ref2.setValue("booked")
+                    val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
+                    refBookId.child(book.bookId).child("status").setValue("booked")
+
+
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                }
+            }
+            ref.child("requests").addListenerForSingleValueEvent(bookTitleListener)
+
+
         })
 
         customDialog.show();
+
+    }
+
+    private fun sendNotification(waitingUser: Any, bookTitle: String) {
+        val thread = Thread(Runnable {
+            try {
+
+                val url = URL("https://fcm.googleapis.com/fcm/send")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8")
+                conn.setRequestProperty("Authorization", "key=" + Constants.SERVER_KEY)
+                conn.setRequestProperty("Accept", "application/json")
+                conn.doOutput = true
+                conn.doInput = true
+
+                val jsonParam = JSONObject()
+                val jsonParam2 = JSONObject()
+                jsonParam2.put("body",  bookTitle + " " + c.getString(R.string.requestCancelledBody))
+                jsonParam2.put("title", c.getString(R.string.requestCancelledTitle))
+                jsonParam2.put("tag", Constants.NOTIFICATION_TAG)
+                jsonParam2.put("bookTitle", bookTitle)
+                jsonParam2.put("type", Constants.REQUESTCANCELLED)
+                jsonParam.put("data", jsonParam2)
+                jsonParam.put("to", "/topics/" + waitingUser)
+
+                /*jsonParam3.put("body", msg);
+                    jsonParam3.put("title", "testTitle");
+                    jsonParam2.put("topic", user);
+                    jsonParam2.put("notification", jsonParam3);
+                    jsonParam.put("message", jsonParam2);*/
+
+
+                Log.i("JSON", jsonParam.toString())
+                val os = DataOutputStream(conn.outputStream)
+                //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                os.writeBytes(jsonParam.toString())
+
+                os.flush()
+                os.close()
+
+                Log.i("STATUS", conn.responseCode.toString())
+                Log.i("MSG", conn.responseMessage)
+
+                conn.disconnect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
+
+        thread.start()
 
     }
 

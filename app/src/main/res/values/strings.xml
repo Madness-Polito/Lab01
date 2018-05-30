@@ -55,6 +55,8 @@
     <string name="returnedBook">I\'ve returned the book</string>
     <string name="reviewTitle">Review</string>
     <string name="reviewBody">Do you want to write a review on the user borrowing this book?</string>
+    <string name="requestCancelledBody">is not available anymore. Your request for this book has been cancelled.</string>
+    <string name="requestCancelledTitle">Request cancelled</string>
 
     <string name="facebook_application_id" translatable="false">210891089496907</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb210891089496907</string>
