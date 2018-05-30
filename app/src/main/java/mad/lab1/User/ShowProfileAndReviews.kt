@@ -3,10 +3,13 @@ package mad.lab1.User
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.firebase.database.FirebaseDatabase
+import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
 import mad.lab1.R
 import mad.lab1.review.ReviewsActivity
@@ -24,31 +27,23 @@ class ShowProfileAndReviews : AppCompatActivity() {
     private lateinit var bookBorrowedNumber : TextView
     private lateinit var showMoreReviews : ImageView
     private lateinit var showMoreReviewsText : TextView
+    private lateinit var chooseUserFab : FloatingActionButton
+    private lateinit var b : Book
+    private lateinit var u: UserInfo
+    private lateinit var bookOwner: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile_and_reviews)
+
+        var bundle = intent.getBundleExtra("user_book")
+        u = bundle.getParcelable("user")
+        b = bundle.getParcelable("book")
+        bookOwner = bundle.getString("owner")
+
         initialization()
-    }
 
 
-
-    private fun initialization(){
-
-        name = findViewById(R.id.showRequestTextName)
-        city = findViewById(R.id.showTextCityStateName)
-        birthDate = findViewById(R.id.showRequestTextBirthDate)
-        email = findViewById(R.id.showRequestTextMail)
-        phone = findViewById(R.id.showRequestTextTelephone)
-        image = findViewById(R.id.showRequestImageProfile)
-        bookBorrowedNumber = findViewById(R.id.showRequestBookBorrowed)
-        showMoreReviews = findViewById(R.id.showMoreReviews)
-        showMoreReviewsText = findViewById(R.id.textView6)
-
-        var bundle = intent.getBundleExtra("user")
-        var u : UserInfo = bundle.getParcelable("user")
-
-        initializeToolbar()
 
         name.text = u.name
         city.text = u.city
@@ -68,6 +63,57 @@ class ShowProfileAndReviews : AppCompatActivity() {
             i.putExtra("uid", u.uid)
             startActivity(i)
         }
+
+
+        chooseUserFab.setOnClickListener {
+
+
+
+            //Adding book to borrowed book
+            val refBorrowed = FirebaseDatabase.getInstance().getReference("borrowedBooks")
+            refBorrowed.child(u.uid)
+                    .child(b?.bookId)
+                    .setValue(b)
+
+            refBorrowed.child(u.uid).child(b.bookId).child("status").setValue("pending")
+
+            val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
+            refBookId.child(b.bookId).child("status").setValue("pending")
+
+            //Changing status from free to pending
+            var refPending = FirebaseDatabase.getInstance().getReference("bookList")
+            refPending.child(bookOwner)
+                    .child(b?.bookId)
+                    .child("status")
+                    .setValue("pending")
+
+
+        }
+
+
+
+    }
+
+
+
+    private fun initialization(){
+
+        name = findViewById(R.id.showRequestTextName)
+        city = findViewById(R.id.showTextCityStateName)
+        birthDate = findViewById(R.id.showRequestTextBirthDate)
+        email = findViewById(R.id.showRequestTextMail)
+        phone = findViewById(R.id.showRequestTextTelephone)
+        image = findViewById(R.id.showRequestImageProfile)
+        bookBorrowedNumber = findViewById(R.id.showRequestBookBorrowed)
+        showMoreReviews = findViewById(R.id.showMoreReviews)
+        showMoreReviewsText = findViewById(R.id.textView6)
+
+        chooseUserFab = findViewById(R.id.choose_user_fab)
+
+
+
+        initializeToolbar()
+
 
 
         //TODO Set image, set number of borrowed books

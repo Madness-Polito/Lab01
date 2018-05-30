@@ -147,8 +147,7 @@
                         android:elevation="8dp"
                         android:maxEms="5"
                         android:maxLines="2"
-                        android:text="Reviews"
-                        android:textAllCaps="true"
+                        android:text="@string/show_reviews_text"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/divider5"
                         app:layout_constraintStart_toEndOf="@+id/divider4"
@@ -197,7 +196,7 @@
                         android:id="@+id/showMoreReviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="17dp"
+                        android:layout_marginStart="12dp"
                         android:layout_marginTop="9dp"
                         android:elevation="8dp"
                         android:src="@drawable/ic_rate_review_accent_24dp"
@@ -363,6 +362,7 @@
 
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/choose_user_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"

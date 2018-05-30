@@ -66,6 +66,8 @@
     <string name="borrowed_book">Preso in prestito!</string>
     <string name="no_book_selected">Per favore, seleziona un libro</string>
 
+    <string name="show_reviews_text">Recensioni</string>
+
     <!-- tutorial -->
     <string name="tutorial_welcome">BENVENUTO</string>
     <string name="tutorial_signin">AUTENTICATI</string>

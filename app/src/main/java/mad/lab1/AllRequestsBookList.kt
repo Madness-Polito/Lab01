@@ -36,18 +36,22 @@ class AllRequestsBookList : AppCompatActivity() {
 
 
         val book = intent.getStringExtra("bookId")
-
-        // init layout
-        recyclerView = findViewById<RecyclerView>(R.id.requestBookListRecyclerView)
-        recyclerView?.layoutManager = LinearLayoutManager(this)
-        recyclerView?.adapter = AllRequestBookAdapter(users, this)
-
+        var b : Book? = null
 
         db = FirebaseDatabase.getInstance()
 
         dbRef = db?.reference?.child("bookList")
                 ?.child(currentUser)
                 ?.child(book)?.child("requests")
+
+
+        // init layout
+        recyclerView = findViewById<RecyclerView>(R.id.requestBookListRecyclerView)
+        recyclerView?.layoutManager = LinearLayoutManager(this)
+        recyclerView?.adapter = AllRequestBookAdapter(users, book, currentUser,  this)
+
+
+
 
         // define listener
         userListener = object : ChildEventListener {

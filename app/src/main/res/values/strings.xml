@@ -77,12 +77,17 @@
     <string name="borrowed_book">Borrowed!</string>
     <string name="no_book_selected">Please select a book to borrow</string>
 
+
+
+    <string name="show_reviews_text">Reviews</string>
+
     <!-- tutorial titles-->
     <string name="tutorial_welcome">WELCOME</string>
     <string name="tutorial_signin">SIGN IN</string>
     <string name="tutorial_profile">PERSONAL PROFILE</string>
     <string name="tutorial_chat">CHAT</string>
-    <string name="tutorial_letsstart">LET'S START</string>
+    <string name="tutorial_letsstart">LET\'S START</string>
+
 
     <!-- tutorial text-->
     <string name="tutorial_welcome_text">Welcome to Pazzia Libro Condivisione! :D With this app you'll be able to share books with other people</string>

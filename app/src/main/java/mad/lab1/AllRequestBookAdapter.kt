@@ -11,13 +11,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.database.*
+import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
 import mad.lab1.User.ShowProfileAndReviews
 
-class AllRequestBookAdapter (val d : ArrayList<String>, val c : Context):RecyclerView.Adapter<AllRequestBookAdapter.AllRequestBookViewHolder>(){
+class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : String?, var owner : String?, val c : Context):RecyclerView.Adapter<AllRequestBookAdapter.AllRequestBookViewHolder>(){
 
 
     private var users : ArrayList<String> = d
+    private var bookOwner : String? = owner
+    private var book : String? = bookRequestedId
+    private var bookRequest : Book? = null
     private var db: FirebaseDatabase? = null
     private var dbRef: DatabaseReference? = null
     private var userListener: ValueEventListener? = null
@@ -37,16 +41,36 @@ class AllRequestBookAdapter (val d : ArrayList<String>, val c : Context):Recycle
         db = FirebaseDatabase.getInstance()
         dbRef = db?.reference?.child("users")?.child(users.get(position))
 
+
+
+
+
         userListener = object : ValueEventListener{
             override fun onDataChange(p0: DataSnapshot?) {
                 u = p0?.getValue(UserInfo::class.java)
                 holder.nameTextView.text = u?.name
                 holder.cityTextView.text = u?.city
+
+                val dbRefBook = db?.reference?.child("bookID")?.child(book)
+                dbRefBook?.addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError?) {
+
+                    }
+
+                    override fun onDataChange(p0: DataSnapshot?) {
+                        bookRequest = p0?.getValue(Book :: class.java)
+                        bookRequest?.bookId = p0?.key
+                    }
+                })
+
+
                 holder.cardView.setOnClickListener {
                     var i = Intent(c, ShowProfileAndReviews::class.java)
                     var b = Bundle()
                     b.putParcelable("user", u)
-                    i.putExtra("user", b)
+                    b.putParcelable("book", bookRequest)
+                    b.putString("owner", bookOwner)
+                    i.putExtra("user_book", b)
                     c.startActivity(i)
 
                 }
