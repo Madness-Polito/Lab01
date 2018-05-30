@@ -1,5 +1,6 @@
 package mad.lab1.User
 
+import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.firebase.database.FirebaseDatabase
+import mad.lab1.AllRequestsBookList
 import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
 import mad.lab1.R
@@ -16,6 +18,9 @@ import mad.lab1.review.ReviewsActivity
 import org.w3c.dom.Text
 
 class ShowProfileAndReviews : AppCompatActivity() {
+
+
+    private val SHOW_PROFILE_AND_REVIEWS_CODE = 1
 
     private lateinit var toolbar: Toolbar
     private lateinit var name : TextView
@@ -70,6 +75,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
 
 
             //Adding book to borrowed book
+
             val refBorrowed = FirebaseDatabase.getInstance().getReference("borrowedBooks")
             refBorrowed.child(u.uid)
                     .child(b?.bookId)
@@ -92,6 +98,13 @@ class ShowProfileAndReviews : AppCompatActivity() {
                     .setValue("pending")
             refPending.child(bookOwner).child(b?.bookId).child("selectedRequest").setValue(u.uid)
 
+
+            //Starting chat
+            val intent = Intent(this, AllRequestsBookList::class.java)
+            intent.putExtra("uid", u.uid)
+
+            setResult(Activity.RESULT_OK, intent)
+            finish()
 
         }
 
@@ -134,7 +147,10 @@ class ShowProfileAndReviews : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-        toolbar.setNavigationOnClickListener(View.OnClickListener { onBackPressed() })
+        toolbar.setNavigationOnClickListener(View.OnClickListener {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+            })
 
     }
 }

@@ -200,21 +200,21 @@ public class BorrowedBooksFragment extends Fragment {
     public void onPause() {
         super.onPause();
         //Remove childEventListener
-        if(dbRef != null) {
-            dbRef.removeEventListener(bookIDListener);
-            int size = allBookList.size();
-            allBookList.clear();
-            adapter.notifyItemRangeRemoved(0, size);
-        }
+
+        dbRef.removeEventListener(bookIDListener);
+        int size = allBookList.size();
+        allBookList.clear();
+        adapter.notifyItemRangeRemoved(0, size);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         //add childEventListener
-        if(bookIDListener != null) {
-            dbRef.addChildEventListener(bookIDListener);
-        }
+
+        dbRef.addChildEventListener(bookIDListener);
+
 
     }
 

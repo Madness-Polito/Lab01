@@ -1,5 +1,7 @@
 package mad.lab1
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -11,9 +13,13 @@ import com.google.firebase.database.*
 import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
 import mad.lab1.User.Authentication
+import mad.lab1.User.ShowProfileAndReviews
 
 
-class AllRequestsBookList : AppCompatActivity() {
+class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnRequestClicked{
+
+
+    private val SHOW_PROFILE_AND_REVIEWS_CODE = 1
 
     private val users: ArrayList<String> = ArrayList()
     private var db: FirebaseDatabase? = null
@@ -24,7 +30,9 @@ class AllRequestsBookList : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
 
 
-
+    override fun onRequestClicked(u: UserInfo?, bookRequest : Book?, owner : String?  ) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +56,19 @@ class AllRequestsBookList : AppCompatActivity() {
         // init layout
         recyclerView = findViewById<RecyclerView>(R.id.requestBookListRecyclerView)
         recyclerView?.layoutManager = LinearLayoutManager(this)
-        recyclerView?.adapter = AllRequestBookAdapter(users, book, currentUser,  this)
+        recyclerView?.adapter = AllRequestBookAdapter(users, book, currentUser,  this, object : AllRequestBookAdapter.OnRequestClicked{
+            override fun onRequestClicked(u: UserInfo?, bookRequest: Book?, owner: String?) {
+
+                var i = Intent(this@AllRequestsBookList, ShowProfileAndReviews::class.java)
+                var b = Bundle()
+                b.putParcelable("user", u)
+                b.putParcelable("book", bookRequest)
+                b.putString("owner", owner)
+                i.putExtra("user_book", b)
+                startActivityForResult(i, SHOW_PROFILE_AND_REVIEWS_CODE)
+            }
+        })
+
 
 
 
@@ -90,7 +110,21 @@ class AllRequestsBookList : AppCompatActivity() {
     }
 
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
+        when(requestCode){
+            SHOW_PROFILE_AND_REVIEWS_CODE ->
+                if(resultCode != Activity.RESULT_CANCELED){
+                    val intent = Intent(this, AllRequestsBookList::class.java)
+                    intent.putExtra("uid", data?.getStringExtra("uid"))
+
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                }
+        }
+
+    }
 
     private fun initializeToolbar(){
         toolbar = findViewById<Toolbar>(R.id.requestBookListToolbar)
@@ -99,7 +133,10 @@ class AllRequestsBookList : AppCompatActivity() {
 
         setSupportActionBar(toolbar)
 
-        toolbar.setNavigationOnClickListener(View.OnClickListener { onBackPressed() })
+        toolbar.setNavigationOnClickListener(View.OnClickListener {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        })
 
     }
 

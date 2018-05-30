@@ -35,6 +35,7 @@ import mad.lab1.Database.LocalDB;
 import mad.lab1.Database.StorageDB;
 import mad.lab1.Database.UserInfo;
 import mad.lab1.Database.UsersDB;
+import mad.lab1.Fragments.AllBooksFragment;
 import mad.lab1.Fragments.ShowSelectedBookInfo;
 import mad.lab1.Notifications.Constants;
 import mad.lab1.User.Authentication;
@@ -42,7 +43,7 @@ import mad.lab1.User.EditProfile;
 import mad.lab1.User.ShowProfile;
 
 
-public class MainPageMenu extends AppCompatActivity {
+public class MainPageMenu extends AppCompatActivity implements AllBooksFragment.AllBooksFragmentInterface{
 
 
     private PagerAdapterFragmentMainMenu adapter;
@@ -63,7 +64,10 @@ public class MainPageMenu extends AppCompatActivity {
     private MaterialSearchView searchView;
 
 
-
+    @Override
+    public void changePage(int page) {
+        viewPager.setCurrentItem(page);
+    }
 
     @Override
     protected void onStart() {

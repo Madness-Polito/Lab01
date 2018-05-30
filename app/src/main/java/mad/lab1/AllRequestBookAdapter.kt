@@ -3,6 +3,7 @@ package mad.lab1
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -15,7 +16,7 @@ import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
 import mad.lab1.User.ShowProfileAndReviews
 
-class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : String?, var owner : String?, val c : Context):RecyclerView.Adapter<AllRequestBookAdapter.AllRequestBookViewHolder>(){
+class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : String?, var owner : String?, val c : Context, listener : OnRequestClicked):RecyclerView.Adapter<AllRequestBookAdapter.AllRequestBookViewHolder>(){
 
 
     private var users : ArrayList<String> = d
@@ -25,6 +26,12 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
     private var db: FirebaseDatabase? = null
     private var dbRef: DatabaseReference? = null
     private var userListener: ValueEventListener? = null
+    private var listenerRequestClicked : OnRequestClicked = listener
+
+
+    interface OnRequestClicked {
+        fun onRequestClicked(u: UserInfo?, bookRequest : Book?, owner : String? )
+    }
 
     class AllRequestBookViewHolder(val view : View) : RecyclerView.ViewHolder(view){
         var nameTextView : TextView = view.findViewById(R.id.requestProfileName)
@@ -65,13 +72,9 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
 
                 holder.cardView.setOnClickListener {
-                    var i = Intent(c, ShowProfileAndReviews::class.java)
-                    var b = Bundle()
-                    b.putParcelable("user", u)
-                    b.putParcelable("book", bookRequest)
-                    b.putString("owner", bookOwner)
-                    i.putExtra("user_book", b)
-                    c.startActivity(i)
+
+                    listenerRequestClicked.onRequestClicked(u, bookRequest, bookOwner)
+
 
                 }
             }

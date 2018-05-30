@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -40,6 +41,9 @@ import mad.lab1.chat.Chat;
 import mad.lab1.chat.ChatActivity;
 
 public class FinalBookingConfirmationActivity extends AppCompatActivity {
+
+
+    private final int BOOK_SELECTED_CODE = 3;
 
     private Toolbar toolbar;
     private TextView titleTextView;
@@ -117,18 +121,15 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
 
             DatabaseReference ref = FirebaseDatabase.getInstance()
                     .getReference("bookList");
+
             ref.child(bookOwner.getUid())
                     .child(book.getBookId())
                     .child("requests")
                     .child(user.getUid())
                     .setValue(user.getUid());
 
-            ///change the status of the book to "pending"
-            /*ref.child(bookOwner.getUid())
-                    .child(book.getBookId())
-                    .child("status")
-                    .setValue("pending");
-            */
+
+
 
             //TODO: close this activity
 
@@ -142,7 +143,9 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
             intent.putExtra("chatInfo", b);
             startActivity(intent);*/
 
-
+            setResult(RESULT_OK);
+            Toast.makeText(this, "Request sent", Toast.LENGTH_SHORT);
+            finish();
 
 
         });

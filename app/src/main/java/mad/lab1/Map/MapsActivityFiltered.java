@@ -64,6 +64,10 @@ import mad.lab1.Database.UserInfo;
 
 public class MapsActivityFiltered extends AppCompatActivity implements OnMapReadyCallback {
 
+
+    private final int SELECT_ON_MAP_CODE = 2;
+    private final int BOOK_SELECTED_CODE = 3;
+
     private GoogleMap mMap;
     private FloatingActionButton cancelBtn;
     private FloatingActionButton borrowBtn;
@@ -171,7 +175,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                     Toast.makeText(MapsActivityFiltered.this, "bookID-> "+bu.getBook().getUid()+" userID->"+bu.getUser().getUid(), Toast.LENGTH_SHORT).show();
                 Intent i = new Intent(getApplicationContext(), FinalBookingConfirmationActivity.class);
                 i.putExtra("argument", arg);
-                startActivity(i);
+                startActivityForResult(i, BOOK_SELECTED_CODE);
 
 
                 //Toast.makeText(getApplicationContext(), "Book borrowed , "+markUserMap.get(marker).getName(), Toast.LENGTH_SHORT).show();
@@ -666,4 +670,19 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
         });
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case BOOK_SELECTED_CODE:
+                if(resultCode != RESULT_CANCELED){
+                    setResult(RESULT_OK);
+                    finish();
+                }
+                break;
+            default:
+                break;
+        }
+    }
 }

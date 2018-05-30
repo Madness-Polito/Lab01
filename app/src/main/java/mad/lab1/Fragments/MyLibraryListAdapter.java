@@ -40,6 +40,13 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
 
     private Context context;
+    private final int SHOW_REQUESTS_CODE = 1;
+    private OnBookClickedMyLibrary listener;
+
+
+    public interface OnBookClickedMyLibrary {
+        void onBookClickedMyLibrary(Book b);
+    }
 
 
     public static class MyLibraryListViewHolder extends RecyclerView.ViewHolder{
@@ -52,6 +59,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         private CardView card;
         private TextView bookRequestCounter;
         private de.hdodenhof.circleimageview.CircleImageView bookRequestCounterBackground;
+
 
         //Constructor
         public MyLibraryListViewHolder(View v){
@@ -70,9 +78,10 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
     private ArrayList<Book> allSharedBooks;
 
     //Constructor
-    public MyLibraryListAdapter(ArrayList<Book> allSharedBooks, Context context){
+    public MyLibraryListAdapter(ArrayList<Book> allSharedBooks, Context context, OnBookClickedMyLibrary listener){
         this.allSharedBooks = allSharedBooks;
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -125,9 +134,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
                 switch(holder.status){
                     case "free":
-                        Intent i = new Intent(context, AllRequestsBookList.class);
-                        i.putExtra("bookId", holder.b.getBookId());
-                        context.startActivity(i);
+                        listener.onBookClickedMyLibrary(holder.b);
                         break;
                     case "pending":
                         openPendingDialog(holder);
@@ -142,6 +149,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
 
     }
+
 
     private void openBookedDialog(MyLibraryListViewHolder holder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -196,6 +204,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         };
         ref.addListenerForSingleValueEvent(bookTitleListener);
     }
+
 
     private void openPendingDialog(MyLibraryListViewHolder holder) {
         // get prompts.xml view

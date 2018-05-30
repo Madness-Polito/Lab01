@@ -3,6 +3,7 @@ package mad.lab1.Fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -63,6 +65,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 import mad.lab1.AddingBookActivity;
+import mad.lab1.AllRequestsBookList;
 import mad.lab1.Database.Book;
 import mad.lab1.Database.BookIdInfo;
 import mad.lab1.Database.BookTitleDB;
@@ -72,10 +75,15 @@ import mad.lab1.Database.IsbnDB;
 import mad.lab1.Database.IsbnInfo;
 import mad.lab1.Map.MapsActivity;
 import mad.lab1.R;
+import mad.lab1.chat.ChatActivity;
+
+import static android.app.Activity.RESULT_CANCELED;
 
 public class MyLibraryFragment extends Fragment {
 
     private final static Integer CREATE_NEW_BOOK = 30;
+    private final int SHOW_REQUESTS_CODE = 50;
+    private final int STARTING_CHAT_CODE = 51;
 
     private FloatingActionButton map;
     private FloatingActionButton fab;
@@ -100,8 +108,17 @@ public class MyLibraryFragment extends Fragment {
     private MyLibraryListAdapter adapter;
     private ChildEventListener bookIDListener;
 
+    private AllBooksFragment.AllBooksFragmentInterface mainPageMenuInterface;
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            mainPageMenuInterface = (AllBooksFragment.AllBooksFragmentInterface) context;
+        }catch (ClassCastException e){
+            Log.d("Error", "Error, wrong interface");
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,20 +131,17 @@ public class MyLibraryFragment extends Fragment {
 
 
             allBookList = new ArrayList<>();
-            /*adapter = new AllBooksListAdapter(allBookList, new AllBooksListAdapter.OnBookClicked() {
-                @Override
-                public void onBookClicked(Book b) {
 
-                    Bundle arg = new Bundle();
-                    arg.putParcelable("book", b);
-                    Intent i = new Intent(getContext(), ShowSelectedBookInfo.class);
-                    i.putExtra("argument", b);
-                    startActivity(i);
+            adapter = new MyLibraryListAdapter(allBookList, getActivity(), new MyLibraryListAdapter.OnBookClickedMyLibrary() {
+                @Override
+                public void onBookClickedMyLibrary(Book b) {
+
+                    Intent i = new Intent(getContext(), AllRequestsBookList.class);
+                    i.putExtra("bookId", b.getBookId());
+
+                    startActivityForResult(i, SHOW_REQUESTS_CODE);
                 }
             });
-            */
-
-            adapter = new MyLibraryListAdapter(allBookList, getContext());
 
             bookIDListener = new ChildEventListener() {
                 @Override
@@ -177,6 +191,10 @@ public class MyLibraryFragment extends Fragment {
         //runFirstTimeTutotrial();
 
     }
+
+
+
+
 
     private void runFirstTimeTutotrial(){
         //run first time tutorial
@@ -491,6 +509,26 @@ public class MyLibraryFragment extends Fragment {
 
             creatingNewBook = false;
         }
+
+        switch (requestCode){
+            case SHOW_REQUESTS_CODE:
+                if(resultCode != RESULT_CANCELED){
+                    //Start Chat
+                    String uid = data.getStringExtra("uid");
+                    //open chat
+                    Intent intent = new Intent(getContext(), ChatActivity.class);
+                    //TODO: make this intent start in the proper way
+                    intent.setAction(uid);
+                    startActivityForResult(intent, STARTING_CHAT_CODE);
+
+                }
+                break;
+            case STARTING_CHAT_CODE:
+                mainPageMenuInterface.changePage(3);
+                break;
+            default:
+                break;
+        }
     }
 
     private void saveThumbnailToFirebase(Bitmap thumbnail){
@@ -549,6 +587,7 @@ public class MyLibraryFragment extends Fragment {
         arg.putString("title", title);
         arg.putInt("page", page);
         fragment.setArguments(arg);
+
         return fragment;
     }
 

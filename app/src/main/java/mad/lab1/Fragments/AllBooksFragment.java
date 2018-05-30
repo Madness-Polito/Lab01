@@ -1,5 +1,6 @@
 package mad.lab1.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,15 +29,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import mad.lab1.Database.Book;
+import mad.lab1.MainPageMenu;
 import mad.lab1.Map.MapsActivity;
 import mad.lab1.R;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.content.ContentValues.TAG;
 
 public class AllBooksFragment extends Fragment {
 
 
-    private final int REQUEST_BOOK_CODE = 1;
+    private final int REQUEST_BOOK_CODE = 3;
 
     private FloatingActionButton map;
     private FloatingActionButton fab;
@@ -55,6 +59,8 @@ public class AllBooksFragment extends Fragment {
 
     private ArrayList<String> selectedFilters;
 
+    private AllBooksFragmentInterface mainPageMenuInterfaceController;
+
     private Boolean filterApplied = false;
     private ArrayList<String> categories;
 
@@ -66,6 +72,17 @@ public class AllBooksFragment extends Fragment {
     private ChildEventListener bookIDListener;
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try{
+            mainPageMenuInterfaceController = (AllBooksFragmentInterface) context;
+        }catch (ClassCastException e){
+            Toast.makeText(context, "Error, mainpagemenu should implement the interface", Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,9 +120,12 @@ public class AllBooksFragment extends Fragment {
                 arg.putParcelable("book", b);
                 Intent i = new Intent(getContext(), ShowSelectedBookInfo.class);
                 i.putExtra("argument", b);
-                startActivity(i);
+                startActivityForResult(i, REQUEST_BOOK_CODE);
             }
         });
+
+
+
 
         bookIDListener = new ChildEventListener() {
             @Override
@@ -286,7 +306,9 @@ public class AllBooksFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode){
             case REQUEST_BOOK_CODE:
-
+                if(resultCode != RESULT_CANCELED){
+                    mainPageMenuInterfaceController.changePage(0);
+                }
                 break;
             default:
                 break;
@@ -362,5 +384,10 @@ public class AllBooksFragment extends Fragment {
 
 
     }
+
+    public interface AllBooksFragmentInterface{
+        void changePage(int page);
+    }
+
 }
 

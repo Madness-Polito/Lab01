@@ -25,6 +25,9 @@ import mad.lab1.R;
 
 public class ShowSelectedBookInfo extends AppCompatActivity {
 
+    private final int REQUEST_BOOK_CODE = 1;
+    private final int SELECT_ON_MAP_CODE = 2;
+
     private Toolbar toolbar;
     private TextView titleTextView;
     private TextView authorTextView;
@@ -91,7 +94,7 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
             Intent intent = new Intent(fab.getContext(), MapsActivityFiltered.class);
             intent.putExtra("isbn",book.getIsbn());
             //intent.putExtra("bookID", this.bookID);
-            startActivity(intent);
+            startActivityForResult(intent, SELECT_ON_MAP_CODE);
         });
         
         //run first time tutorial
@@ -148,9 +151,9 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-
+                //User canceled operation, going back
+                setResult(RESULT_CANCELED);
+                finish();
             }
         });
 
@@ -164,6 +167,22 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
         descriptionTextView = findViewById(R.id.showBookInfoDescription);
         fab = findViewById(R.id.showBookInfoFab);
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case SELECT_ON_MAP_CODE:
+                if(resultCode != RESULT_CANCELED){
+                    setResult(RESULT_OK);
+                    finish();
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
 
