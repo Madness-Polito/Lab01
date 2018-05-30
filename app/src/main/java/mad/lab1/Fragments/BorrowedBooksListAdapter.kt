@@ -127,6 +127,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             c.startActivity(intent)
             customDialog.dismiss()
 
+            //TODO: fix this
             val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
             refBookId.child(book.bookId).child("status").setValue("free")
         })
@@ -162,7 +163,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             val ref2 = FirebaseDatabase.getInstance().reference.child("borrowedBooks").child(fbUser!!.uid).child(book.bookId).child("status")
 
 
-            //TODO: send notification to all other users that the book isn't available
+            //send notification to all other users that the book isn't available
             val bookTitleListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     //get the users that were in the waiting list
@@ -175,6 +176,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
                     ref.child("requests").removeValue();
                     ref.child("status").setValue("booked")
                     ref2.setValue("booked")
+                    //TODO: fix this
                     val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
                     refBookId.child(book.bookId).child("status").setValue("booked")
 
@@ -186,6 +188,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
                 }
             }
             ref.child("requests").addListenerForSingleValueEvent(bookTitleListener)
+            customDialog.dismiss()
 
 
         })
