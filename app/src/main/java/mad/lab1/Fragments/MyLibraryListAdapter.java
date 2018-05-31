@@ -149,7 +149,29 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                         openPendingDialog(holder);
                         break;
                     case "booked":
-                        openBookedDialog(holder, "booked");
+                        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                        //set the flag "reviewed" to true. If the flag is already on true, don't ask for a new review
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                                .child(fbUser.getUid())
+                                .child(holder.b.getBookId())
+                                .child("reviewed");
+
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String reviewed = dataSnapshot.getValue().toString();
+                                if(reviewed.equals("false")){
+                                    openBookedDialog(holder, "booked");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
                         break;
                     case "returning":
                         openBookedDialog(holder, "returning");
@@ -177,13 +199,14 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
                         if(status.equals("booked")){
 
-                            //set the flag "reviewed" to true
+                            //set the flag "reviewed" to true. If the flag is already on true, don't ask for a new review
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
                                     .child(fbUser.getUid())
                                     .child(holder.b.getBookId())
                                     .child("reviewed");
                             ref.setValue("true");
-
+                            startReview(holder);
+                            
                         }else if(status.equals("returning")){
 
                             //set the book to free
@@ -197,9 +220,11 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                                     .child("status");
                             ref.setValue("free");
 
+                            startReview(holder);
+
                         }
 
-                        startReview(holder);
+
                         dialog.cancel();
                     }
                 });

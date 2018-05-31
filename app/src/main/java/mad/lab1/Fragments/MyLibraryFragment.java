@@ -280,6 +280,8 @@ public class MyLibraryFragment extends Fragment {
             startActivity(i);
         });
 
+        map.setVisibility(View.GONE);
+
 
 
         fab = v.findViewById(R.id.addBookToShareActionButton);
