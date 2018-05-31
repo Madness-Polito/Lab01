@@ -14,9 +14,10 @@
         android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_add_white_24dp" />
+        app:srcCompat="@drawable/ic_filter_list_black_24dp" />
 
     <android.support.design.widget.FloatingActionButton
+        android:visibility="gone"
         android:id="@+id/showMapActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
