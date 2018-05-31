@@ -169,10 +169,10 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                 arg.putParcelable("book", parcelableBook);
                 arg.putParcelable("user", bu.getUser());
 
-                if(bu == null)
+                /*if(bu == null)
                     Toast.makeText(MapsActivityFiltered.this, "NULL PD", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(MapsActivityFiltered.this, "bookID-> "+bu.getBook().getUid()+" userID->"+bu.getUser().getUid(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MapsActivityFiltered.this, "bookID-> "+bu.getBook().getUid()+" userID->"+bu.getUser().getUid(), Toast.LENGTH_SHORT).show();*/
                 Intent i = new Intent(getApplicationContext(), FinalBookingConfirmationActivity.class);
                 i.putExtra("argument", arg);
                 startActivityForResult(i, BOOK_SELECTED_CODE);
@@ -198,7 +198,8 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot user : dataSnapshot.getChildren()){
                     //select the keys of owners of this book
-                    userIds.add(user.getKey());
+                    checkIfToAddUser(user.getKey());
+
                 }
 
                 placeMarkers(location);
@@ -211,6 +212,28 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
             }
         });
 
+
+    }
+
+    private void checkIfToAddUser(String uid) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                .child(uid);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot b : dataSnapshot.getChildren()){
+                    Book book = b.getValue(Book.class);
+                    if(book.getIsbn().equals(isbn) && book.getStatus().equals("free")){
+                        userIds.add(uid);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -301,7 +324,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
                             users.add(u);
 
-                            Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getApplicationContext(), u.getName()+" "+u.getLatitude(), Toast.LENGTH_SHORT).show();
                             Log.d("ADDING", i+" - "+u.getName() + " " + u.getLatitude() + " " + u.getLongitude() + " " + u.getUid());
                             i++;
                             if (u.getLatitude() != null && u.getLongitude() != null) {
