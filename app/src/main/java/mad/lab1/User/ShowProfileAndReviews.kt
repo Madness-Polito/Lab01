@@ -102,6 +102,10 @@ class ShowProfileAndReviews : AppCompatActivity() {
                     .child(b?.bookId)
                     .child("status")
                     .setValue("pending")
+            refPending.child(bookOwner)
+                    .child(b?.bookId)
+                    .child("reviewed")
+                    .setValue("false")
             refPending.child(bookOwner).child(b?.bookId).child("selectedRequest").setValue(u.uid)
 
             //send a notification to the borrower that their request has been accepted

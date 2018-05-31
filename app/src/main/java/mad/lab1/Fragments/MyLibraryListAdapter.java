@@ -140,7 +140,10 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                         openPendingDialog(holder);
                         break;
                     case "booked":
-                        openBookedDialog(holder);
+                        openBookedDialog(holder, "booked");
+                        break;
+                    case "returning":
+                        openBookedDialog(holder, "returning");
                         break;
                 }
             }
@@ -151,7 +154,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
     }
 
 
-    private void openBookedDialog(MyLibraryListViewHolder holder) {
+    private void openBookedDialog(MyLibraryListViewHolder holder, String status) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.reviewTitle);
         builder.setMessage(R.string.reviewBody);
@@ -161,6 +164,28 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                 R.string.yes,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
+                        if(status.equals("booked")){
+
+                            //set the flag "reviewed" to true
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                                    .child(holder.b.getBookId())
+                                    .child("reviewed");
+                            ref.setValue("true");
+
+                        }else if(status.equals("returning")){
+
+                            //set the book to free
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                                    .child(holder.b.getBookId())
+                                    .child("status");
+                            ref.setValue("free");
+                            ref = FirebaseDatabase.getInstance().getReference("bookID")
+                                    .child(holder.b.getBookId())
+                                    .child("status");
+                            ref.setValue("free");
+
+                        }
 
                         startReview(holder);
                         dialog.cancel();

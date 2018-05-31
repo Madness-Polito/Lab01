@@ -113,23 +113,59 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
         btn_recieved_returned.setOnClickListener(View.OnClickListener {
             val fbUser = FirebaseAuth.getInstance().currentUser
 
-            //change the book status
-            val ref = FirebaseDatabase.getInstance().reference.child("bookList").child(user).child(book!!.bookId)
-            val ref2 = FirebaseDatabase.getInstance().reference.child("borrowedBooks").child(fbUser!!.uid).child(book.bookId)
+            //read the flag "reviewed" on the book to check if to put the status to free or to returning
 
-            //set book to free
-            ref.child("status").setValue("free")
-            //remove book from booked books
+            //change the book status
+            val ref = FirebaseDatabase.getInstance().reference.child("bookList").child(user).child(book!!.bookId).child("reviewed");
+
+            val bookTitleListener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    //get the reviewed status
+                    val reviewed = dataSnapshot.value
+                    if(reviewed!!.equals("true")){
+                        //set the status to free
+
+                        //set book to free
+                        ref.parent.child("status").setValue("free")
+                        //remove book from booked books
+
+
+                        val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
+                        refBookId.child(book.bookId).child("status").setValue("free")
+
+                    }else if (reviewed!!.equals("false")){
+                        //set status to returning
+
+                        //set book to returning
+                        ref.parent.child("status").setValue("returning")
+                        //remove book from booked books
+
+
+                        val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
+                        refBookId.child(book.bookId).child("status").setValue("returning")
+                    }
+
+
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                }
+            }
+            ref.child("requests").addListenerForSingleValueEvent(bookTitleListener)
+
+            val ref2 = FirebaseDatabase.getInstance().reference.child("borrowedBooks").child(fbUser!!.uid).child(book.bookId)
             ref2.removeValue()
+
+
+
 
             val intent = Intent(c, ReviewActivity::class.java)
             intent.putExtra("uid", user);
             c.startActivity(intent)
             customDialog.dismiss()
 
-            //TODO: fix this
-            val refBookId = FirebaseDatabase.getInstance().getReference("bookID")
-            refBookId.child(book.bookId).child("status").setValue("free")
+
         })
 
         customDialog.show();
