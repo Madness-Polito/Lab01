@@ -380,6 +380,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                 holder.returningState.setVisibility(View.GONE);
                 holder.pendingState.setVisibility(View.VISIBLE);
                 holder.bookedState.setVisibility(View.GONE);
+                holder.bookRequestCounterBackground.setVisibility(View.VISIBLE);
                 holder.bookRequestCounter.setVisibility(View.GONE);
                 holder.card.setCardBackgroundColor(Color.parseColor("#90caf9"));
                 break;
@@ -388,6 +389,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                 holder.returningState.setVisibility(View.GONE);
                 holder.bookedState.setVisibility(View.VISIBLE);
                 holder.pendingState.setVisibility(View.GONE);
+                holder.bookRequestCounterBackground.setVisibility(View.VISIBLE);
                 holder.bookRequestCounter.setVisibility(View.GONE);
                 break;
             case "returning":
@@ -396,6 +398,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                 holder.bookedState.setVisibility(View.GONE);
                 holder.pendingState.setVisibility(View.GONE);
                 holder.bookRequestCounter.setVisibility(View.GONE);
+                holder.bookRequestCounterBackground.setVisibility(View.VISIBLE);
                 break;
         }
 
