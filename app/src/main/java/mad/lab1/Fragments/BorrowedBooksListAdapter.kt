@@ -118,7 +118,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             //change the book status
             val ref = FirebaseDatabase.getInstance().reference.child("bookList").child(user).child(book!!.bookId).child("reviewed");
 
-            val bookTitleListener = object : ValueEventListener {
+            val bookStatusListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     //get the reviewed status
                     val reviewed = dataSnapshot.value
@@ -152,7 +152,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
 
                 }
             }
-            ref.child("requests").addListenerForSingleValueEvent(bookTitleListener)
+            ref.addListenerForSingleValueEvent(bookStatusListener)
 
             val ref2 = FirebaseDatabase.getInstance().reference.child("borrowedBooks").child(fbUser!!.uid).child(book.bookId)
             ref2.removeValue()

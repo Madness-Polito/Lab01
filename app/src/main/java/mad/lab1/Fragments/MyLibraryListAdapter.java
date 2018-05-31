@@ -164,11 +164,13 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                 R.string.yes,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
                         if(status.equals("booked")){
 
                             //set the flag "reviewed" to true
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                                    .child(fbUser.getUid())
                                     .child(holder.b.getBookId())
                                     .child("reviewed");
                             ref.setValue("true");
@@ -177,6 +179,7 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
                             //set the book to free
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                                    .child(fbUser.getUid())
                                     .child(holder.b.getBookId())
                                     .child("status");
                             ref.setValue("free");
