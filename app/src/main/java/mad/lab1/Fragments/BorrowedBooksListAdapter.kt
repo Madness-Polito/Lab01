@@ -2,18 +2,22 @@ package mad.lab1.Fragments
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import de.hdodenhof.circleimageview.CircleImageView
 import mad.lab1.Database.Book
 import mad.lab1.Notifications.Constants
 import mad.lab1.R
@@ -34,6 +38,9 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
         var author : TextView = view.findViewById(R.id.authorBookBorrowedTextView)
         var bookImage : ImageView = view.findViewById(R.id.imageBookBorrowed)
         var card : CardView = view.findViewById(R.id.borrowedBookCardView)
+        var bookStatusBackground : CircleImageView = view.findViewById(R.id.bookStatusBackground)
+        val pendingState: ImageView = view.findViewById(R.id.bookPendingWaitingStatus)
+
 
     }
 
@@ -45,6 +52,9 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
         var user : String? = null
         holder.name.text = book?.title
         holder.author.text = book?.author
+
+        holder.bookStatusBackground.visibility = GONE
+        holder.pendingState.visibility = GONE
 
         var db : FirebaseDatabase? = FirebaseDatabase.getInstance()
         var dbRef : DatabaseReference? = db?.reference?.child("bookID")?.child(book?.bookId)?.child("uid")
@@ -90,6 +100,18 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             // case PENDING -> Chat    ||       Confirmation, book received from owner (This will change status pending -> booked)
         }
 
+        when(book?.status){
+            "pending" -> {
+                holder.bookStatusBackground.visibility = VISIBLE
+                holder.pendingState.visibility = VISIBLE
+                holder.card.setCardBackgroundColor(Color.parseColor("#90caf9"))
+            }
+            "booked" ->{
+                holder.bookStatusBackground.visibility = GONE
+                holder.pendingState.visibility = GONE
+                holder.card.setCardBackgroundColor(Color.parseColor("#ffffff"))
+            }
+        }
 
     }
 

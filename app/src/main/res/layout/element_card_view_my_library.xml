@@ -93,6 +93,42 @@
             app:layout_constraintStart_toStartOf="@+id/newBookRequestCountBackgroundMyLibrary"
             app:layout_constraintTop_toTopOf="@+id/newBookRequestCountBackgroundMyLibrary" />
 
+
+        <ImageView
+            android:id="@+id/bookReturningState"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/notebook_returning_state"
+            app:layout_constraintBottom_toBottomOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintEnd_toEndOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintStart_toStartOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintTop_toTopOf="@+id/newBookRequestCountBackgroundMyLibrary" />
+
+        <ImageView
+            android:id="@+id/bookBookedState"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/book_booked_state"
+            app:layout_constraintBottom_toBottomOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintEnd_toEndOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintStart_toStartOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintTop_toTopOf="@+id/newBookRequestCountBackgroundMyLibrary" />
+
+
+        <ImageView
+            android:id="@+id/bookPendingState"
+            android:layout_width="19dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_notebook_delivery"
+            app:layout_constraintBottom_toBottomOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintEnd_toEndOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintStart_toStartOf="@+id/newBookRequestCountBackgroundMyLibrary"
+            app:layout_constraintTop_toTopOf="@+id/newBookRequestCountBackgroundMyLibrary" />
+
     </android.support.constraint.ConstraintLayout>
 
 

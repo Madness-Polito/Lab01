@@ -3,8 +3,7 @@ package mad.lab1.Fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -29,7 +28,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-import mad.lab1.AllRequestsBookList;
 import mad.lab1.Database.Book;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
@@ -59,6 +57,9 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         private CardView card;
         private TextView bookRequestCounter;
         private de.hdodenhof.circleimageview.CircleImageView bookRequestCounterBackground;
+        private ImageView bookedState;
+        private ImageView returningState;
+        private ImageView pendingState;
 
 
         //Constructor
@@ -70,6 +71,14 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
             image = v.findViewById(R.id.imageBookMyLibrary);
             bookRequestCounter = v.findViewById(R.id.newBookRequestCountMyLibrary);
             bookRequestCounterBackground = v.findViewById(R.id.newBookRequestCountBackgroundMyLibrary);
+            bookedState = v.findViewById(R.id.bookBookedState);
+            returningState = v.findViewById(R.id.bookReturningState);
+            pendingState = v.findViewById(R.id.bookPendingState);
+
+            bookedState.setVisibility(View.GONE);
+            returningState.setVisibility(View.GONE);
+            pendingState.setVisibility(View.GONE);
+
         }
 
     }
@@ -360,12 +369,33 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
         switch(holder.status){
             case "free":
                 requestBookReference.addValueEventListener(requestBookListener);
+                holder.card.setCardBackgroundColor(Color.parseColor("#ffffff"));
+                holder.returningState.setVisibility(View.GONE);
+                holder.bookedState.setVisibility(View.GONE);
+                holder.pendingState.setVisibility(View.GONE);
+
                 break;
             case "pending":
                 requestBookReference.addValueEventListener(requestBookListener);
+                holder.returningState.setVisibility(View.GONE);
+                holder.pendingState.setVisibility(View.VISIBLE);
+                holder.bookedState.setVisibility(View.GONE);
+                holder.bookRequestCounter.setVisibility(View.GONE);
+                holder.card.setCardBackgroundColor(Color.parseColor("#90caf9"));
                 break;
             case "booked":
-                hideBookCounter(holder);
+                holder.card.setCardBackgroundColor(Color.parseColor("#ffe082"));
+                holder.returningState.setVisibility(View.GONE);
+                holder.bookedState.setVisibility(View.VISIBLE);
+                holder.pendingState.setVisibility(View.GONE);
+                holder.bookRequestCounter.setVisibility(View.GONE);
+                break;
+            case "returning":
+                holder.card.setCardBackgroundColor(Color.parseColor("#bcaaa4"));
+                holder.returningState.setVisibility(View.VISIBLE);
+                holder.bookedState.setVisibility(View.GONE);
+                holder.pendingState.setVisibility(View.GONE);
+                holder.bookRequestCounter.setVisibility(View.GONE);
                 break;
         }
 
@@ -373,8 +403,5 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
     }
 
-    private void hideBookCounter(MyLibraryListViewHolder holder){
-        holder.bookRequestCounter.setVisibility(View.GONE);
-        holder.bookRequestCounterBackground.setVisibility(View.GONE);
-    }
+
 }

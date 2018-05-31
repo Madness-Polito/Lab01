@@ -65,6 +65,28 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/bookStatusBackground"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:elevation="0dp"
+            android:src="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/bookPendingWaitingStatus"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_notebook"
+            app:layout_constraintBottom_toBottomOf="@+id/bookStatusBackground"
+            app:layout_constraintEnd_toEndOf="@+id/bookStatusBackground"
+            app:layout_constraintStart_toStartOf="@+id/bookStatusBackground"
+            app:layout_constraintTop_toTopOf="@+id/bookStatusBackground" />
+
     </android.support.constraint.ConstraintLayout>
 
 

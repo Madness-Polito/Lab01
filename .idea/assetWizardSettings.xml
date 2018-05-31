@@ -63,10 +63,13 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="448aff" />
-                            <entry key="outputName" value="ic_rate_review_accent_24dp" />
+                            <entry key="height" value="58" />
+                            <entry key="outputName" value="ic_notebook_delivery" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\danie\Downloads\notebook.svg" />
+                            <entry key="sourceFile" value="C:\Users\danie\Desktop\notebook_delivery.svg" />
+                            <entry key="width" value="58" />
                           </map>
                         </option>
                       </PersistentState>
