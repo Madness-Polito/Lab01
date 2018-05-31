@@ -58,6 +58,9 @@
     <string name="reviewBody">Vuoi recensire l\'utente che ha preso questo libro in prestitio?</string>
     <string name="requestCancelledBody">non e\' piu\' disponibile. La tua richiesta per questo libro e\' stato cancellato.</string>
     <string name="requestCancelledTitle">Richiesta cancellata</string>
+    <string name="requestAcceptedBody1">La tua richiesta per</string>
+    <string name="requestAcceptedBody2">e\' stata accettata. Il libro ora dovrebbe essere visibile in "Libri presi in prestito"</string>
+    <string name="requestAcceptedTitle">Request accepted</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="AllBooks">Tutti i libri</string>

@@ -14,5 +14,6 @@ public class Constants {
     public static final String MESSAGE = "message";
     public static final String NEWBOOKING = "newBooking";
     public static final String REQUESTCANCELLED = "requestCancelled";
+    public static final String REQUESTACCEPTED = "requestAccepted";
 
 }

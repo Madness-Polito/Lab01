@@ -263,9 +263,12 @@ public class MainPageMenu extends AppCompatActivity implements AllBooksFragment.
             FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
         }
 
-        if(getIntent().getAction() != null) {
+        if(getIntent().getAction() == Constants.NEWBOOKING) {
             //this has been opened from a notification
             viewPager.setCurrentItem(1);
+        }else if(getIntent().getAction() == Constants.REQUESTACCEPTED){
+            //Booking request has been accepted
+            viewPager.setCurrentItem(2);
         }
 
 

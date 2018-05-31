@@ -148,7 +148,7 @@ public class MyNotificationManager {
 
         Intent resultIntent = new Intent(mCtx, MainPageMenu.class);
         resultIntent
-                .setAction(bookTitle)
+                .setAction(Constants.NEWBOOKING)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         /*
@@ -232,6 +232,90 @@ public class MyNotificationManager {
 
         Intent resultIntent = new Intent(mCtx, MainPageMenu.class);
         resultIntent
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        /*
+        *  Now we will create a pending intent
+        *  The method getActivity is taking 4 parameters
+        *  All paramters are describing themselves
+        *  0 is the request code (the second parameter)
+        *  We can detect this code in the activity that will open by this we can get
+        *  Which notification opened the activity
+        * */
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                mCtx,
+                0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        /*
+        *  Setting the pending intent to notification builder
+        * */
+
+        Notification parentNotification = new NotificationCompat.Builder(mCtx, CHANNEL_ID)
+                .setSmallIcon(R.drawable.all_books_selected_24dp)
+                .setGroupSummary(true)
+                .setGroup(bookTitle)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+
+        Notification childNotification = new NotificationCompat.Builder(mCtx, CHANNEL_ID)
+                .setSmallIcon(R.drawable.all_books_selected_24dp)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setGroup(bookTitle)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .build();
+
+
+
+        //mBuilder.setContentIntent(pendingIntent);
+
+        NotificationManager mNotifyMgr =
+                (NotificationManager) mCtx.getSystemService(NOTIFICATION_SERVICE);
+
+        /*
+        * The first parameter is the notification id
+        * better don't give a literal here (right now we are giving a int literal)
+        * because using this id we can modify it later
+        * */
+        if (mNotifyMgr != null) {
+            mNotifyMgr.notify(notificationTag, childNotification);
+            mNotifyMgr.notify(bookTitle.hashCode(), parentNotification);
+        }
+    }
+
+    public void displayNotificationAcceptedRequest(String title, String body, String bookTitle) {
+
+
+        int notificationTag = (int) (Math.random() * 10000);
+        long time = System.currentTimeMillis();
+
+        /*NotificationCompat.MessagingStyle.Message message =
+                new NotificationCompat.MessagingStyle.Message(body, time, title);
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(mCtx, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.all_books_selected_24dp)
+                        .setContentTitle(title)
+                        .setContentText(body)
+                        .setStyle(new NotificationCompat.MessagingStyle(title).addMessage(message))
+                        .setCategory(NotificationCompat.CATEGORY_MESSAGE);*/
+
+
+
+
+        /*
+        *  Clicking on the notification will take us to this intent
+        *  Right now we are using the MainActivity as this is the only activity we have in our application
+        *  But for your project you can customize it as you want
+        * */
+
+        Intent resultIntent = new Intent(mCtx, MainPageMenu.class);
+        resultIntent
+                .setAction(Constants.REQUESTACCEPTED)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         /*

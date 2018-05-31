@@ -107,6 +107,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 MyNotificationManager.getInstance(this).displayNotificationCancelledRequest(title, body, bookTitle);
                 break;
+
+            case Constants.REQUESTACCEPTED:
+                title = remoteMessage.getData().get("title");
+                body = remoteMessage.getData().get("body");
+                bookTitle = remoteMessage.getData().get("bookTitle");
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    int importance = NotificationManager.IMPORTANCE_HIGH;
+                    NotificationChannel mChannel = new NotificationChannel(Constants.CHANNEL_ID, Constants.CHANNEL_NAME, importance);
+                    mChannel.setDescription(Constants.CHANNEL_DESCRIPTION);
+                    mChannel.enableLights(true);
+                    mChannel.setLightColor(Color.WHITE);
+                    mChannel.enableVibration(true);
+                    mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    mNotificationManager.createNotificationChannel(mChannel);
+                }
+
+
+                MyNotificationManager.getInstance(this).displayNotificationAcceptedRequest(title, body, bookTitle);
+                break;
+
+
         }
 
     }

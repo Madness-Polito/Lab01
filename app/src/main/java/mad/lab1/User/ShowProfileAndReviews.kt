@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,9 +14,14 @@ import com.google.firebase.database.FirebaseDatabase
 import mad.lab1.AllRequestsBookList
 import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
+import mad.lab1.Notifications.Constants
 import mad.lab1.R
 import mad.lab1.review.ReviewsActivity
+import org.json.JSONObject
 import org.w3c.dom.Text
+import java.io.DataOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class ShowProfileAndReviews : AppCompatActivity() {
 
@@ -98,6 +104,9 @@ class ShowProfileAndReviews : AppCompatActivity() {
                     .setValue("pending")
             refPending.child(bookOwner).child(b?.bookId).child("selectedRequest").setValue(u.uid)
 
+            //send a notification to the borrower that their request has been accepted
+            sendNotification(b?.title, u.uid);
+
 
             //Starting chat
             val intent = Intent(this, AllRequestsBookList::class.java)
@@ -112,6 +121,56 @@ class ShowProfileAndReviews : AppCompatActivity() {
 
     }
 
+    private fun sendNotification(title: String?, uid: String?) {
+
+        val thread = Thread(Runnable {
+            try {
+
+                val url = URL("https://fcm.googleapis.com/fcm/send")
+                val conn = url.openConnection() as HttpURLConnection
+                conn.requestMethod = "POST"
+                conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8")
+                conn.setRequestProperty("Authorization", "key=" + Constants.SERVER_KEY)
+                conn.setRequestProperty("Accept", "application/json")
+                conn.doOutput = true
+                conn.doInput = true
+
+                val jsonParam = JSONObject()
+                val jsonParam2 = JSONObject()
+                jsonParam2.put("body",  getString(R.string.requestAcceptedBody1) + " " + title + " " + getString(R.string.requestAcceptedBody2))
+                jsonParam2.put("title", getString(R.string.requestAcceptedTitle))
+                jsonParam2.put("tag", Constants.NOTIFICATION_TAG)
+                jsonParam2.put("bookTitle", title)
+                jsonParam2.put("type", Constants.REQUESTACCEPTED)
+                jsonParam.put("data", jsonParam2)
+                jsonParam.put("to", "/topics/" + uid)
+
+                /*jsonParam3.put("body", msg);
+                    jsonParam3.put("title", "testTitle");
+                    jsonParam2.put("topic", user);
+                    jsonParam2.put("notification", jsonParam3);
+                    jsonParam.put("message", jsonParam2);*/
+
+
+                Log.i("JSON", jsonParam.toString())
+                val os = DataOutputStream(conn.outputStream)
+                //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                os.writeBytes(jsonParam.toString())
+
+                os.flush()
+                os.close()
+
+                Log.i("STATUS", conn.responseCode.toString())
+                Log.i("MSG", conn.responseMessage)
+
+                conn.disconnect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        })
+
+        thread.start()
+    }
 
 
     private fun initialization(){
