@@ -85,6 +85,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
     private Map<Marker, BookUser> markBookUserMap = new HashMap<>();
     private Marker selectedMarker = null;
     private int i = 0;
+    private Boolean done;
 
 
     @Override
@@ -196,13 +197,15 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                done = true;
                 for(DataSnapshot user : dataSnapshot.getChildren()){
                     //select the keys of owners of this book
-                    checkIfToAddUser(user.getKey());
+                    done = false;
+                    checkIfToAddUser(user.getKey(), location);
 
                 }
 
-                placeMarkers(location);
+
             }
 
             @Override
@@ -215,7 +218,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
     }
 
-    private void checkIfToAddUser(String uid) {
+    private void checkIfToAddUser(String uid, Location location) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
                 .child(uid);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -227,11 +230,13 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                         userIds.add(uid);
                     }
                 }
+                done = true;
+                placeMarkers(location);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                done = true;
             }
         });
 
