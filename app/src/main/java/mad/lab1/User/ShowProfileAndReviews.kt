@@ -49,7 +49,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
 
 
 
-    private var ratingBar : RatingBar = findViewById(R.id.all_request_rating_bar)
+    private var ratingBar : RatingBar? = null
     private var totStarCount: Float? = null
     private var totReviewCount: Float? = null
     private var numStar: Float? = null
@@ -62,6 +62,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
         u = bundle.getParcelable("user")
         b = bundle.getParcelable("book")
         bookOwner = bundle.getString("owner")
+
 
         initialization()
 
@@ -203,7 +204,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
         showMoreReviewsText = findViewById(R.id.textView6)
 
         chooseUserFab = findViewById(R.id.choose_user_fab)
-
+        ratingBar = findViewById(R.id.show_profile_and_review_rating_bar)
 
 
         initializeToolbar()
@@ -246,7 +247,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
                     } else {
                         numStar = 0f
                     }
-                    ratingBar.rating = numStar!!
+                    ratingBar?.rating = numStar!!
 
                 }
 
@@ -266,7 +267,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
                 } else {
                     numStar = 0f
                 }
-                ratingBar.rating = numStar!!
+                ratingBar?.rating = numStar!!
 
             }
 

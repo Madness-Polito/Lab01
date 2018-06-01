@@ -80,7 +80,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
                     }
 
                     override fun onDataChange(p0: DataSnapshot) {
-                        val totStarCount: Float = p0.getValue(Float::class.java)!!
+                        val totStarCount: Float = p0?.getValue(Float::class.java) ?: 0f
 
                         // dowload numReviews
                         reviewRef.child("reviewCount")
@@ -89,7 +89,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
                                     }
 
                                     override fun onDataChange(p0: DataSnapshot) {
-                                        val reviewCount: Float = p0.getValue(Float::class.java)!!
+                                        val reviewCount: Float = p0?.getValue(Float::class.java) ?: 1f
 
                                         holder.ratingBar.rating = totStarCount / reviewCount
                                     }
@@ -132,10 +132,10 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
         dbRef?.addListenerForSingleValueEvent(userListener!!)
 
-        setUpRatingBar(uid, holder)
+
     }
 
-
+/*
     private fun setUpRatingBar(userId : String?, holder : AllRequestBookViewHolder?){
         val db = FirebaseDatabase.getInstance()
         val dbRef = db.reference.child("reviews").child(userId!!)
@@ -190,7 +190,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
 
     }
-
+*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllRequestBookViewHolder {
 
