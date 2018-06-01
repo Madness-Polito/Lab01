@@ -201,9 +201,12 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                 for(DataSnapshot user : dataSnapshot.getChildren()){
                     //select the keys of owners of this book
                     done = false;
-                    checkIfToAddUser(user.getKey(), location);
+                    //checkIfToAddUser(user.getKey(), location);
+                    userIds.add(user.getKey());
 
                 }
+
+                placeMarkers(location);
 
 
             }
@@ -227,11 +230,11 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                 for(DataSnapshot b : dataSnapshot.getChildren()){
                     Book book = b.getValue(Book.class);
                     if(book.getIsbn().equals(isbn) && book.getStatus().equals("free")){
-                        userIds.add(uid);
+
                     }
                 }
                 done = true;
-                placeMarkers(location);
+
             }
 
             @Override
@@ -380,6 +383,9 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
                                                     Log.d("BookUser", "found");
                                                     markBookUserMap.put(m, new BookUser(u, b, book.getKey()));
                                                     Log.d("BookUser", "user: " + u.getName() + " uid: " + u.getUid() + " book: " + b.getTitle() + " bID: " + b.getUid());
+                                                    if(!b.getStatus().equals("free")){
+                                                        m.setVisible(false);
+                                                    }
                                                 }
                                             }
                                         }
