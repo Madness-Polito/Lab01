@@ -21,12 +21,14 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -60,6 +62,12 @@ public class EditProfile extends AppCompatActivity{
     private int BOOK_LOCATION_CODE = 1234;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+    private RatingBar ratingBar;
+    private Float totStarCount;
+    private Float totReviewCount;
+    private Float numStar;
+
+
     private ImageButton personalInfoButton, locationButton, bioButton, favBooksButton;
 
     @Override
@@ -80,6 +88,9 @@ public class EditProfile extends AppCompatActivity{
         ImageButton but_persInfo = findViewById(R.id.editPersonalInfo);
         ImageButton but_bio = findViewById(R.id.editBio);
         ImageButton backButton = findViewById(R.id.editProfileBackButton);
+        ratingBar = findViewById(R.id.edit_profile_rating_bar);
+
+        setRatingBar();
 
         this.personalInfoButton = but_persInfo;
         this.locationButton = but_bookLocation;
@@ -553,6 +564,60 @@ public class EditProfile extends AppCompatActivity{
                 longitude = null;
             }
         });
+    }
+
+
+    private void setRatingBar(){
+
+
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = db.getReference().child("reviews").child(Authentication.getCurrentUser().getUid());
+        DatabaseReference totCountRef = dbRef.child("totStarCount");
+        DatabaseReference reviewCountRef = dbRef.child("reviewCount");
+
+
+
+        totCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    totStarCount = dataSnapshot.getValue(Float.class);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        reviewCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    totReviewCount = dataSnapshot.getValue(Float.class);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        if(totStarCount != null && totReviewCount != null){
+            numStar = totStarCount / totReviewCount;
+        }else{
+            numStar = new Float(0);
+        }
+
+        ratingBar.setRating(numStar);
+
+
     }
 
 }

@@ -4,17 +4,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import mad.lab1.Database.Globals;
 import mad.lab1.Database.LocalDB;
@@ -28,6 +35,10 @@ public class ShowProfile extends AppCompatActivity {
     private final String[] KEYS = Globals.KEYS;
     TextView name, mail, bio, date, city, phone;
     private ImageButton backButton, editButton;
+    private RatingBar ratingBar;
+    private Float totStarCount;
+    private Float totReviewCount;
+    private Float numStar;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -45,6 +56,7 @@ public class ShowProfile extends AppCompatActivity {
         TEXTVIEWS = new TextView[]{name, mail, bio, date, city, phone};
         editButton = findViewById(R.id.editProfileButton);
         backButton = findViewById(R.id.showProfileBackButton);
+        ratingBar = findViewById(R.id.show_profile_rating_bar);
 
         // load user info & update view
         UserInfo userInfo = LocalDB.getUserInfo(this);
@@ -126,6 +138,7 @@ public class ShowProfile extends AppCompatActivity {
             e.apply();
         }
     }
+
     // copies data from user info on the db to the textviews
     private void updateView(UserInfo userInfo){
         name.setText(userInfo.getName());
@@ -134,6 +147,53 @@ public class ShowProfile extends AppCompatActivity {
         date.setText(userInfo.getDob());
         city.setText(userInfo.getCity());
         phone.setText(userInfo.getPhone());
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = db.getReference().child("reviews").child(userInfo.getUid());
+        DatabaseReference totCountRef = dbRef.child("totStarCount");
+        DatabaseReference reviewCountRef = dbRef.child("reviewCount");
+
+
+        totCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    totStarCount = dataSnapshot.getValue(Float.class);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        reviewCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() != null){
+                    totReviewCount = dataSnapshot.getValue(Float.class);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        if(totStarCount != null && totReviewCount != null){
+            numStar = totStarCount / totReviewCount;
+        }else{
+            numStar = new Float(0);
+        }
+
+        ratingBar.setRating(numStar);
+
+
     }
 
   /*  protected void onSaveInstanceState(Bundle b) {

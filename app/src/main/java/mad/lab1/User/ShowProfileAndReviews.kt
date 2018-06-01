@@ -9,8 +9,12 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.RatingBar
 import android.widget.TextView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import mad.lab1.AllRequestsBookList
 import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
@@ -43,6 +47,13 @@ class ShowProfileAndReviews : AppCompatActivity() {
     private lateinit var u: UserInfo
     private lateinit var bookOwner: String
 
+
+
+    private var ratingBar : RatingBar = findViewById(R.id.all_request_rating_bar)
+    private var totStarCount: Float? = null
+    private var totReviewCount: Float? = null
+    private var numStar: Float? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_profile_and_reviews)
@@ -62,6 +73,8 @@ class ShowProfileAndReviews : AppCompatActivity() {
         email.text = u.mail
         phone.text = u.phone
 
+
+        setUpRatingBar(u.uid)
 
         showMoreReviews.setOnClickListener{
             var i = Intent(this, ReviewsActivity::class.java)
@@ -215,5 +228,48 @@ class ShowProfileAndReviews : AppCompatActivity() {
             finish()
             })
 
+    }
+
+    private fun setUpRatingBar(uid : String?){
+        val db = FirebaseDatabase.getInstance()
+        val dbRef = db.reference.child("reviews").child(uid!!)
+        val totCountRef = dbRef.child("totStarCount")
+        val reviewCountRef = dbRef.child("reviewCount")
+
+
+        totCountRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value != null) {
+                    totStarCount = dataSnapshot.getValue(Float::class.java)
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
+
+        reviewCountRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value != null) {
+                    totReviewCount = dataSnapshot.getValue(Float::class.java)
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
+
+
+        if (totStarCount != null && totReviewCount != null) {
+            numStar = totStarCount ?: 0f / (totReviewCount ?: 1f)
+        } else {
+            numStar = 0f
+        }
+
+        ratingBar?.setRating(numStar ?: 0f)
     }
 }

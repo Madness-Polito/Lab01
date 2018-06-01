@@ -175,7 +175,7 @@
 
                     <RatingBar
 
-                        android:id="@+id/request_rating_bar"
+                        android:id="@+id/show_profile_and_review_rating_bar"
                         style="@style/Widget.AppCompat.RatingBar.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="16dp"
@@ -207,7 +207,7 @@
                         android:elevation="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/textView6"
-                        app:layout_constraintStart_toEndOf="@+id/request_rating_bar"
+                        app:layout_constraintStart_toEndOf="@+id/show_profile_and_review_rating_bar"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView

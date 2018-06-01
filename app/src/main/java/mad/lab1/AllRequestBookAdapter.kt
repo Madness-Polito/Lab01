@@ -34,6 +34,8 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
     private var listenerRequestClicked : OnRequestClicked = listener
 
 
+
+
     interface OnRequestClicked {
         fun onRequestClicked(u: UserInfo?, bookRequest : Book?, owner : String? )
     }
@@ -43,7 +45,10 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
         var cityTextView : TextView = view.findViewById(R.id.requestProfileCity)
         var profileImage : de.hdodenhof.circleimageview.CircleImageView = view.findViewById(R.id.requestProfileImage)
         var cardView : CardView = view.findViewById(R.id.requestBookCard)
-        var ratingBar : RatingBar = view.ratingBar
+        var ratingBar : RatingBar = view.findViewById(R.id.all_request_rating_bar)
+        var totStarCount: Float? = null
+        var totReviewCount: Float? = null
+        var numStar: Float? = null
     }
 
 
@@ -61,7 +66,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
         val picRef : StorageReference = FirebaseStorage.getInstance()
                 .getReference("userPics")
                 .child(uid)
-        GlideApp.with(c)
+                GlideApp.with(c)
                 .load(picRef)
                 .into(holder.profileImage)
 
@@ -126,6 +131,52 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
         }
 
         dbRef?.addListenerForSingleValueEvent(userListener!!)
+
+        setUpRatingBar(u?.uid, holder)
+    }
+
+
+    private fun setUpRatingBar(userId : String?, holder : AllRequestBookViewHolder?){
+        val db = FirebaseDatabase.getInstance()
+        val dbRef = db.reference.child("reviews").child(userId!!)
+        val totCountRef = dbRef.child("totStarCount")
+        val reviewCountRef = dbRef.child("reviewCount")
+
+
+        totCountRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value != null) {
+                    holder?.totStarCount = dataSnapshot.getValue(Float::class.java)
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
+
+        reviewCountRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value != null) {
+                    holder?.totReviewCount = dataSnapshot.getValue(Float::class.java)
+                }
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+
+            }
+        })
+
+
+        if (holder?.totStarCount != null && holder?.totReviewCount != null) {
+            holder?.numStar = holder?.totStarCount ?: 0f / (holder?.totReviewCount ?: 1f)
+        } else {
+            holder?.numStar = 0f
+        }
+
+        holder?.ratingBar?.setRating(holder?.numStar ?: 0f)
     }
 
 
