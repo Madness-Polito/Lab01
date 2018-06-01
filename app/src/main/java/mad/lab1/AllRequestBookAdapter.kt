@@ -135,62 +135,6 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
     }
 
-/*
-    private fun setUpRatingBar(userId : String?, holder : AllRequestBookViewHolder?){
-        val db = FirebaseDatabase.getInstance()
-        val dbRef = db.reference.child("reviews").child(userId!!)
-        val totCountRef = dbRef.child("totStarCount")
-        val reviewCountRef = dbRef.child("reviewCount")
-
-
-        totCountRef?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != null) {
-                    holder?.totStarCount = dataSnapshot.getValue(Float::class.java)
-                    if (holder?.totReviewCount != null) {
-                        holder?.numStar = (holder?.totStarCount ?: 0f) / (holder?.totReviewCount ?: 1f)
-                    } else {
-                        holder?.numStar = 0f
-                    }
-                    holder?.ratingBar?.rating = holder?.numStar ?: 0f
-
-
-
-
-                }
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
-
-        reviewCountRef?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != null) {
-                    holder?.totReviewCount = dataSnapshot.getValue(Float::class.java)
-
-                    if (holder?.totStarCount != null) {
-                        holder?.numStar = (holder?.totStarCount ?: 0f) / (holder?.totReviewCount ?: 1f)
-                    } else {
-                        holder?.numStar = 0f
-                    }
-                    holder?.ratingBar?.rating = holder?.numStar ?: 0f
-
-                }
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-
-            }
-        })
-
-
-
-    }
-*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllRequestBookViewHolder {
 

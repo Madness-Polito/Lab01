@@ -88,6 +88,8 @@
 
 
 
+
+    <string name="missing_book_request">At the moment there aren\'t any requests for this book... </string>
     <string name="show_reviews_text">Reviews</string>
 
     <!-- tutorial titles-->
@@ -96,6 +98,8 @@
     <string name="tutorial_profile">PERSONAL PROFILE</string>
     <string name="tutorial_chat">CHAT</string>
     <string name="tutorial_letsstart">LET\'S START</string>
+
+
 
 
     <!-- tutorial text-->

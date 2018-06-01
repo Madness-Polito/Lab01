@@ -2,12 +2,17 @@ package mad.lab1
 
 import android.app.Activity
 import android.content.Intent
+import android.opengl.Visibility
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.ImageView
+import android.widget.TextView
 import com.firebase.ui.auth.data.model.User
 import com.google.firebase.database.*
 import mad.lab1.Database.Book
@@ -26,6 +31,8 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
     private var dbRef: DatabaseReference? = null
     private var userListener: ChildEventListener? = null
     private var recyclerView: RecyclerView? = null
+    private var noRequestImage : ImageView? = null
+    private var noRequestText : TextView? = null
 
     private lateinit var toolbar: Toolbar
 
@@ -39,6 +46,10 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
         setContentView(R.layout.activity_all_requests_book_list)
 
         initializeToolbar()
+
+
+        noRequestImage = findViewById(R.id.no_request_image_owl)
+        noRequestText = findViewById(R.id.no_request_text)
 
         val currentUser = Authentication.getCurrentUser().uid
 
@@ -55,6 +66,7 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
 
         // init layout
         recyclerView = findViewById<RecyclerView>(R.id.requestBookListRecyclerView)
+        recyclerView?.visibility = GONE
         recyclerView?.layoutManager = LinearLayoutManager(this)
         recyclerView?.adapter = AllRequestBookAdapter(users, book, currentUser,  this, object : AllRequestBookAdapter.OnRequestClicked{
             override fun onRequestClicked(u: UserInfo?, bookRequest: Book?, owner: String?) {
@@ -78,7 +90,11 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 val u = dataSnapshot!!.key
                 users.add(u!!)
+                noRequestText?.visibility = GONE
+                noRequestImage?.visibility = GONE
+                recyclerView?.visibility = VISIBLE
                 recyclerView?.adapter?.notifyItemInserted(users.indexOf(u))
+
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
@@ -107,8 +123,16 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
         val size = users.size
         users.clear()
         recyclerView?.adapter?.notifyItemRangeChanged(0, size)
+
+
     }
 
+    override fun onStop() {
+        super.onStop()
+        recyclerView?.visibility = GONE
+        noRequestText?.visibility = VISIBLE
+        noRequestImage?.visibility = VISIBLE
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

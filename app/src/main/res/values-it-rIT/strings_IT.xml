@@ -76,6 +76,7 @@
     <string name="no_book_selected">Per favore, seleziona un libro</string>
 
     <string name="show_reviews_text">Recensioni</string>
+    <string name="missing_book_request">Attualmente non ci son richieste per questo libro...</string>
 
     <!-- tutorial -->
     <string name="tutorial_welcome">BENVENUTO</string>
