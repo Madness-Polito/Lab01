@@ -3,6 +3,7 @@ package mad.lab1
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.annotation.NonNull
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
@@ -53,20 +54,22 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
 
         userListener = object : ValueEventListener{
-            override fun onDataChange(p0: DataSnapshot?) {
-                u = p0?.getValue(UserInfo::class.java)
+            override fun onDataChange( p0: DataSnapshot) {
+                u = p0.getValue(UserInfo::class.java)
                 holder.nameTextView.text = u?.name
                 holder.cityTextView.text = u?.city
 
-                val dbRefBook = db?.reference?.child("bookID")?.child(book)
+                val dbRefBook = db?.reference
+                                    ?.child("bookID")
+                                    ?.child(book!!)
                 dbRefBook?.addListenerForSingleValueEvent(object : ValueEventListener{
-                    override fun onCancelled(p0: DatabaseError?) {
+                    override fun onCancelled(p0: DatabaseError) {
 
                     }
 
-                    override fun onDataChange(p0: DataSnapshot?) {
-                        bookRequest = p0?.getValue(Book :: class.java)
-                        bookRequest?.bookId = p0?.key
+                    override fun onDataChange(p0: DataSnapshot) {
+                        bookRequest = p0.getValue(Book :: class.java)
+                        bookRequest?.bookId = p0.key
                     }
                 })
 
@@ -78,18 +81,18 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
                 }
             }
-            override fun onCancelled(p0: DatabaseError?) {
+            override fun onCancelled(p0: DatabaseError) {
 
             }
         }
 
-        dbRef?.addListenerForSingleValueEvent(userListener)
+        dbRef?.addListenerForSingleValueEvent(userListener!!)
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllRequestBookViewHolder {
 
-        var v : View = LayoutInflater.from(parent.context).inflate(R.layout.element_card_view_all_requests, parent, false)
+        val v : View = LayoutInflater.from(parent.context).inflate(R.layout.element_card_view_all_requests, parent, false)
         return AllRequestBookViewHolder(v)
 
     }

@@ -1,30 +1,38 @@
 package mad.lab1.review;
 
+import android.net.Uri
 import android.os.Parcel
 import android.os.Parcelable
 
 // represents a review of a user
-data class Review (val uid: String,      // uid of the user who is writing the review
-                   val userName: String, // username of the user who is writing the review
-                   val numStars: Int,
-                   val title: String = "",
-                   val body: String = "") : Parcelable {
+data class Review (var uid: String,      // uid of the user who is writing the review
+                   var userName: String, // username of the user who is writing the review
+                   var numStars: Float,
+                   var title: String = "",
+                   var body: String = "",
+                   var picNames : List<String>? = null) : Parcelable {
 //picsUri: List<String>? = null) : Parcelable {
 
-    constructor(p: Parcel) : this(
-            p.readString(),
-            p.readString(),
-            p.readInt(),
-            p.readString(),
-            p.readString())
-            //picsUri  = p.readList(getClassLoader())))
+    constructor() : this("",
+                         "",
+                         0f)
+
+    constructor(p: Parcel) : this(){
+        uid = p.readString()
+        userName = p.readString()
+        numStars = p.readFloat()
+        title = p.readString()
+        body = p.readString()
+        p.readStringList(picNames)
+    }
 
     override fun writeToParcel(p: Parcel, flags: Int) {
         p.writeString(uid)
         p.writeString(userName)
-        p.writeInt(numStars)
+        p.writeFloat(numStars)
         p.writeString(title)
         p.writeString(body)
+        p.writeStringList(picNames)
     }
 
     override fun describeContents(): Int {

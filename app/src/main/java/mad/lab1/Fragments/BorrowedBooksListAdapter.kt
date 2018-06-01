@@ -48,7 +48,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
 
 
     override fun onBindViewHolder(holder: BorrowedBooksViewHolder, position: Int) {
-        var book : Book? = books?.get(position)
+        val book : Book? = books.get(position)
         var user : String? = null
         holder.name.text = book?.title
         holder.author.text = book?.author
@@ -56,17 +56,17 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
         holder.bookStatusBackground.visibility = GONE
         holder.pendingState.visibility = GONE
 
-        var db : FirebaseDatabase? = FirebaseDatabase.getInstance()
-        var dbRef : DatabaseReference? = db?.reference?.child("bookID")?.child(book?.bookId)?.child("uid")
+        val db : FirebaseDatabase? = FirebaseDatabase.getInstance()
+        val dbRef : DatabaseReference? = db?.reference?.child("bookID")?.child(book?.bookId!!)?.child("uid")
         var listener : ValueEventListener? = null
 
         listener = object : ValueEventListener{
-            override fun onDataChange(p0: DataSnapshot?) {
-                user = p0?.getValue(String::class.java)
+            override fun onDataChange(p0: DataSnapshot) {
+                user = p0.getValue(String::class.java)
 
             }
 
-            override fun onCancelled(p0: DatabaseError?) {
+            override fun onCancelled(p0: DatabaseError) {
 
             }
         }
@@ -138,7 +138,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             //read the flag "reviewed" on the book to check if to put the status to free or to returning
 
             //change the book status
-            val ref = FirebaseDatabase.getInstance().reference.child("bookList").child(user).child(book!!.bookId).child("reviewed");
+            val ref = FirebaseDatabase.getInstance().reference.child("bookList").child(user!!).child(book.bookId).child("reviewed");
 
             val bookStatusListener = object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -148,7 +148,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
                         //set the status to free
 
                         //set book to free
-                        ref.parent.child("status").setValue("free")
+                        ref.parent!!.child("status").setValue("free")
                         //remove book from booked books
 
 
@@ -159,7 +159,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
                         //set status to returning
 
                         //set book to returning
-                        ref.parent.child("status").setValue("returning")
+                        ref.parent!!.child("status").setValue("returning")
                         //remove book from booked books
 
 
@@ -217,7 +217,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
             val fbUser = FirebaseAuth.getInstance().currentUser
 
             //change the book status
-            val ref = FirebaseDatabase.getInstance().reference.child("bookList").child(user).child(book!!.bookId)
+            val ref = FirebaseDatabase.getInstance().reference.child("bookList").child(user!!).child(book!!.bookId)
             val ref2 = FirebaseDatabase.getInstance().reference.child("borrowedBooks").child(fbUser!!.uid).child(book.bookId).child("status")
 
 

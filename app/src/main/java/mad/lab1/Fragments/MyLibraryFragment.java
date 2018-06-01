@@ -564,7 +564,7 @@ public class MyLibraryFragment extends Fragment {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 //save the URL for the thumbnail on the database
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
                 ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
@@ -758,7 +758,7 @@ public class MyLibraryFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     //save the URL for the thumbnail on the database
-                    Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
                     ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());

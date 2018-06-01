@@ -43,25 +43,25 @@ class ReviewsActivity : AppCompatActivity() {
 
         // define listener
         reviewListener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot?, previousChildName: String?) {
-                val review = dataSnapshot!!.getValue(Review::class.java)
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                val review = dataSnapshot.getValue(Review::class.java)
                 reviews.add(review!!)
                 rv?.adapter?.notifyItemInserted(reviews.indexOf(review))
             }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot?, previousChildName: String?) {
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
 
                 //TODO if review modified, change here the view
 
             }
 
-            override fun onChildRemoved(dataSnapshot: DataSnapshot?) {
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
             }
 
-            override fun onChildMoved(dataSnapshot: DataSnapshot?, previousChildName: String?) {
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
             }
 
-            override fun onCancelled(databaseError: DatabaseError?) {
+            override fun onCancelled(databaseError: DatabaseError) {
             }
         }
 
@@ -81,13 +81,13 @@ class ReviewsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        reviewListRef?.addChildEventListener(reviewListener)
+        reviewListRef?.addChildEventListener(reviewListener!!)
     }
 
     override fun onPause() {
         super.onPause()
-        reviewListRef?.removeEventListener(reviewListener)
-        var size = reviews.size
+        reviewListRef?.removeEventListener(reviewListener!!)
+        val size = reviews.size
         reviews.clear()
         rv?.adapter?.notifyItemRangeChanged(0, size)
     }

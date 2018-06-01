@@ -75,22 +75,22 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
 
         // define listener
         userListener = object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot?, previousChildName: String?) {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 val u = dataSnapshot!!.key
                 users.add(u!!)
                 recyclerView?.adapter?.notifyItemInserted(users.indexOf(u))
             }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot?, previousChildName: String?) {
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
             }
 
-            override fun onChildRemoved(dataSnapshot: DataSnapshot?) {
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
             }
 
-            override fun onChildMoved(dataSnapshot: DataSnapshot?, previousChildName: String?) {
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
             }
 
-            override fun onCancelled(databaseError: DatabaseError?) {
+            override fun onCancelled(databaseError: DatabaseError) {
             }
         }
 
@@ -98,13 +98,13 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
 
     override fun onResume() {
         super.onResume()
-        dbRef?.addChildEventListener(userListener)
+        dbRef?.addChildEventListener(userListener!!)
     }
 
     override fun onPause() {
         super.onPause()
-        dbRef?.removeEventListener(userListener)
-        var size = users.size
+        dbRef?.removeEventListener(userListener!!)
+        val size = users.size
         users.clear()
         recyclerView?.adapter?.notifyItemRangeChanged(0, size)
     }
