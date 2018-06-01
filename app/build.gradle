@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
 
@@ -24,31 +26,33 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
+
+
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.android.support:customtabs:27.1.1'
     implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
-    /*testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1' */
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
 
     // firebase
-    implementation 'com.google.firebase:firebase-core:12.0.1'
-    implementation 'com.google.firebase:firebase-auth:12.0.1'
-    implementation 'com.google.firebase:firebase-database:12.0.1'
-    implementation 'com.google.firebase:firebase-storage:12.0.1'
-    implementation 'com.google.firebase:firebase-messaging:12.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.0'
+    implementation 'com.google.firebase:firebase-auth:16.0.1'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-storage:16.0.1'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
 
     // firebaseui
     implementation 'com.firebaseui:firebase-ui-database:3.3.0'
@@ -61,14 +65,8 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.twitter.sdk.android:twitter:3.0.0'
 
-    ////
-    implementation 'com.github.bumptech.glide:glide:4.1.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.1.1'
-    ////
-    //implementation "com.twitter.sdk.android:twitter-core:3.0.0@aar"
-
-    implementation 'com.google.android.gms:play-services-maps:12.0.1'
-    implementation "com.google.android.gms:play-services-location:12.0.1"
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation "com.google.android.gms:play-services-location:15.0.1"
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
 
     implementation 'com.journeyapps:zxing-android-embedded:3.1.0@aar'
@@ -76,22 +74,25 @@ dependencies {
 
     // object serialization/deserialization
     implementation 'com.google.code.gson:gson:2.8.2'
-
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     implementation 'com.github.fafaldo:fab-toolbar:1.2.0'
 
+    /*implementation ("com.github.bumptech.glide:glide:4.7.1") {
+        exclude group: "com.android.support"
+    }*/
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    implementation "com.android.support:support-fragment:27.1.1"
     implementation 'com.android.support:support-v4:27.1.1'
 
     //appIntro
     implementation 'com.github.apl-devs:appintro:v4.2.3'
 
+    kapt 'com.github.bumptech.glide:compiler:4.7.1'
+    kapt "android.arch.lifecycle:compiler:1.1.1"
+
     //obscure backgroung tutorial
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -103,7 +104,6 @@ apply plugin: 'org.jetbrains.kotlin.android.extensions'
 androidExtensions {
     experimental = true
 }
+
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'

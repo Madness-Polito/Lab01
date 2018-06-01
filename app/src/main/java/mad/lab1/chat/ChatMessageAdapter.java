@@ -7,10 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import mad.lab1.GlideApp;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
 
@@ -135,39 +141,23 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
         ReceivedMessageHolder(View itemView) {
             super(itemView);
 
-            messageText = (TextView) itemView.findViewById(R.id.text_message_body);
-            //timeText = (TextView) itemView.findViewById(R.id.text_message_time);
-            nameText = (TextView) itemView.findViewById(R.id.text_message_name);
-            profileImage = (ImageView) itemView.findViewById(R.id.image_message_profile);
+            messageText  =  itemView.findViewById(R.id.text_message_body);
+            nameText     =  itemView.findViewById(R.id.text_message_name);
+            profileImage =  itemView.findViewById(R.id.image_message_profile);
         }
 
         void bind(ChatMessage msg) {
             messageText.setText(msg.getText());
-
-            Long time = msg.getTime();
-            DateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-            //timeText.setText(formatter.format(time));
-
             nameText.setText(msg.getUser());
 
-            // TODO fix download the pic at the beginning of the chat
-            // Insert the profile image from the URL into the ImageView.
-            /*StorageReference picRef = StorageDB.getProfilePicRef()
-                                    .child(msg.getUid());
-            picRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    String imageURL = uri.toString();
-                    Glide.with(context)
-                            .load(imageURL)
-                            .into(profileImage);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(context, "Error downloading profile pic", Toast.LENGTH_SHORT).show();
-                }
-            });*/
+            // set profile pic
+               StorageReference profilePicRef = FirebaseStorage.getInstance()
+                       .getReference("userPics")
+                       .child(msg.getUid());
+               GlideApp.with(context)
+                       .load(profilePicRef)
+                       .into(profileImage);
+
         }
     }
 }
