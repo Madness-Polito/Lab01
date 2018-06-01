@@ -16,13 +16,29 @@
                             <entry key="launcher">
                               <value>
                                 <PersistentState>
+                                  <option name="children">
+                                    <map>
+                                      <entry key="foregroundImage">
+                                        <value>
+                                          <PersistentState>
+                                            <option name="values">
+                                              <map>
+                                                <entry key="trimmed" value="true" />
+                                              </map>
+                                            </option>
+                                          </PersistentState>
+                                        </value>
+                                      </entry>
+                                    </map>
+                                  </option>
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundImage" value="C:\Users\Edoardo\Downloads\all_books.jpg" />
+                                      <entry key="backgroundColor" value="448aff" />
+                                      <entry key="foregroundImage" value="C:\Users\danie\Desktop\owl.png" />
                                       <entry key="foregroundLayerName" value="ic_all_books_foreground" />
-                                      <entry key="outputName" value="ic_borrow_book" />
+                                      <entry key="outputName" value="ic_missing_request_owl" />
+                                      <entry key="previewDensity" value="MEDIUM" />
                                     </map>
                                   </option>
                                 </PersistentState>

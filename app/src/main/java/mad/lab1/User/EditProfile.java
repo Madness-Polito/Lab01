@@ -581,8 +581,14 @@ public class EditProfile extends AppCompatActivity{
         totCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null){
+                if(dataSnapshot.getValue() != null) {
                     totStarCount = dataSnapshot.getValue(Float.class);
+                    if (totReviewCount != null) {
+                        numStar = totStarCount / totReviewCount;
+                    } else {
+                        numStar = new Float(0);
+                    }
+                    ratingBar.setRating(numStar);
                 }
 
             }
@@ -596,10 +602,13 @@ public class EditProfile extends AppCompatActivity{
         reviewCountRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue() != null){
-                    totReviewCount = dataSnapshot.getValue(Float.class);
+                totReviewCount = dataSnapshot.getValue(Float.class);
+                if(totStarCount != null){
+                    numStar = totStarCount / totReviewCount;
+                }else{
+                    numStar = new Float(0);
                 }
-
+                ratingBar.setRating(numStar);
             }
 
             @Override
@@ -609,13 +618,7 @@ public class EditProfile extends AppCompatActivity{
         });
 
 
-        if(totStarCount != null && totReviewCount != null){
-            numStar = totStarCount / totReviewCount;
-        }else{
-            numStar = new Float(0);
-        }
 
-        ratingBar.setRating(numStar);
 
 
     }

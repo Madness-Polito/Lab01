@@ -132,7 +132,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
         dbRef?.addListenerForSingleValueEvent(userListener!!)
 
-        setUpRatingBar(u?.uid, holder)
+        setUpRatingBar(uid, holder)
     }
 
 
@@ -143,10 +143,20 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
         val reviewCountRef = dbRef.child("reviewCount")
 
 
-        totCountRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        totCountRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
                     holder?.totStarCount = dataSnapshot.getValue(Float::class.java)
+                    if (holder?.totReviewCount != null) {
+                        holder?.numStar = (holder?.totStarCount ?: 0f) / (holder?.totReviewCount ?: 1f)
+                    } else {
+                        holder?.numStar = 0f
+                    }
+                    holder?.ratingBar?.rating = holder?.numStar ?: 0f
+
+
+
+
                 }
 
             }
@@ -156,10 +166,18 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
             }
         })
 
-        reviewCountRef.addListenerForSingleValueEvent(object : ValueEventListener {
+        reviewCountRef?.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
                     holder?.totReviewCount = dataSnapshot.getValue(Float::class.java)
+
+                    if (holder?.totStarCount != null) {
+                        holder?.numStar = (holder?.totStarCount ?: 0f) / (holder?.totReviewCount ?: 1f)
+                    } else {
+                        holder?.numStar = 0f
+                    }
+                    holder?.ratingBar?.rating = holder?.numStar ?: 0f
+
                 }
 
             }
@@ -170,13 +188,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
         })
 
 
-        if (holder?.totStarCount != null && holder?.totReviewCount != null) {
-            holder?.numStar = holder?.totStarCount ?: 0f / (holder?.totReviewCount ?: 1f)
-        } else {
-            holder?.numStar = 0f
-        }
 
-        holder?.ratingBar?.setRating(holder?.numStar ?: 0f)
     }
 
 

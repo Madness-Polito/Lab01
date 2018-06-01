@@ -241,7 +241,15 @@ class ShowProfileAndReviews : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.value != null) {
                     totStarCount = dataSnapshot.getValue(Float::class.java)
+                    if (totReviewCount != null) {
+                        numStar = totStarCount!! / totReviewCount!!
+                    } else {
+                        numStar = 0f
+                    }
+                    ratingBar.rating = numStar!!
+
                 }
+
 
             }
 
@@ -252,9 +260,13 @@ class ShowProfileAndReviews : AppCompatActivity() {
 
         reviewCountRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value != null) {
-                    totReviewCount = dataSnapshot.getValue(Float::class.java)
+                totReviewCount = dataSnapshot.getValue(Float::class.java)
+                if (totStarCount != null) {
+                    numStar = totStarCount!! / totReviewCount!!
+                } else {
+                    numStar = 0f
                 }
+                ratingBar.rating = numStar!!
 
             }
 
@@ -264,12 +276,5 @@ class ShowProfileAndReviews : AppCompatActivity() {
         })
 
 
-        if (totStarCount != null && totReviewCount != null) {
-            numStar = totStarCount ?: 0f / (totReviewCount ?: 1f)
-        } else {
-            numStar = 0f
-        }
-
-        ratingBar?.setRating(numStar ?: 0f)
     }
 }
