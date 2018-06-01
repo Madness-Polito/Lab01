@@ -22,6 +22,10 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_review_pic.view.*
 import mad.lab1.GlideApp
 import mad.lab1.R.id.imageView
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+
+
 
 
 class ReviewsAdapter(private val reviews: ArrayList<Review>, val context: Context)

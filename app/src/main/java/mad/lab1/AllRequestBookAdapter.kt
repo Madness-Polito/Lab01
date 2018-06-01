@@ -10,9 +10,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.database.*
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.review.view.*
 import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
 import mad.lab1.User.ShowProfileAndReviews
@@ -39,6 +43,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
         var cityTextView : TextView = view.findViewById(R.id.requestProfileCity)
         var profileImage : de.hdodenhof.circleimageview.CircleImageView = view.findViewById(R.id.requestProfileImage)
         var cardView : CardView = view.findViewById(R.id.requestBookCard)
+        var ratingBar : RatingBar = view.ratingBar
     }
 
 
@@ -46,12 +51,46 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
 
 
         var u : UserInfo? = null
+        val uid: String = users[position]
         db = FirebaseDatabase.getInstance()
-        dbRef = db?.reference?.child("users")?.child(users.get(position))
+        dbRef = db?.reference
+                  ?.child("users")
+                  ?.child(uid)
 
+        // load profile pic
+        val picRef : StorageReference = FirebaseStorage.getInstance()
+                .getReference("userPics")
+                .child(uid)
+        GlideApp.with(c)
+                .load(picRef)
+                .into(holder.profileImage)
 
+        // set rating stars
+        val reviewRef = FirebaseDatabase.getInstance()
+                .getReference("reviews")
+                .child(uid)
+        reviewRef.child("totStarCount")
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onCancelled(@NonNull p0: DatabaseError) {
+                    }
 
+                    override fun onDataChange(p0: DataSnapshot) {
+                        val totStarCount: Float = p0.getValue(Float::class.java)!!
 
+                        // dowload numReviews
+                        reviewRef.child("reviewCount")
+                                .addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onCancelled(@NonNull p0: DatabaseError) {
+                                    }
+
+                                    override fun onDataChange(p0: DataSnapshot) {
+                                        val reviewCount: Float = p0.getValue(Float::class.java)!!
+
+                                        holder.ratingBar.rating = totStarCount / reviewCount
+                                    }
+                                })
+                    }
+                })
 
         userListener = object : ValueEventListener{
             override fun onDataChange( p0: DataSnapshot) {
