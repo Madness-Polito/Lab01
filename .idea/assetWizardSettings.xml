@@ -36,10 +36,11 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="fafafa" />
-                                      <entry key="foregroundImage" value="C:\Users\danie\Desktop\Owl-Book-512.png" />
-                                      <entry key="foregroundLayerName" value="ic_all_books_foreground" />
-                                      <entry key="outputName" value="ic_missing_request_owl" />
+                                      <entry key="foregroundImage" value="C:\Users\danie\Desktop\books.svg" />
+                                      <entry key="legacyIconShape" value="CIRCLE" />
+                                      <entry key="outputName" value="ic_mad_sharing1" />
                                       <entry key="previewDensity" value="XXXHIGH" />
+                                      <entry key="webIconShape" value="CIRCLE" />
                                     </map>
                                   </option>
                                 </PersistentState>
