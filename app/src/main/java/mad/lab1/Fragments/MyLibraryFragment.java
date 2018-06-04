@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -285,6 +286,7 @@ public class MyLibraryFragment extends Fragment {
 
 
         fab = v.findViewById(R.id.addBookToShareActionButton);
+        fab.setImageResource(R.drawable.ic_add_white_24dp);
 
         fab.setOnClickListener(view -> {
 
