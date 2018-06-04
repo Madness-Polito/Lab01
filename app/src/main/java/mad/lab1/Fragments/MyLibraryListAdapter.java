@@ -1,5 +1,6 @@
 package mad.lab1.Fragments;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,12 +29,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.zxing.integration.android.IntentIntegrator;
 
 import java.util.ArrayList;
 
 import mad.lab1.Database.Book;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
+import mad.lab1.chat.ChatActivity;
 import mad.lab1.review.ReviewActivity;
 
 public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdapter.MyLibraryListViewHolder> {
@@ -162,6 +168,8 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
                                 String reviewed = dataSnapshot.getValue().toString();
                                 if(reviewed.equals("false")){
                                     openBookedDialog(holder, "booked");
+                                }else{
+                                    openBookedDialog(holder, "reviewed");
                                 }
                             }
 
@@ -186,59 +194,190 @@ public class MyLibraryListAdapter extends RecyclerView.Adapter<MyLibraryListAdap
 
 
     private void openBookedDialog(MyLibraryListViewHolder holder, String status) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.reviewTitle);
-        builder.setMessage(R.string.reviewBody);
-        builder.setCancelable(true);
+        if(status == "reviewed"){
 
-        builder.setPositiveButton(
-                R.string.yes,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+            // custom dialog
+            final Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.chat_recieved_returned_dialog);
 
-                        if(status.equals("booked")){
+            // set the custom dialog components - text, image and button
+            ImageButton btn_chat = dialog.findViewById(R.id.btn_chat);
+            Button btn_review = dialog.findViewById(R.id.btn_recieved_returned);
 
-                            //set the flag "reviewed" to true. If the flag is already on true, don't ask for a new review
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
-                                    .child(fbUser.getUid())
-                                    .child(holder.b.getBookId())
-                                    .child("reviewed");
-                            ref.setValue("true");
-                            startReview(holder);
-                            
-                        }else if(status.equals("returning")){
+            btn_review.setActivated(false);
 
-                            //set the book to free
-                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
-                                    .child(fbUser.getUid())
-                                    .child(holder.b.getBookId())
-                                    .child("status");
-                            ref.setValue("free");
-                            ref = FirebaseDatabase.getInstance().getReference("bookID")
-                                    .child(holder.b.getBookId())
-                                    .child("status");
-                            ref.setValue("free");
+            btn_chat.setOnClickListener(view -> {
 
-                            startReview(holder);
+                //get the user to chat with
+                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("bookList").child(fbUser.getUid()).child(holder.b.getBookId()).child("selectedRequest");
 
+                ValueEventListener bookTitleListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //get the user to review
+                        String user = dataSnapshot.getValue().toString();
+                        Intent intent = new Intent(context, ChatActivity.class);
+
+                        intent.setAction(user);
+                        dialog.dismiss();
+
+                        context.startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                };
+                ref.addListenerForSingleValueEvent(bookTitleListener);
+
+            });
+
+            btn_review.setText(R.string.reviewButtonDone);
+
+            dialog.show();
+
+
+
+
+        }
+
+        if(status == "booked"){
+            // custom dialog
+            final Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.chat_recieved_returned_dialog);
+
+            // set the custom dialog components - text, image and button
+            ImageButton btn_chat = dialog.findViewById(R.id.btn_chat);
+            Button btn_review = dialog.findViewById(R.id.btn_recieved_returned);
+
+            btn_review.setOnClickListener(view -> {
+                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                if (status.equals("booked")) {
+
+                    //set the flag "reviewed" to true. If the flag is already on true, don't ask for a new review
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                            .child(fbUser.getUid())
+                            .child(holder.b.getBookId())
+                            .child("reviewed");
+                    ref.setValue("true");
+                    startReview(holder);
+
+                } else if (status.equals("returning")) {
+
+                    //set the book to free
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                            .child(fbUser.getUid())
+                            .child(holder.b.getBookId())
+                            .child("status");
+                    ref.setValue("free");
+                    ref = FirebaseDatabase.getInstance().getReference("bookID")
+                            .child(holder.b.getBookId())
+                            .child("status");
+                    ref.setValue("free");
+
+                    startReview(holder);
+
+                }
+
+
+                dialog.cancel();
+            });
+
+            btn_chat.setOnClickListener(view -> {
+
+                //get the user to chat with
+                FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("bookList").child(fbUser.getUid()).child(holder.b.getBookId()).child("selectedRequest");
+
+                ValueEventListener bookTitleListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //get the user to review
+                        String user = dataSnapshot.getValue().toString();
+                        Intent intent = new Intent(context, ChatActivity.class);
+
+                        intent.setAction(user);
+                        dialog.dismiss();
+
+                        context.startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                };
+                ref.addListenerForSingleValueEvent(bookTitleListener);
+
+            });
+
+            btn_review.setText(R.string.reviewButton);
+
+            dialog.show();
+
+        }
+
+
+        if(status == "returning"){
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle(R.string.reviewTitle);
+            builder.setMessage(R.string.reviewBody);
+            builder.setCancelable(true);
+
+            builder.setPositiveButton(
+                    R.string.yes,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                            if (status.equals("booked")) {
+
+                                //set the flag "reviewed" to true. If the flag is already on true, don't ask for a new review
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                                        .child(fbUser.getUid())
+                                        .child(holder.b.getBookId())
+                                        .child("reviewed");
+                                ref.setValue("true");
+                                startReview(holder);
+
+                            } else if (status.equals("returning")) {
+
+                                //set the book to free
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("bookList")
+                                        .child(fbUser.getUid())
+                                        .child(holder.b.getBookId())
+                                        .child("status");
+                                ref.setValue("free");
+                                ref = FirebaseDatabase.getInstance().getReference("bookID")
+                                        .child(holder.b.getBookId())
+                                        .child("status");
+                                ref.setValue("free");
+
+                                startReview(holder);
+
+                            }
+
+
+                            dialog.cancel();
                         }
+                    });
 
+            builder.setNegativeButton(
+                    R.string.no,
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
 
-                        dialog.cancel();
-                    }
-                });
-
-        builder.setNegativeButton(
-                R.string.no,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-
-        AlertDialog alert11 = builder.create();
-        alert11.show();
+            AlertDialog alert11 = builder.create();
+            alert11.show();
+        }
     }
 
     private void startReview(MyLibraryListViewHolder holder) {

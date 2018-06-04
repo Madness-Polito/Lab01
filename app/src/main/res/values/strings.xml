@@ -55,6 +55,8 @@
     <string name="returnedBook">I\'ve returned the book</string>
     <string name="reviewTitle">Review</string>
     <string name="reviewBody">Do you want to write a review on the user borrowing this book?</string>
+    <string name="reviewButton">Write a review for the user borrowing this book</string>
+    <string name="reviewButtonDone">You\'ve already reviewed the user borrowing this book</string>
     <string name="requestCancelledBody">is not available anymore. Your request for this book has been cancelled.</string>
     <string name="requestCancelledTitle">Request cancelled</string>
     <string name="requestAcceptedBody1">Your request for</string>

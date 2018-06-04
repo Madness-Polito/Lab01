@@ -56,6 +56,8 @@
     <string name="returnedBook">Ho reso il libro</string>
     <string name="reviewTitle">Recensione</string>
     <string name="reviewBody">Vuoi recensire l\'utente che ha preso questo libro in prestitio?</string>
+    <string name="reviewButton">Recensici l\'utente che ha preso in prestito questo libro</string>
+    <string name="reviewButtonDone">Hai gia\' recensito l\'utente che ha preso in prestito questo libro</string>
     <string name="requestCancelledBody">non e\' piu\' disponibile. La tua richiesta per questo libro e\' stato cancellato.</string>
     <string name="requestCancelledTitle">Richiesta cancellata</string>
     <string name="requestAcceptedBody1">La tua richiesta per</string>
