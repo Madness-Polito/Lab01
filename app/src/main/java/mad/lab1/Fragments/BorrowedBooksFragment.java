@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -74,6 +76,10 @@ public class BorrowedBooksFragment extends Fragment {
     private String description;
     private String imageLinks;
 
+    private ImageView owlNoBooksBorrowedImage;
+    private TextView owlNoBookBorrowedText;
+
+
     private ArrayList<Book> allBookList;
 
 
@@ -103,6 +109,8 @@ public class BorrowedBooksFragment extends Fragment {
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Book b = dataSnapshot.getValue(Book.class);
                     allBookList.add(b);
+                    owlNoBookBorrowedText.setVisibility(View.GONE);
+                    owlNoBooksBorrowedImage.setVisibility(View.GONE);
                     adapter.notifyItemInserted(allBookList.indexOf(b));
                 }
 
@@ -114,6 +122,7 @@ public class BorrowedBooksFragment extends Fragment {
                         i++;
                     }
                     allBookList.set(i, b);
+
                     adapter.notifyItemChanged(i);
 
                 }
@@ -146,16 +155,14 @@ public class BorrowedBooksFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         //Inflating the layout for the fragment
-        View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
-
-        map = v.findViewById(R.id.showMapActionButton);
-        map.setVisibility(View.GONE);
+        View v = inflater.inflate(R.layout.borrowed_books_fragment_layout, container, false);
 
 
-        fab = v.findViewById(R.id.addBookToShareActionButton);
-        fab.setVisibility(View.GONE);
+        owlNoBooksBorrowedImage = v.findViewById(R.id.no_book_borrowed_owl);
+        owlNoBookBorrowedText = v.findViewById(R.id.no_book_borrowed_text);
 
-        cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
+
+        cardViewList = v.findViewById(R.id.recyclerViewBorrowedBooks);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -174,6 +181,9 @@ public class BorrowedBooksFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+
+        owlNoBookBorrowedText.setVisibility(View.VISIBLE);
+        owlNoBooksBorrowedImage.setVisibility(View.VISIBLE);
 
     }
 
@@ -206,6 +216,13 @@ public class BorrowedBooksFragment extends Fragment {
         allBookList.clear();
         adapter.notifyItemRangeRemoved(0, size);
 
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        owlNoBooksBorrowedImage.setVisibility(View.GONE);
+        owlNoBookBorrowedText.setVisibility(View.GONE);
     }
 
     @Override
