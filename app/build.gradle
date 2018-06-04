@@ -55,9 +55,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:17.0.0'
 
     // firebaseui
-    implementation 'com.firebaseui:firebase-ui-database:3.3.0'
-    implementation 'com.firebaseui:firebase-ui-auth:3.3.0'
-    implementation 'com.firebaseui:firebase-ui-storage:3.3.0'
+    implementation 'com.firebaseui:firebase-ui-database:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-storage:4.0.1'
     implementation 'com.firebaseui:firebase-ui:0.6.0'
 
     // facebook, twitter, github
@@ -68,6 +68,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation "com.google.android.gms:play-services-location:15.0.1"
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
+    implementation "com.google.android.gms:play-services-auth:15.0.1"
 
     implementation 'com.journeyapps:zxing-android-embedded:3.1.0@aar'
     implementation 'com.google.zxing:core:3.3.0'
