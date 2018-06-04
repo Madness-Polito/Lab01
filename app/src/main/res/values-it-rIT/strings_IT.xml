@@ -87,6 +87,9 @@
     <string name="tutorial_chat">CHAT</string>
     <string name="tutorial_letsstart">INIZIAMO</string>
 
+    <!-- my library -->
+    <string name="missing_book_my_library">Attualmente non ci sono libri nella tua libreria...</string>
+
     <!-- reviews -->
     <string name="no_reviews">Nessuna recensione disponibile</string>
 

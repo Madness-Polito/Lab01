@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
@@ -109,6 +111,9 @@ public class MyLibraryFragment extends Fragment {
     private MyLibraryListAdapter adapter;
     private ChildEventListener bookIDListener;
 
+    private ImageView owlMissingBooks;
+    private TextView owlMissingBooksText;
+
     private AllBooksFragment.AllBooksFragmentInterface mainPageMenuInterface;
 
     @Override
@@ -150,6 +155,8 @@ public class MyLibraryFragment extends Fragment {
                     Book b = dataSnapshot.getValue(Book.class);
                     b.setBookId(dataSnapshot.getKey());
                     allBookList.add(b);
+                    owlMissingBooks.setVisibility(View.GONE);
+                    owlMissingBooksText.setVisibility(View.GONE);
                     adapter.notifyItemInserted(allBookList.indexOf(b));
                 }
 
@@ -269,9 +276,15 @@ public class MyLibraryFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         //Inflating the layout for the fragment
-        View v = inflater.inflate(R.layout.all_books_fragment_layout, container, false);
+        View v = inflater.inflate(R.layout.my_library_fragment_layout, container, false);
 
 
+        owlMissingBooks = v.findViewById(R.id.no_book_my_library_owl);
+        owlMissingBooksText = v.findViewById(R.id.no_book_my_library_text);
+
+
+
+        /*
         map = v.findViewById(R.id.showMapActionButton);
 
         map.setOnClickListener(view -> {
@@ -283,10 +296,10 @@ public class MyLibraryFragment extends Fragment {
 
         map.setVisibility(View.GONE);
 
+        */
 
+        fab = v.findViewById(R.id.addBookToShareActionButtonMyLibrary);
 
-        fab = v.findViewById(R.id.addBookToShareActionButton);
-        fab.setImageResource(R.drawable.ic_add_white_24dp);
 
         fab.setOnClickListener(view -> {
 
@@ -344,7 +357,7 @@ public class MyLibraryFragment extends Fragment {
         });
 
 
-        cardViewList = v.findViewById(R.id.recyclerViewAllBooks);
+        cardViewList = v.findViewById(R.id.recyclerViewMyLibrary);
         layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
@@ -795,9 +808,18 @@ public class MyLibraryFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        owlMissingBooks.setVisibility(View.VISIBLE);
+        owlMissingBooksText.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
+        owlMissingBooks.setVisibility(View.VISIBLE);
+        owlMissingBooksText.setVisibility(View.VISIBLE);
 
         //add childEventListener
         if(bookIDListener != null) {
@@ -846,6 +868,8 @@ public class MyLibraryFragment extends Fragment {
 
         SharedPreferences getPrefs = PreferenceManager
                 .getDefaultSharedPreferences(getContext());
+
+
 
 
         //  Create a new boolean and preference and set it to true

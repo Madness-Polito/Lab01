@@ -101,6 +101,9 @@
     <string name="tutorial_chat">CHAT</string>
     <string name="tutorial_letsstart">LET\'S START</string>
 
+    <!-- my library -->
+    <string name="missing_book_my_library">At the moment There aren\'t any books in your library...</string>
+
     <!-- reviews -->
     <string name="missing_reviews">No reviews available</string>
 
