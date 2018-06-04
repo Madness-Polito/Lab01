@@ -88,13 +88,12 @@ class AllRequestsBookList : AppCompatActivity() , AllRequestBookAdapter.OnReques
         // define listener
         userListener = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                val u = dataSnapshot!!.key
+                val u = dataSnapshot.key
                 users.add(u!!)
                 noRequestText?.visibility = GONE
                 noRequestImage?.visibility = GONE
                 recyclerView?.visibility = VISIBLE
                 recyclerView?.adapter?.notifyItemInserted(users.indexOf(u))
-
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {

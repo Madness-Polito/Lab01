@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.LocalDB;
 import mad.lab1.Database.UserInfo;
+import mad.lab1.GlideApp;
 import mad.lab1.R;
 import mad.lab1.User.Authentication;
 
@@ -74,7 +77,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             ChatInfo c = chatList.get(position);
 
             //Set the user profile pic
-            //setOtherUserImageProfile(holder, c);
+            setOtherUserImageProfile(holder, c);
             setOtherUserName(holder, c);
             setNewMsgCount(holder, c);
 
@@ -113,9 +116,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     private void setOtherUserImageProfile(ChatListViewHolder holder, ChatInfo c){
 
-        Uri picUri = Uri.parse(LocalDB.getProfilePicPath(context));
-        holder.chatUserImage.setImageURI(picUri);
-
+        // load profile pic
+        StorageReference picRef = FirebaseStorage.getInstance()
+                                                .getReference("userPics")
+                                                .child(c.getOtherUser());
+        GlideApp.with(context)
+                .load(picRef)
+                .into(holder.chatUserImage);
     }
 
     private void setNewMsgCount(ChatListViewHolder holder, ChatInfo c){
@@ -154,7 +161,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         };
@@ -168,13 +175,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         DatabaseReference user2Ref = db.getReference().child("users").child(c.getOtherUser());
         user2Ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 UserInfo u = dataSnapshot.getValue(UserInfo.class);
                 holder.chatUserName.setText(u.getName());
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

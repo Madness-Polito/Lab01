@@ -85,6 +85,12 @@
     <string name="tutorial_chat">CHAT</string>
     <string name="tutorial_letsstart">INIZIAMO</string>
 
+    <!-- reviews -->
+    <string name="no_reviews">Nessuna recensione disponibile</string>
+
+    <!-- chat -->
+    <string name="no_msg">Nessun messaggio da visualizzare</string>
+
     <!-- tutorial text-->
     <string name="tutorial_welcome_text">Benvenuto su Pazzia Libro Condivisione! :D Con questa app potrai condividere tantissimi libri con altruì utenti</string>
     <string name="tutorial_signin_text">Autenticati tramite la tua email o i tuoi account social</string>

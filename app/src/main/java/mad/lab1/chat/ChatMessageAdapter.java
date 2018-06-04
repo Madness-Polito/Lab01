@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
@@ -135,11 +136,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText, nameText;
+        TextView messageText, nameText;
         ImageView profileImage;
 
         ReceivedMessageHolder(View itemView) {
             super(itemView);
+            System.out.println("------------> ReceivedMessageViewHolder");
 
             messageText  =  itemView.findViewById(R.id.text_message_body);
             nameText     =  itemView.findViewById(R.id.text_message_name);
@@ -147,16 +149,29 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
         }
 
         void bind(ChatMessage msg) {
-            messageText.setText(msg.getText());
-            nameText.setText(msg.getUser());
 
-            // set profile pic
-               StorageReference profilePicRef = FirebaseStorage.getInstance()
-                       .getReference("userPics")
-                       .child(msg.getUid());
-               GlideApp.with(context)
-                       .load(profilePicRef)
-                       .into(profileImage);
+            System.out.println("------------> ReceivedMessageViewHolder.bind()");
+
+            messageText.setText(msg.getText());
+
+            // show only text if prev msg was from the same person
+            if (msg.getUid().equals(msg.getPrevMsgUid())){
+                nameText.setVisibility(View.GONE);
+                profileImage.setVisibility(View.GONE);
+            }
+            // otherwise show full msg
+            else {
+                nameText.setText(msg.getUser());
+
+                // set profile pic
+                StorageReference profilePicRef = FirebaseStorage.getInstance()
+                        .getReference("userPics")
+                        .child(msg.getUid());
+                GlideApp.with(context)
+                        .load(profilePicRef)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(profileImage);
+            }
 
         }
     }

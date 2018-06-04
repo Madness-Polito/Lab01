@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:cardElevation="1dp"
-    android:layout_margin="2dp"
-    app:cardCornerRadius="5dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp">
 
     <android.support.constraint.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -58,7 +58,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerViewPic"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"

@@ -12,6 +12,7 @@ public class ChatMessage implements Parcelable{
     private String text;
     private String user;
     private String uid;
+    private String prevMsgUid;
     private long time;
 
     public ChatMessage(String text, String user) {
@@ -53,6 +54,14 @@ public class ChatMessage implements Parcelable{
             return new ChatMessage[size];
         }
     };
+
+    public String getPrevMsgUid(){
+        return prevMsgUid;
+    }
+
+    public void setPrevMsgUid(String prevMsgUid){
+        this.prevMsgUid = prevMsgUid;
+    }
 
     public String getUid(){
         return uid;

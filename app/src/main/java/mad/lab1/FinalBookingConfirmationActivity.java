@@ -144,7 +144,7 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
             startActivity(intent);*/
 
             setResult(RESULT_OK);
-            Toast.makeText(this, "Request sent", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Request sent", Toast.LENGTH_SHORT).show();
             finish();
 
 

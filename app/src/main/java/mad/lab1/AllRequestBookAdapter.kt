@@ -66,7 +66,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
         val picRef : StorageReference = FirebaseStorage.getInstance()
                 .getReference("userPics")
                 .child(uid)
-                GlideApp.with(c)
+        GlideApp.with(c)
                 .load(picRef)
                 .into(holder.profileImage)
 
@@ -80,7 +80,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
                     }
 
                     override fun onDataChange(p0: DataSnapshot) {
-                        val totStarCount: Float = p0?.getValue(Float::class.java) ?: 0f
+                        val totStarCount: Float = p0.getValue(Float::class.java) ?: 0f
 
                         // dowload numReviews
                         reviewRef.child("reviewCount")
@@ -89,7 +89,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
                                     }
 
                                     override fun onDataChange(p0: DataSnapshot) {
-                                        val reviewCount: Float = p0?.getValue(Float::class.java) ?: 1f
+                                        val reviewCount: Float = p0.getValue(Float::class.java) ?: 1f
 
                                         holder.ratingBar.rating = totStarCount / reviewCount
                                     }

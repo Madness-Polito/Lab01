@@ -72,6 +72,7 @@ public class ChatActivity extends AppCompatActivity {
     private boolean isNewMsg;
     private boolean isNextMsgNew;
     private boolean isFirstMsg;
+    private String prevMsgUid;
     private String lastReadMsg = "";
     private DatabaseReference chatRef;
     private ChildEventListener msgListener;
@@ -239,6 +240,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 // A new comment has been added, add it to the displayed list
                 ChatMessage msg = dataSnapshot.getValue(ChatMessage.class);
+                msg.setPrevMsgUid(prevMsgUid);
 
                 System.out.println("------->getMessages received msg from " + msg.getUid());
 
@@ -312,42 +314,7 @@ public class ChatActivity extends AppCompatActivity {
                     isFirstMsg = false;
                 }
 
-
-
-              /*
-                // (no previously read msg & not my message) or new msg: print system message
-                if ((lastReadMsg.equals("") && !msg.getUid().equals(Authentication.getCurrentUser().getUid()))
-                        || isNextMexNew){
-                    isNewMex = true;
-                    isNextMexNew = false;
-                    lastReadMsg = dataSnapshot.getKey();
-                    ChatMessage tmpMsg = new ChatMessage("New messages received!", "", "");
-                    addMessage(tmpMsg);
-                }
-
-                if (dataSnapshot.getKey().equals(lastReadMsg)
-                        && !msg.getUid().equals(Authentication.getCurrentUser().getUid())){
-                    lastReadMsg = dataSnapshot.getKey();
-                    isNextMexNew = true;
-                }
-
-                // decrease # of new msgs if msg from another user and comes after last read msg
-                if (!msg.getUid().equals(Authentication.getCurrentUser().getUid())
-                        && isNewMex) {
-
-                    System.out.println("------->getMessages received msg from " + msg.getUid());
-                    Chat.decreaseNewMsgCount(getApplicationContext(), user1, chatId);
-                }
-
-                if (isNewMex){
-                    // modify last viewed message of user
-                    lastReadMsg = dataSnapshot.getKey();
-                    Chat.updateLastReadMsg(user1, chatId, lastReadMsg);
-                }
-
-                // display last received msg & scroll to bottom
-                addMessage(msg);*/
-
+                prevMsgUid = msg.getUid();
             }
 
             @Override
@@ -390,12 +357,12 @@ public class ChatActivity extends AppCompatActivity {
 
         isNewMsg     = false;
         isNextMsgNew = false;
+        prevMsgUid   = null;
 
         //add childEventListener
         if(msgListener != null) {
             chatRef.addChildEventListener(msgListener);
         }
-
     }
 
 

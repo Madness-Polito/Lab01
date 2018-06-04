@@ -7,6 +7,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import com.google.firebase.database.*
 import mad.lab1.R
 import mad.lab1.User.Authentication
@@ -19,6 +21,8 @@ class ReviewsActivity : AppCompatActivity() {
     private var reviewListener: ChildEventListener? = null
     private var toolbar : Toolbar? = null
     private var rv : RecyclerView? = null
+    private var noRequestImage : ImageView? = null
+    private var noRequestText : TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +37,8 @@ class ReviewsActivity : AppCompatActivity() {
         rv = findViewById(R.id.reviewList)
         rv?.layoutManager = LinearLayoutManager(this)
         rv?.adapter = ReviewsAdapter(reviews, this)
+        noRequestImage = findViewById(R.id.no_request_image_owl)
+        noRequestText = findViewById(R.id.no_request_text)
 
         // get firebase reference for reading reviews
         dbRef = FirebaseDatabase.getInstance()
@@ -45,14 +51,16 @@ class ReviewsActivity : AppCompatActivity() {
         reviewListener = object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
                 val review = dataSnapshot.getValue(Review::class.java)
+
+
                 reviews.add(review!!)
+                noRequestText?.visibility = View.GONE
+                noRequestImage?.visibility = View.GONE
+                rv?.visibility = View.VISIBLE
                 rv?.adapter?.notifyItemInserted(reviews.indexOf(review))
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-
-                //TODO if review modified, change here the view
-
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
@@ -65,30 +73,38 @@ class ReviewsActivity : AppCompatActivity() {
             }
         }
 
+        reviewListRef?.addChildEventListener(reviewListener!!)
+
     }
 
 
     private fun initializeToolbar(){
-        toolbar = findViewById<Toolbar>(R.id.requestBookListToolbar)
+        toolbar = findViewById(R.id.requestBookListToolbar)
         toolbar?.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp)
 
 
         setSupportActionBar(toolbar)
 
         toolbar?.setNavigationOnClickListener(View.OnClickListener { onBackPressed() })
-
     }
 
     override fun onResume() {
         super.onResume()
-        reviewListRef?.addChildEventListener(reviewListener!!)
+        //reviewListRef?.addChildEventListener(reviewListener!!)
     }
 
     override fun onPause() {
         super.onPause()
-        reviewListRef?.removeEventListener(reviewListener!!)
+        /*reviewListRef?.removeEventListener(reviewListener!!)
         val size = reviews.size
         reviews.clear()
-        rv?.adapter?.notifyItemRangeChanged(0, size)
+        rv?.adapter?.notifyItemRangeChanged(0, size)*/
+    }
+
+    override fun onStop() {
+        super.onStop()
+        /*rv?.visibility = View.GONE
+        noRequestText?.visibility = View.VISIBLE
+        noRequestImage?.visibility = View.VISIBLE*/
     }
 }

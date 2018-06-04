@@ -15,9 +15,13 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.review.view.*
 import mad.lab1.AllRequestsBookList
 import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
+import mad.lab1.GlideApp
 import mad.lab1.Notifications.Constants
 import mad.lab1.R
 import mad.lab1.review.ReviewsActivity
@@ -214,6 +218,13 @@ class ShowProfileAndReviews : AppCompatActivity() {
         //TODO Set image, set number of borrowed books
 
 
+        // load profile pic
+        val picRef : StorageReference = FirebaseStorage.getInstance()
+                .getReference("userPics")
+                .child(u.uid)
+        GlideApp.with(this)
+                .load(picRef)
+                .into(image)
     }
 
 

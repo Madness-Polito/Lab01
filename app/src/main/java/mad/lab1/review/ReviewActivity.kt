@@ -68,7 +68,10 @@ class ReviewActivity : AppCompatActivity() {
         rvPic = findViewById(R.id.recyclerViewPic)
 
         // set adapter for recyclerview
-        rvPic?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val mLayoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        //mLayoutManager.reverseLayout = true
+        mLayoutManager.stackFromEnd  = true
+        rvPic?.layoutManager = mLayoutManager
         rvPic?.adapter = PicAdapter(picUris, this)
 
         // set listener for picBtn
@@ -180,7 +183,9 @@ class ReviewActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val resultUri = result.uri
                 picUris.add(resultUri)
-                rvPic?.adapter?.notifyItemInserted(picUris.indexOf(resultUri))
+                val index : Int = picUris.indexOf(resultUri)
+                rvPic?.adapter?.notifyItemInserted(index)
+                rvPic?.scrollToPosition(index)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 val error = result.error
                 error.printStackTrace()
