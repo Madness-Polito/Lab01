@@ -93,14 +93,7 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         titleTextView.setText(book.getTitle());
         authorTextView.setText(book.getAuthor());
         //bookImageView.setImageBitmap(book.getDecodedThumbnail());
-        Glide.with(bookImageView.getContext())
-                .load(book.getThumbURL())
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.my_library_selected_24dp)
-                        .centerCrop()
-                        .dontAnimate()
-                        .dontTransform())
-                .into(bookImageView);
+        fillImageView(book);
         publisherTextView.setText(book.getPublisher());
         publicationYearTextView.setText(book.getPubYear());
         conditionTextView.setText(book.getCondition());
@@ -162,6 +155,37 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
 
 
         });
+
+
+
+
+    }
+
+    private void fillImageView(Book book) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("isbn").child(book.getIsbn()).child("thumbURL");
+
+        ValueEventListener bookImageListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //get the user to review
+                String thumbnail = dataSnapshot.getValue().toString();
+                Glide.with(bookImageView.getContext())
+                        .load(thumbnail)
+                        .apply(new RequestOptions()
+                                .placeholder(R.drawable.my_library_selected_24dp)
+                                .centerCrop()
+                                .dontAnimate()
+                                .dontTransform())
+                        .into(bookImageView);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        ref.addListenerForSingleValueEvent(bookImageListener);
 
 
 
