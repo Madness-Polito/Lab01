@@ -169,7 +169,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                         .child(msg.getUid());
                 GlideApp.with(context)
                         .load(profilePicRef)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.ic_account_circle_144dp)
                         .into(profileImage);
             }
 

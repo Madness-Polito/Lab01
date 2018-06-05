@@ -1,5 +1,6 @@
 package mad.lab1.review
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.support.v7.view.menu.ActionMenuItemView
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,8 +15,14 @@ import com.bumptech.glide.Glide
 import android.support.annotation.NonNull
 import com.google.android.gms.tasks.OnFailureListener
 import android.net.Uri
+import android.support.annotation.Nullable
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.LinearLayoutManager
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.module.AppGlideModule
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -101,8 +108,20 @@ class ReviewsAdapter(private val reviews: ArrayList<Review>, val context: Contex
                 val picRef : StorageReference = FirebaseStorage.getInstance()
                         .getReference("reviews")
                         .child(picName)
+
                 GlideApp.with(context)
                         .load(picRef)
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                itemView.progressBar.visibility = View.GONE
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                itemView.progressBar.visibility = View.GONE
+                                return false
+                            }
+                        })
                         .into(itemView.pic)
             }
         }

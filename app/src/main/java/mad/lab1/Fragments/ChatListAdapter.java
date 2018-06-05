@@ -122,6 +122,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
                                                 .child(c.getOtherUser());
         GlideApp.with(context)
                 .load(picRef)
+                .placeholder(R.drawable.ic_account_circle_144dp)
                 .into(holder.chatUserImage);
     }
 
