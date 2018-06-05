@@ -90,6 +90,7 @@
 
 
 
+    <string name="final_book_confimation_owner">Owner:</string>
 
     <string name="missing_book_request">At the moment there aren\'t any requests for this book... </string>
     <string name="show_reviews_text">Reviews</string>

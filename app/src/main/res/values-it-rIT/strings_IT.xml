@@ -80,6 +80,9 @@
     <string name="show_reviews_text">Recensioni</string>
     <string name="missing_book_request">Attualmente non ci son richieste per questo libro...</string>
 
+
+    <string name="final_book_confimation_owner">Proprietario:</string>
+
     <!-- tutorial -->
     <string name="tutorial_welcome">BENVENUTO</string>
     <string name="tutorial_signin">AUTENTICATI</string>

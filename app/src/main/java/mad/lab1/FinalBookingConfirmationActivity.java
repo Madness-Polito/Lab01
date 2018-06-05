@@ -3,12 +3,15 @@ package mad.lab1;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONObject;
@@ -31,6 +35,7 @@ import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import mad.lab1.Database.Book;
 import mad.lab1.Database.ChatInfo;
 import mad.lab1.Database.UserInfo;
@@ -39,6 +44,7 @@ import mad.lab1.Notifications.Constants;
 import mad.lab1.R;
 import mad.lab1.chat.Chat;
 import mad.lab1.chat.ChatActivity;
+import mad.lab1.review.ReviewsActivity;
 
 public class FinalBookingConfirmationActivity extends AppCompatActivity {
 
@@ -56,6 +62,13 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
     private TextView descriptionTextView;
     private FloatingActionButton fab;
 
+    private CircleImageView ownerImage;
+    private TextView ownerName;
+    private TextView ownerCity;
+    private RatingBar ownerRating;
+    private CardView ownerCardView;
+
+
     final Context context = this;
 
     private UserInfo bookOwner;
@@ -65,7 +78,7 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.book_info_dialog_layout);
+        setContentView(R.layout.activity_final_book_confirmation);
 
         Intent i = getIntent();
         //Bundle b = i.getBundleExtra("argument");
@@ -230,6 +243,72 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         conditionTextView = findViewById(R.id.showBookInfoCondition);
         descriptionTextView = findViewById(R.id.showBookInfoDescription);
         fab = findViewById(R.id.showBookInfoFab);
+
+
+
+        ownerImage = findViewById(R.id.ownerProfileImageView);
+        ownerName = findViewById(R.id.ownerProfileName);
+        ownerCity = findViewById(R.id.ownerProfileCity);
+        ownerRating = findViewById(R.id.owner_rating_bar);
+        ownerCardView = findViewById(R.id.ownerProfileCardView);
+
+        ownerCity.setText(bookOwner.getCity());
+        ownerName.setText(bookOwner.getName());
+
+
+        // set rating stars
+
+        DatabaseReference reviewRef = FirebaseDatabase.getInstance()
+                .getReference("reviews")
+                .child(bookOwner.getUid());
+        reviewRef.child("totStarCount")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                        Float totStarCount = dataSnapshot.getValue(Float.class);
+
+                        // dowload numReviews
+                        reviewRef.child("reviewCount")
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        Float reviewCount = dataSnapshot.getValue(Float.class);
+                                        if(reviewCount == null){
+                                            reviewCount = 0f;
+                                        }
+                                        if(reviewCount != 0f ){
+                                            ownerRating.setRating(totStarCount / reviewCount);
+                                        }else{
+                                            ownerRating.setRating(0);
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                } );
+
+
+        ownerCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, ReviewsActivity.class);
+                i.putExtra("uid", bookOwner.getUid());
+                startActivity(i);
+            }
+        });
 
     }
 }
