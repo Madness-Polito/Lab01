@@ -64,8 +64,10 @@ class ReviewsAdapter(private val reviews: ArrayList<Review>, val context: Contex
             if (review.picNames != null) {
                 rv.adapter = ReviewsAdapter.ReviewImagesAdapter(review.picNames!!, context)
             }
-            else
+            else {
                 itemView.horizontalBar.visibility = View.GONE
+                itemView.reviewPicList.visibility = View.GONE
+            }
 
             itemView.userName.text = review.userName
             itemView.ratingBar.rating = review.numStars
