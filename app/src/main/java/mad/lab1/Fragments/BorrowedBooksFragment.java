@@ -129,6 +129,21 @@ public class BorrowedBooksFragment extends Fragment {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    int i = 0;
+                    Book b = dataSnapshot.getValue(Book.class);
+                    while (allBookList.get(i).getBookId() != b.getBookId()) {
+                        i++;
+                    }
+                    allBookList.remove(i);
+
+
+
+                    adapter.notifyItemRemoved(i);
+
+                    if(allBookList.isEmpty()){
+                        owlNoBookBorrowedText.setVisibility(View.VISIBLE);
+                        owlNoBooksBorrowedImage.setVisibility(View.VISIBLE);
+                    }
 
                 }
 
