@@ -106,7 +106,7 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
         boolean isFirstStart = getPrefs.getBoolean("showSelectedBookFirstStart", true);
 
         if (isFirstStart) {
-            showcase("fab");
+            //showcase("fab");
             //  Make a new preferences editor
             SharedPreferences.Editor e = getPrefs.edit();
 
