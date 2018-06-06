@@ -149,52 +149,12 @@ public class MyLibraryFragment extends Fragment {
                 }
             });
 
-            bookIDListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Book b = dataSnapshot.getValue(Book.class);
-                    b.setBookId(dataSnapshot.getKey());
-                    allBookList.add(b);
-                    owlMissingBooks.setVisibility(View.GONE);
-                    owlMissingBooksText.setVisibility(View.GONE);
-                    adapter.notifyItemInserted(allBookList.indexOf(b));
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    int i = 0;
-                    Book b = dataSnapshot.getValue(Book.class);
-                    b.setBookId(dataSnapshot.getKey());
-
-                    while (!allBookList.get(i).getBookId().equals(b.getBookId())) {
-                        i++;
-                    }
-
-                    allBookList.set(i, b);
-
-                    adapter.notifyItemChanged(i);
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    //Toast.makeText(getActivity(), "Failed to load book list.",
-                    //      Toast.LENGTH_SHORT).show();
-                }
-            };
 
         }
+
+
+
+
 
         //runFirstTimeTutotrial();
 
@@ -369,6 +329,11 @@ public class MyLibraryFragment extends Fragment {
 
         cardViewList.setAdapter(adapter);
 
+
+
+
+
+
         return v;
 
     }
@@ -376,6 +341,51 @@ public class MyLibraryFragment extends Fragment {
     @Override
     public void onStart(){
         super.onStart();
+
+        bookIDListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Book b = dataSnapshot.getValue(Book.class);
+                b.setBookId(dataSnapshot.getKey());
+                allBookList.add(b);
+                owlMissingBooks.setVisibility(View.GONE);
+                owlMissingBooksText.setVisibility(View.GONE);
+                adapter.notifyItemInserted(allBookList.indexOf(b));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                int i = 0;
+                Book b = dataSnapshot.getValue(Book.class);
+                b.setBookId(dataSnapshot.getKey());
+
+                while (!allBookList.get(i).getBookId().equals(b.getBookId())) {
+                    i++;
+                }
+
+                allBookList.set(i, b);
+
+                adapter.notifyItemChanged(i);
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                //Toast.makeText(getActivity(), "Failed to load book list.",
+                //      Toast.LENGTH_SHORT).show();
+            }
+        };
 
     }
 
