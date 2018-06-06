@@ -130,31 +130,66 @@ public class MyLibraryFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        allBookList = new ArrayList<>();
+
+        adapter = new MyLibraryListAdapter(allBookList, getActivity(), new MyLibraryListAdapter.OnBookClickedMyLibrary() {
+            @Override
+            public void onBookClickedMyLibrary(Book b) {
+
+                Intent i = new Intent(getContext(), AllRequestsBookList.class);
+                i.putExtra("bookId", b.getBookId());
+
+                startActivityForResult(i, SHOW_REQUESTS_CODE);
+            }
+        });
         //initialize db
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user != null) {
-            dbRef = FirebaseDatabase.getInstance().getReference().child("bookList").child(user.getUid());
 
 
-            allBookList = new ArrayList<>();
 
-            adapter = new MyLibraryListAdapter(allBookList, getActivity(), new MyLibraryListAdapter.OnBookClickedMyLibrary() {
-                @Override
-                public void onBookClickedMyLibrary(Book b) {
+        bookIDListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Book b = dataSnapshot.getValue(Book.class);
+                b.setBookId(dataSnapshot.getKey());
+                allBookList.add(b);
+                owlMissingBooks.setVisibility(View.GONE);
+                owlMissingBooksText.setVisibility(View.GONE);
+                adapter.notifyItemInserted(allBookList.indexOf(b));
+            }
 
-                    Intent i = new Intent(getContext(), AllRequestsBookList.class);
-                    i.putExtra("bookId", b.getBookId());
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                int i = 0;
+                Book b = dataSnapshot.getValue(Book.class);
+                b.setBookId(dataSnapshot.getKey());
 
-                    startActivityForResult(i, SHOW_REQUESTS_CODE);
+                while (!allBookList.get(i).getBookId().equals(b.getBookId())) {
+                    i++;
                 }
-            });
 
+                allBookList.set(i, b);
 
-        }
+                adapter.notifyItemChanged(i);
 
+            }
 
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
+            }
 
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                //Toast.makeText(getActivity(), "Failed to load book list.",
+                //      Toast.LENGTH_SHORT).show();
+            }
+        };
 
         //runFirstTimeTutotrial();
 
@@ -342,50 +377,58 @@ public class MyLibraryFragment extends Fragment {
     public void onStart(){
         super.onStart();
 
-        bookIDListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Book b = dataSnapshot.getValue(Book.class);
-                b.setBookId(dataSnapshot.getKey());
-                allBookList.add(b);
-                owlMissingBooks.setVisibility(View.GONE);
-                owlMissingBooksText.setVisibility(View.GONE);
-                adapter.notifyItemInserted(allBookList.indexOf(b));
-            }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user != null) {
+            dbRef = FirebaseDatabase.getInstance().getReference().child("bookList").child(user.getUid());
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                int i = 0;
-                Book b = dataSnapshot.getValue(Book.class);
-                b.setBookId(dataSnapshot.getKey());
+        }
 
-                while (!allBookList.get(i).getBookId().equals(b.getBookId())) {
-                    i++;
+        if(bookIDListener == null){
+            bookIDListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Book b = dataSnapshot.getValue(Book.class);
+                    b.setBookId(dataSnapshot.getKey());
+                    allBookList.add(b);
+                    owlMissingBooks.setVisibility(View.GONE);
+                    owlMissingBooksText.setVisibility(View.GONE);
+                    adapter.notifyItemInserted(allBookList.indexOf(b));
                 }
 
-                allBookList.set(i, b);
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    int i = 0;
+                    Book b = dataSnapshot.getValue(Book.class);
+                    b.setBookId(dataSnapshot.getKey());
 
-                adapter.notifyItemChanged(i);
+                    while (!allBookList.get(i).getBookId().equals(b.getBookId())) {
+                        i++;
+                    }
 
-            }
+                    allBookList.set(i, b);
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    adapter.notifyItemChanged(i);
 
-            }
+                }
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-            }
+                }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                //Toast.makeText(getActivity(), "Failed to load book list.",
-                //      Toast.LENGTH_SHORT).show();
-            }
-        };
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                    //Toast.makeText(getActivity(), "Failed to load book list.",
+                    //      Toast.LENGTH_SHORT).show();
+                }
+            };
+        }
 
     }
 
@@ -856,10 +899,13 @@ public class MyLibraryFragment extends Fragment {
         super.onPause();
         //Remove childEventListener
 
-        dbRef.removeEventListener(bookIDListener);
-        int size = allBookList.size();
-        allBookList.clear();
-        adapter.notifyItemRangeRemoved(0, size);
+        if(dbRef != null){
+            dbRef.removeEventListener(bookIDListener);
+            int size = allBookList.size();
+            allBookList.clear();
+            adapter.notifyItemRangeRemoved(0, size);
+        }
+
 
     }
 
@@ -878,7 +924,12 @@ public class MyLibraryFragment extends Fragment {
         owlMissingBooksText.setVisibility(View.VISIBLE);
 
 
-        dbRef.addChildEventListener(bookIDListener);
+
+
+        if(dbRef != null && bookIDListener != null){
+            dbRef.addChildEventListener(bookIDListener);
+        }
+
 
 
         //TODO call it in a method which is called ONLY when the user is in MyLibraryFragment
