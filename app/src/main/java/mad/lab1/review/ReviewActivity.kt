@@ -76,7 +76,9 @@ class ReviewActivity : AppCompatActivity() {
 
         // set listener for picBtn
         picBtn?.setOnClickListener{
-            CropImage.startPickImageActivity(this)
+            //CropImage.startPickImageActivity(this)
+            CropImage.activity()
+                    .start(this)
         }
 
         // define okBtn action when pressed

@@ -81,7 +81,9 @@ public class CreateBookActivity extends AppCompatActivity {
         spin_condition.setAdapter(adapter);
 
         btn_thumbnail.setOnClickListener(view -> {
-            CropImage.startPickImageActivity(this);
+            //CropImage.startPickImageActivity(this);
+            CropImage.activity()
+                    .start(this);
         });
 
 

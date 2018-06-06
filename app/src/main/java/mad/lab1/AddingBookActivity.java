@@ -6,9 +6,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +26,11 @@ public class AddingBookActivity extends AppCompatActivity {
     private TextView txt_bookTitle;
     private TextView txt_author;
     private TextView txt_description;
+    private ImageView img_thumbnail;
     private Spinner spin_condition;
     private List<String> spinList;
+
+    private String thumbnailURL;
 
     private Button btn_ok;
     private Button btn_cancel;
@@ -42,12 +49,22 @@ public class AddingBookActivity extends AppCompatActivity {
         spin_condition = findViewById(R.id.spin_condition);
         btn_ok = findViewById(R.id.btn_ok);
         btn_cancel = findViewById(R.id.btn_cancel);
+        img_thumbnail = findViewById(R.id.img_thumbnail);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             txt_author.setText(extras.getString("author"));
             txt_description.setText(extras.getString("description"));
             txt_bookTitle.setText(extras.getString("title"));
+            thumbnailURL = extras.getString("thumbnail");
+            Glide.with(this)
+                    .load(thumbnailURL)
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.my_library_selected_24dp)
+                            .centerCrop()
+                            .dontAnimate()
+                            .dontTransform())
+                    .into(img_thumbnail);
         }
 
         spinList.add(getString(R.string.cond_vUsed));

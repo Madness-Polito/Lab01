@@ -75,10 +75,10 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
         Glide.with(holder.bookImage.context)
                 .load(books.get(position).thumbURL)
                 .apply(RequestOptions()
-                .placeholder(R.drawable.my_library_selected_24dp)
-                .centerCrop()
-                .dontAnimate()
-                .dontTransform())
+                    .placeholder(R.drawable.my_library_selected_24dp)
+                    .centerCrop()
+                    .dontAnimate()
+                    .dontTransform())
                 .into(holder.bookImage)
 
         holder.card.setOnClickListener {

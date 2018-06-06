@@ -714,6 +714,7 @@ public class MyLibraryFragment extends Fragment {
                 i.putExtra("author",author);
                 i.putExtra("description",description);
                 i.putExtra("title",title);
+                i.putExtra("thumbnail", imageLinks);
                 startActivityForResult(i, 1);
 
 

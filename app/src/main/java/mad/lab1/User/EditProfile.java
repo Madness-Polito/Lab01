@@ -123,8 +123,10 @@ public class EditProfile extends AppCompatActivity{
         //set listeners
         imgBtn.setOnClickListener(v -> {
             if (v.getId() == R.id.selectImage)
-                CropImage.startPickImageActivity(this);}
-        );
+                //CropImage.startPickImageActivity(this);
+                CropImage.activity()
+                    .start(this);
+        });
 
         but_bookLocation.setOnClickListener((View v) ->{
             // start an activity that returns long and lat
