@@ -74,7 +74,9 @@ public class EditProfile extends AppCompatActivity{
     private Float totStarCount;
     private Float totReviewCount;
     private Float numStar;
+    private Integer reviews;
 
+    private TextView numberReviews;
 
     private ImageButton personalInfoButton, locationButton, bioButton, favBooksButton;
 
@@ -101,7 +103,14 @@ public class EditProfile extends AppCompatActivity{
         ImageButton backButton = findViewById(R.id.editProfileBackButton);
         ratingBar = findViewById(R.id.edit_profile_rating_bar);
 
+        numberReviews = findViewById(R.id.numberReviewsEditProfile);
+        numberReviews.setText("0");
+
         setRatingBar();
+
+
+
+
 
         this.personalInfoButton = but_persInfo;
         this.locationButton = but_bookLocation;
@@ -712,6 +721,10 @@ public class EditProfile extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 totReviewCount = dataSnapshot.getValue(Float.class);
+                reviews = dataSnapshot.getValue(Integer.class);
+                if(reviews != null){
+                    numberReviews.setText(reviews.toString());
+                }
                 if(totStarCount != null){
                     numStar = totStarCount / totReviewCount;
                 }else{
