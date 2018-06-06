@@ -35,7 +35,7 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
     private TextView publisherTextView;
     private TextView publicationYearTextView;
     private TextView isbnTextView;
-    private TextView conditionTextView;
+
     private TextView descriptionTextView;
     private FloatingActionButton fab;
 
@@ -69,7 +69,7 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
                 .into(bookImageView);
         publisherTextView.setText(book.getPublisher());
         publicationYearTextView.setText(book.getPubYear());
-        conditionTextView.setText(book.getCondition());
+
         isbnTextView.setText("ISBN: " + book.getIsbn());
         descriptionTextView.setText(book.getDescription());
         
@@ -163,7 +163,7 @@ public class ShowSelectedBookInfo extends AppCompatActivity {
         publisherTextView = findViewById(R.id.showBookInfoPublisher);
         publicationYearTextView = findViewById(R.id.showBookInfoPublicationYear);
         isbnTextView = findViewById(R.id.showBookInfoISBN);
-        conditionTextView = findViewById(R.id.showBookInfoCondition);
+
         descriptionTextView = findViewById(R.id.showBookInfoDescription);
         fab = findViewById(R.id.showBookInfoFab);
 
