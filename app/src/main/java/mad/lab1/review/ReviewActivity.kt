@@ -243,6 +243,7 @@ class ReviewActivity : AppCompatActivity() {
 
             fun bindItems(picUri: Uri) {
                 itemView.pic.setImageURI(picUri)
+                itemView.progressBar.visibility = View.GONE
             }
         }
     }

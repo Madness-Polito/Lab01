@@ -168,15 +168,17 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //get the user to review
-                String thumbnail = dataSnapshot.getValue().toString();
-                Glide.with(bookImageView.getContext())
-                        .load(thumbnail)
-                        .apply(new RequestOptions()
-                                .placeholder(R.drawable.my_library_selected_24dp)
-                                .centerCrop()
-                                .dontAnimate()
-                                .dontTransform())
-                        .into(bookImageView);
+                if(dataSnapshot.getValue() != null) {
+                    String thumbnail = dataSnapshot.getValue().toString();
+                    Glide.with(bookImageView.getContext())
+                            .load(thumbnail)
+                            .apply(new RequestOptions()
+                                    .placeholder(R.drawable.my_library_selected_24dp)
+                                    .centerCrop()
+                                    .dontAnimate()
+                                    .dontTransform())
+                            .into(bookImageView);
+                }
 
             }
 

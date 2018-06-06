@@ -161,6 +161,8 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
             }
             // otherwise show full msg
             else {
+                nameText.setVisibility(View.VISIBLE);
+                profileImage.setVisibility(View.VISIBLE);
                 nameText.setText(msg.getUser());
 
                 // set profile pic

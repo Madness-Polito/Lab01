@@ -61,7 +61,11 @@ class ReviewsAdapter(private val reviews: ArrayList<Review>, val context: Contex
 
             val rv : RecyclerView = itemView.reviewPicList
             rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            rv.adapter = ReviewsAdapter.ReviewImagesAdapter(review.picNames!!, context)
+            if (review.picNames != null) {
+                rv.adapter = ReviewsAdapter.ReviewImagesAdapter(review.picNames!!, context)
+            }
+            else
+                itemView.horizontalBar.visibility = View.GONE
 
             itemView.userName.text = review.userName
             itemView.ratingBar.rating = review.numStars

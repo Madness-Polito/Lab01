@@ -51,7 +51,7 @@
     <string name="no">No</string>
     <string name="requestTitle">New book request</string>
     <string name="requestBody">You have a new request for </string>
-    <string name="recievedBook">I\'ve recieved the book</string>
+    <string name="receivedBook">I\'ve received the book</string>
     <string name="returnedBook">I\'ve returned the book</string>
     <string name="reviewTitle">Review</string>
     <string name="reviewBody">Do you want to write a review on the user borrowing this book?</string>
@@ -112,7 +112,7 @@
     <string name="no_msg">No message to view</string>
 
     <!-- tutorial text-->
-    <string name="tutorial_welcome_text">Welcome to Pazzia Libro Condivisione! :D With this app you\'ll be able to share books with other people</string>
+    <string name="tutorial_welcome_text">Welcome to Madness Book Sharing! :D With this app you\'ll be able to share books with other people</string>
     <string name="tutorial_signin_text">Authenticate yourself using your email or your social accounts</string>
     <string name="tutorial_profile_text">Fill your personal profile with your personal informations</string>
     <string name="tutorial_chat_text">Use the chat to communicate to other users</string>

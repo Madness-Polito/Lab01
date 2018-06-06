@@ -579,7 +579,23 @@ public class MyLibraryFragment extends Fragment {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 //save the URL for the thumbnail on the database
-                Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri downloadUrl) {
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
+                        ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
+
+                        ref = FirebaseDatabase.getInstance().getReference("bookID");
+                        ref.child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        ref = FirebaseDatabase.getInstance().getReference("bookList");
+                        ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+                    }
+                });
+
+                /*Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
                 ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
@@ -589,7 +605,7 @@ public class MyLibraryFragment extends Fragment {
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 ref = FirebaseDatabase.getInstance().getReference("bookList");
-                ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+                ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());*/
             }
         });
 
@@ -773,7 +789,38 @@ public class MyLibraryFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     //save the URL for the thumbnail on the database
-                    Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri downloadUrl) {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
+                            ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
+
+                            ref = FirebaseDatabase.getInstance().getReference("bookID");
+                            ref.child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            ref = FirebaseDatabase.getInstance().getReference("bookList");
+                            ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+                        }
+                    });
+
+                /*Uri downloadUrl = taskSnapshot.getUploadSessionUri();
+
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
+                ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
+
+                ref = FirebaseDatabase.getInstance().getReference("bookID");
+                ref.child(bookID).child("thumbURL").setValue(downloadUrl.toString());
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                ref = FirebaseDatabase.getInstance().getReference("bookList");
+                ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());*/
+                }
+            });
+
+
+                   /* Uri downloadUrl = taskSnapshot.getUploadSessionUri();
 
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("isbn");
                     ref.child(isbn).child("thumbURL").setValue(downloadUrl.toString());
@@ -783,9 +830,7 @@ public class MyLibraryFragment extends Fragment {
 
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     ref = FirebaseDatabase.getInstance().getReference("bookList");
-                    ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());
-                }
-            });
+                    ref.child(user.getUid()).child(bookID).child("thumbURL").setValue(downloadUrl.toString());*/
 
 
             //StorageDB.putProfilePic(getImageUri(getActivity(), thumbImg).toString());

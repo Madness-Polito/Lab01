@@ -199,7 +199,7 @@ class BorrowedBooksListAdapter(val b : ArrayList<Book>, val c : Context):Recycle
         val dialogView = LayoutInflater.from(c).inflate(R.layout.chat_recieved_returned_dialog, null);
         val btn_chat = dialogView.findViewById<ImageButton>(R.id.btn_chat);
         val btn_recieved_returned = dialogView.findViewById<Button>(R.id.btn_recieved_returned);
-        btn_recieved_returned.text = c.getString(R.string.recievedBook);
+        btn_recieved_returned.text = c.getString(R.string.receivedBook);
         dialog.setView(dialogView);
         val customDialog = dialog.create();
 
