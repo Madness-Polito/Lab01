@@ -845,12 +845,12 @@ public class MyLibraryFragment extends Fragment {
     public void onPause() {
         super.onPause();
         //Remove childEventListener
-        if(dbRef != null) {
-            dbRef.removeEventListener(bookIDListener);
-            int size = allBookList.size();
-            allBookList.clear();
-            adapter.notifyItemRangeRemoved(0, size);
-        }
+
+        dbRef.removeEventListener(bookIDListener);
+        int size = allBookList.size();
+        allBookList.clear();
+        adapter.notifyItemRangeRemoved(0, size);
+        
     }
 
     @Override
@@ -867,10 +867,9 @@ public class MyLibraryFragment extends Fragment {
         owlMissingBooks.setVisibility(View.VISIBLE);
         owlMissingBooksText.setVisibility(View.VISIBLE);
 
-        //add childEventListener
-        if(bookIDListener != null) {
-            dbRef.addChildEventListener(bookIDListener);
-        }
+
+        dbRef.addChildEventListener(bookIDListener);
+
 
         //TODO call it in a method which is called ONLY when the user is in MyLibraryFragment
         //runFirstTimeTutotrial();

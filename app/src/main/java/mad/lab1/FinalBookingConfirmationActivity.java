@@ -44,6 +44,7 @@ import mad.lab1.Database.UserInfo;
 import mad.lab1.Map.MapsActivityFiltered;
 import mad.lab1.Notifications.Constants;
 import mad.lab1.R;
+import mad.lab1.User.ShowProfileAndReviews;
 import mad.lab1.chat.Chat;
 import mad.lab1.chat.ChatActivity;
 import mad.lab1.review.ReviewsActivity;
@@ -159,7 +160,18 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         });
 
 
-
+        ownerCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, ShowProfileAndReviews.class);
+                Bundle b = new Bundle();
+                b.putParcelable("user", bookOwner);
+                b.putParcelable("book", book);
+                b.putString("owner", bookOwner.getUid());
+                i.putExtra("user_book", b);
+                startActivity(i);
+            }
+        });
 
     }
 
@@ -336,14 +348,7 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
                 } );
 
 
-        ownerCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, ReviewsActivity.class);
-                i.putExtra("uid", bookOwner.getUid());
-                startActivity(i);
-            }
-        });
+
 
     }
 }

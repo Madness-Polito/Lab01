@@ -85,6 +85,7 @@
 
     <string name="no_borrowed_books">Non hai ancora preso in prestito nessun libro...</string>
 
+
     <!-- tutorial -->
     <string name="tutorial_welcome">BENVENUTO</string>
     <string name="tutorial_signin">AUTENTICATI</string>

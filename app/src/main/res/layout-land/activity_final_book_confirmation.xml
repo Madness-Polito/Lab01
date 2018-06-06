@@ -16,9 +16,9 @@
 
     <ImageView
         android:id="@+id/showBookInfoImage"
-        android:layout_width="270dp"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/showBookInfoScrollView"
         app:layout_constraintHorizontal_bias="0.5"
@@ -31,7 +31,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/showBookInfoScrollView"
-        android:layout_width="324dp"
+        android:layout_width="350dp"
         android:layout_height="0dp"
         android:fillViewport="true"
         android:scrollbars="none"
