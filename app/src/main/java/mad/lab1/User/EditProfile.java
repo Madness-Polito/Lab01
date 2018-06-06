@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -40,6 +43,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 import mad.lab1.CustomTextWatcher;
 import mad.lab1.Database.Globals;
 import mad.lab1.Database.LocalDB;
@@ -62,12 +69,11 @@ public class EditProfile extends AppCompatActivity{
     private int BOOK_LOCATION_CODE = 1234;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+    private Geocoder geocoder = new Geocoder(this, Locale.getDefault());
     private RatingBar ratingBar;
     private Float totStarCount;
     private Float totReviewCount;
     private Float numStar;
-
-    private TextView numberReviewsEditProfile;
 
 
     private ImageButton personalInfoButton, locationButton, bioButton, favBooksButton;
@@ -107,8 +113,25 @@ public class EditProfile extends AppCompatActivity{
         mail = findViewById(R.id.showTextMail);
         TEXTVIEWS = new TextView[]{name, mail, bio, DoB, city, phone};
 
-        numberReviewsEditProfile = findViewById(R.id.numberReviewsEditProfile);
-        numberReviewsEditProfile.setText("0");
+        getCityFromSavedLocation();
+        /*
+        if(this.latitude != null && longitude != null && this.city==null){
+            //set city
+            Log.d("POS", "IN");
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = null;
+            try {
+                addresses = geocoder.getFromLocation(new Double(latitude), new Double(longitude), 1);
+            } catch(IOException e){
+                e.printStackTrace();
+            }
+            if(addresses!=null) {
+                city.setText(addresses.get(0).getAddressLine(0));
+                //String stateName = addresses.get(0).getAddressLine(1);
+                //String countryName = addresses.get(0).getAddressLine(2);
+            }
+            Log.d("POS", "->"+city.getText()+"<-");
+        }*/
 
         // parse intent
         Intent i = getIntent();
@@ -364,27 +387,58 @@ public class EditProfile extends AppCompatActivity{
                 onBackPressed();
             }
         });
+    }
 
+    public void getCityFromSavedLocation(){
 
+        // if lat and long are registered on firebase fill them
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
+        UserInfo userInfo = LocalDB.getUserInfo(this);
 
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("reviews").child(user.getUid()).child("reviewCount");
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Integer reviews = dataSnapshot.getValue(Integer.class);
-                if(reviews != null){
-                    numberReviewsEditProfile.setText(reviews.toString());
-                }else{
-                    numberReviewsEditProfile.setText("0");
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for(DataSnapshot user : dataSnapshot.getChildren()) {
+                    UserInfo u = user.getValue(UserInfo.class);
+                    Double curlat, curlon;
+                    Location currentLocation;
+                    List<Address> addresses = null;
+                    // if user found, check if lat and long is null
+                    //Log.d("MARKER", "user "+u.getName()+" / "+userInfo.getName());
+                    if (u.getName().equals(userInfo.getName())){
+                        if (u.getLatitude() != null && u.getLongitude() != null){
+                            //Log.d("MARKER", "user found!");
+                            curlat = new Double(u.getLatitude());
+                            curlon = new Double(u.getLongitude());
+
+                            try {
+                                addresses = geocoder.getFromLocation(curlat, curlon, 1);
+                            } catch(IOException e){
+                                e.printStackTrace();
+                            }
+                            if(addresses!=null) {
+                                String cityName = addresses.get(0).getAddressLine(0);
+                                String stateName = addresses.get(0).getAddressLine(1);
+                                String countryName = addresses.get(0).getAddressLine(2);
+                                city.setText(stateName);
+                                Log.d("POS", "----> set "+stateName+" "+cityName+" "+countryName+" <-");
+                            }
+
+                            break;
+                        }
+                    }
                 }
+
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("MARKER", "onCancelled() called");
             }
         });
-
+        //Log.d("MARKER", "return currentLocation");
+        //return currentLocation;
     }
 
     private void runFirstTimeTutorial(){

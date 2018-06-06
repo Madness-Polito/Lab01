@@ -70,7 +70,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
     private GoogleMap mMap;
     private FloatingActionButton cancelBtn;
-    private FloatingActionButton borrowBtn;
+    //private FloatingActionButton borrowBtn;
     //private Location location;
     //private MapView mapView;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -122,7 +122,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
             }
         });
 
-        borrowBtn = findViewById(R.id.borrowButton);
+        //borrowBtn = findViewById(R.id.borrowButton);
         runFirstTimeTutotrial();
     }
 
@@ -255,7 +255,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
         boolean isFirstStart = getPrefs.getBoolean("FilteredMapFirstStart", true);
 
         if (isFirstStart) {
-            showcase("confirm");
+            showcase("cancel");
             //  Make a new preferences editor
             SharedPreferences.Editor e = getPrefs.edit();
 
@@ -290,24 +290,7 @@ public class MapsActivityFiltered extends AppCompatActivity implements OnMapRead
 
                     break;
 
-            case "confirm":
-                new ShowcaseView.Builder(this)
-                        .withMaterialShowcase()
-                        .setStyle(R.style.CustomShowcaseTheme2)
-                        .setTarget(new ViewTarget(borrowBtn))
-                        .setContentTitle("borrow")
-                        .setContentText("press this button to borrow the selected book on the map")
-                        .setShowcaseEventListener(
-                                new SimpleShowcaseEventListener(){
-                                    @Override
-                                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-                                        showcase("cancel");
-                                    }
-                                }
-                        )
-                        .build();
 
-                break;
         }
 
     }
