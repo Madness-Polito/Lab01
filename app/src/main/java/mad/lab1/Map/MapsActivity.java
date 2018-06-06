@@ -54,7 +54,7 @@ import mad.lab1.Database.UserInfo;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private FloatingActionButton cancelBtn, borrowBtn;
+    private FloatingActionButton cancelBtn;
     //private Location location;
     //private MapView mapView;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -90,23 +90,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent intent = new Intent();
                 setResult(Activity.RESULT_CANCELED, intent);
                 finish();
-            }
-        });
-
-        borrowBtn = findViewById(R.id.borrowButton);
-        borrowBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(selectedMarker == null){
-                    Toast.makeText(MapsActivity.this, R.string.no_book_selected, Toast.LENGTH_SHORT).show();
-                }
-                else{
-
-                    // start activity to chat with this user
-
-
-                    Toast.makeText(MapsActivity.this, R.string.borrowed_book, Toast.LENGTH_SHORT).show();
-                }
             }
         });
 

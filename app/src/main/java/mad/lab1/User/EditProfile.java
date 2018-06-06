@@ -80,6 +80,7 @@ public class EditProfile extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle b) {
+        Log.d("POSITION", "onCreate()");
         super.onCreate(b);
         setContentView(R.layout.activity_edit_profile);
 
@@ -112,7 +113,7 @@ public class EditProfile extends AppCompatActivity{
         phone = findViewById(R.id.showTextTelephone);
         mail = findViewById(R.id.showTextMail);
         TEXTVIEWS = new TextView[]{name, mail, bio, DoB, city, phone};
-
+    Log.d("POSITION", "getCityFromSavedLocation");
         getCityFromSavedLocation();
         /*
         if(this.latitude != null && longitude != null && this.city==null){
@@ -418,11 +419,8 @@ public class EditProfile extends AppCompatActivity{
                                 e.printStackTrace();
                             }
                             if(addresses!=null) {
-                                String cityName = addresses.get(0).getAddressLine(0);
-                                String stateName = addresses.get(0).getAddressLine(1);
-                                String countryName = addresses.get(0).getAddressLine(2);
-                                city.setText(stateName);
-                                Log.d("POS", "----> set "+stateName+" "+cityName+" "+countryName+" <-");
+                                Address address = addresses.get(0);
+                                city.setText(address.getLocality());
                             }
 
                             break;
@@ -566,11 +564,38 @@ public class EditProfile extends AppCompatActivity{
             if (resultCode == RESULT_OK){
                 Bundle coordinates =  data.getExtras();
                 if(coordinates != null){
+                    Log.d("POSITION", "coordinates ok");
+
                     LatLng coo = (LatLng) coordinates.get("LatLng");
                     latitude = new Double(coo.latitude).toString();
                     longitude = new Double(coo.longitude).toString();
+                    List<Address> addresses = null;
+                    try {
+                        addresses = geocoder.getFromLocation(new Double(coo.latitude), new Double(coo.longitude), 1);
+                    } catch(IOException e){
+                        e.printStackTrace();
+                    }
+                    if(addresses != null){
+                        //String cityName = addresses.get(0).getAddressLine(0);
+                        Address address = addresses.get(0);
+                        city.setText(address.getLocality());
+                        /*
+                        Log.d("POSITION", "settext() -> "+address.getLocality()+" <-");
+                        //String[] split1 = cityName.split(",");
+                        //String[] split2 = split1[2].split(" ");
+                        if(split2.length == 3) {
+                            Log.d("POSITION", "-> "+split2[2]+" <-");
+                            city.setText(split2[2]);
+                        }
+                        else if(split1.length == 2){
+                            String[] split3 = split1[1].split(" ");
+                            Log.d("POSITION", "-> "+split3[1]+" <-");
+                            city.setText(split3[1]);
+                        }*/
 
-                    //Toast.makeText(this, "lat "+lat+" , lng "+lng, Toast.LENGTH_SHORT).show();
+
+                        //city.setText(cityName);
+                    }
                 }
                 else
                     Toast.makeText(this, "ERROR, coo is null", Toast.LENGTH_SHORT).show();
