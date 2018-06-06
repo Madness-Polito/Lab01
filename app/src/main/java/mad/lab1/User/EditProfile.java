@@ -69,7 +69,7 @@ public class EditProfile extends AppCompatActivity{
     private int BOOK_LOCATION_CODE = 1234;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    private Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+    private Geocoder geocoder;
     private RatingBar ratingBar;
     private Float totStarCount;
     private Float totReviewCount;
@@ -88,6 +88,8 @@ public class EditProfile extends AppCompatActivity{
         FirebaseMessaging.getInstance().subscribeToTopic(user.getUid());
 
         getLatLong();
+
+        geocoder = new Geocoder(this, Locale.getDefault());
 
         // get object references
         pic = findViewById(R.id.showImageProfile);
