@@ -28,6 +28,8 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.FirebaseStorage;
 
 import org.json.JSONObject;
 
@@ -281,9 +283,16 @@ public class FinalBookingConfirmationActivity extends AppCompatActivity {
         ownerCity.setText(bookOwner.getCity());
         ownerName.setText(bookOwner.getName());
 
+        // set profile pic
+        StorageReference profilePicRef = FirebaseStorage.getInstance()
+                .getReference("userPics")
+                .child(bookOwner.getUid());
+        GlideApp.with(context)
+                .load(profilePicRef)
+                .placeholder(R.drawable.ic_account_circle_144dp)
+                .into(ownerImage);
 
         // set rating stars
-
         DatabaseReference reviewRef = FirebaseDatabase.getInstance()
                 .getReference("reviews")
                 .child(bookOwner.getUid());

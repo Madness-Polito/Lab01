@@ -224,6 +224,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
                 .child(u.uid)
         GlideApp.with(this)
                 .load(picRef)
+                .placeholder(R.drawable.ic_account_circle_144dp)
                 .into(image)
     }
 

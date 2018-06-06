@@ -127,23 +127,23 @@ public class ChatActivity extends AppCompatActivity {
         fab.setOnClickListener((View v) -> {
 
                 // Read the input field and push a new ChatMessage to Firebase
-            if(input.getText().length() != 0) {
-                ChatMessage msg = new ChatMessage(input.getText().toString(), Authentication.getCurrentUser().getDisplayName());
-                Chat.postMessage(this, msg, chatId, user2);
+                if(input.getText().length() != 0) {
+                    ChatMessage msg = new ChatMessage(input.getText().toString(), Authentication.getCurrentUser().getDisplayName());
+                    Chat.postMessage(this, msg, chatId, user2);
 
-                //send a notification to user2
-                sendPost(Authentication.getCurrentUser().getDisplayName(), user2, msg.getText());
+                    //send a notification to user2
+                    sendPost(Authentication.getCurrentUser().getDisplayName(), user2, msg.getText());
 
-                // Clear the input
-                input.setText("");
-            }
+                    // Clear the input
+                    input.setText("");
+                }
             }
         );
 
         input.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
+                if ((actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) && input.getText().length() != 0) {
                     // Read the input field and push a new ChatMessage to Firebase
                     ChatMessage msg = new ChatMessage(input.getText().toString(), Authentication.getCurrentUser().getDisplayName());
                     Chat.postMessage(getApplicationContext(), msg, chatId, user2);

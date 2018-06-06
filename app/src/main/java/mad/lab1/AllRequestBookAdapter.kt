@@ -68,6 +68,7 @@ class AllRequestBookAdapter (val d : ArrayList<String>,var bookRequestedId : Str
                 .child(uid)
         GlideApp.with(c)
                 .load(picRef)
+                .placeholder(R.drawable.ic_account_circle_144dp)
                 .into(holder.profileImage)
 
         // set rating stars
