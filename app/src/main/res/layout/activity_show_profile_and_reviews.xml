@@ -163,7 +163,7 @@
                         android:background="?android:attr/listDivider"
                         android:elevation="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/showRequestBookBorrowed"
+                        app:layout_constraintEnd_toStartOf="@+id/showNumberReviewsShowProfileAndReviews"
                         app:layout_constraintStart_toEndOf="@+id/textView6"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0" />
@@ -205,7 +205,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/showRequestBookBorrowed"
+                        android:id="@+id/showNumberReviewsShowProfileAndReviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="49dp"

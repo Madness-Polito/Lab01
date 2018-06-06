@@ -67,6 +67,8 @@ public class EditProfile extends AppCompatActivity{
     private Float totReviewCount;
     private Float numStar;
 
+    private TextView numberReviewsEditProfile;
+
 
     private ImageButton personalInfoButton, locationButton, bioButton, favBooksButton;
 
@@ -104,6 +106,9 @@ public class EditProfile extends AppCompatActivity{
         phone = findViewById(R.id.showTextTelephone);
         mail = findViewById(R.id.showTextMail);
         TEXTVIEWS = new TextView[]{name, mail, bio, DoB, city, phone};
+
+        numberReviewsEditProfile = findViewById(R.id.numberReviewsEditProfile);
+        numberReviewsEditProfile.setText("0");
 
         // parse intent
         Intent i = getIntent();
@@ -359,6 +364,27 @@ public class EditProfile extends AppCompatActivity{
                 onBackPressed();
             }
         });
+
+
+
+        DatabaseReference db = FirebaseDatabase.getInstance().getReference().child("reviews").child(user.getUid()).child("reviewCount");
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Integer reviews = dataSnapshot.getValue(Integer.class);
+                if(reviews != null){
+                    numberReviewsEditProfile.setText(reviews.toString());
+                }else{
+                    numberReviewsEditProfile.setText("0");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     private void runFirstTimeTutorial(){

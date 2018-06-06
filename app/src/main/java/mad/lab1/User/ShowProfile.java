@@ -15,7 +15,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +39,8 @@ public class ShowProfile extends AppCompatActivity {
     private Float totReviewCount;
     private Float numStar;
 
+    private TextView reviewsCounter;
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
@@ -57,7 +58,8 @@ public class ShowProfile extends AppCompatActivity {
         editButton = findViewById(R.id.editProfileButton);
         backButton = findViewById(R.id.showProfileBackButton);
         ratingBar = findViewById(R.id.show_profile_rating_bar);
-
+        reviewsCounter = findViewById(R.id.reviewsNumberShowProfile);
+        reviewsCounter.setText("0");
         // load user info & update view
         UserInfo userInfo = LocalDB.getUserInfo(this);
         updateView(userInfo);
@@ -83,6 +85,26 @@ public class ShowProfile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference dbRef = db.getReference().child("reviews").child(userInfo.getUid()).child("reviewCount");
+        dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Integer reviews = dataSnapshot.getValue(Integer.class);
+                if(reviews == null){
+                    reviews = 0;
+                    reviewsCounter.setText(reviews.toString());
+                }else{
+                    reviewsCounter.setText(reviews.toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }

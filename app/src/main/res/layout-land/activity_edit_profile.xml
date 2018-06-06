@@ -181,6 +181,7 @@
                         android:layout_centerHorizontal="true"/>
 
                     <TextView
+                        android:id="@+id/numberReviewsEditProfile"
                         android:text="Prova"
                         android:layout_centerVertical="true"
                         android:gravity="center"

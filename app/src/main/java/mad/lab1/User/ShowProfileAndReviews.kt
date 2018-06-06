@@ -17,7 +17,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.review.view.*
 import mad.lab1.AllRequestsBookList
 import mad.lab1.Database.Book
 import mad.lab1.Database.UserInfo
@@ -26,7 +25,6 @@ import mad.lab1.Notifications.Constants
 import mad.lab1.R
 import mad.lab1.review.ReviewsActivity
 import org.json.JSONObject
-import org.w3c.dom.Text
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -43,7 +41,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
     private lateinit var email : TextView
     private lateinit var phone : TextView
     private lateinit var image : ImageView
-    private lateinit var bookBorrowedNumber : TextView
+    private lateinit var numberReviewsShowProfileAndReviews : TextView
     private lateinit var showMoreReviews : ImageView
     private lateinit var showMoreReviewsText : TextView
     private lateinit var chooseUserFab : FloatingActionButton
@@ -139,7 +137,23 @@ class ShowProfileAndReviews : AppCompatActivity() {
 
         }
 
+        numberReviewsShowProfileAndReviews.text = "0"
+        var refReview = FirebaseDatabase.getInstance().getReference("reviews").child(u.uid).child("reviewCount")
+        refReview.addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
 
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+
+                var reviews = p0.getValue(Integer::class.java)
+                if(reviews != null){
+                    numberReviewsShowProfileAndReviews.text = reviews.toString()
+                }else{
+                    numberReviewsShowProfileAndReviews.text = "0"
+                }
+            }
+        })
 
     }
 
@@ -203,7 +217,7 @@ class ShowProfileAndReviews : AppCompatActivity() {
         email = findViewById(R.id.showRequestTextMail)
         phone = findViewById(R.id.showRequestTextTelephone)
         image = findViewById(R.id.showRequestImageProfile)
-        bookBorrowedNumber = findViewById(R.id.showRequestBookBorrowed)
+        numberReviewsShowProfileAndReviews = findViewById(R.id.showNumberReviewsShowProfileAndReviews)
         showMoreReviews = findViewById(R.id.showMoreReviews)
         showMoreReviewsText = findViewById(R.id.textView6)
 

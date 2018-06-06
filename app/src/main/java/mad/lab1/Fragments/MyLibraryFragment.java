@@ -850,7 +850,7 @@ public class MyLibraryFragment extends Fragment {
         int size = allBookList.size();
         allBookList.clear();
         adapter.notifyItemRangeRemoved(0, size);
-        
+
     }
 
     @Override
