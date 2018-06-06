@@ -36,7 +36,7 @@
         android:layout_width="237dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/missing_book_my_library"
+        android:text="@string/no_borrowed_books"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

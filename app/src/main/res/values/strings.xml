@@ -92,6 +92,8 @@
 
     <string name="final_book_confimation_owner">Owner:</string>
 
+    <string name="no_borrowed_books">Borrow some books to fill up this page!</string>
+
     <string name="missing_book_request">At the moment there aren\'t any requests for this book... </string>
     <string name="show_reviews_text">Reviews</string>
 
@@ -103,7 +105,7 @@
     <string name="tutorial_letsstart">LET\'S START</string>
 
     <!-- my library -->
-    <string name="missing_book_my_library">At the moment There aren\'t any books in your library...</string>
+    <string name="missing_book_my_library">At the moment there aren\'t any books in your library...</string>
 
     <!-- reviews -->
     <string name="missing_reviews">No reviews available</string>
